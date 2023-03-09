@@ -8,44 +8,43 @@ import re
 def main():
     scrapertools.cdFile(__file__)
 
+    data = {}
+
     #Gets input
-    name = input("Store Name: ")
-    url = input("Store URL: ")
+    data["name"] = input("Store Name: ")
+    data["url"] = input("Store URL: ")
 
     #Checks url input
-    urlCheck = re.fullmatch("https://www\..+\.(com|co)", url)
+    urlCheck = re.fullmatch("https://(www|shop)\..+\.(com|co)", data["url"])
     if not urlCheck:
         raise ValueError("Invalid URL address format.")
 
-    webpageRegex = []
+    data["webpageRegex"] = []
     count = int(input("Webpage Regex Count: "))
 
     for i in range(0, count):
         regex = input("Webpage Regex " + str(i + 1) + ": ")
-        webpageRegex.append(regex)
+        data["webpageRegex"].append(regex)
 
-    clothingRegex = []
+    data["clothingRegex"] = []
     count = int(input("Clothing Page Regex Count: "))
 
     for i in range(0, count):
         regex = input("Clothing Page Regex " + str(i + 1) + ": ")
-        clothingRegex.append(regex)
+        data["clothingRegex"].append(regex)
     
-    nameIdentifier = input("Name Identifier: ")
-    genderIdentifier = input("Gender Identifier: ")
-    imageIdentifier = input("Image Div Identifier: ")
+    data["nameIdentifier"] = input("Name Identifier: ")
+    data["imageIdentifier"] = input("Image Div Identifier: ")
 
-    with open("../info/" + name.lower() + ".json", 'w') as file:
-        print("Writing file " + scrapertools.pwd() + name + ".json")
-        data = {
-            "name" : name,
-            "url" : url,
-            "webpageRegex" : webpageRegex,
-            "clothingRegex" : clothingRegex,
-            "nameIdentifier" : nameIdentifier,
-            "genderIdentifier" : genderIdentifier,
-            "imageIdentifier" : imageIdentifier
-        }
+    if input("Are there breadcrumbs? (Yes/No) ").lower() == "yes":
+        data["breadcrumbsIdentifier"] = input("Breadcrumbs Identifier: ")
+    elif input("Is there a specific gender? (Yes/No) ").lower() == "yes":
+        data["gender"] = input("Gender: (Male/Female/Boy/Girl) ").lower()
+        if data["gender"] not in ["male", "female", "boy", "girl"]:
+            data["gender"] = "other";
+
+    with open("../info/" + data["name"].lower() + ".json", 'w') as file:
+        print("Writing file " + scrapertools.pwd() + data["name"] + ".json")
         json.dump(data, file)
 
 

@@ -1,6 +1,12 @@
 #! /bin/bash
 
+number=0
+
 for i in ./info/*
 do
-    echo $i | python3 main.py &
+    string="script$number"
+    echo $i | nohup python3 ./scripts/main.py > ./output/$string.txt &
+    ((number++))
 done
+
+exit 0
