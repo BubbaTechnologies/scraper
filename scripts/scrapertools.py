@@ -5,6 +5,7 @@ import datetime
 import os
 import re
 import random
+import requests
 
 USER_AGENTS = ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
         'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36',
@@ -27,6 +28,9 @@ CLOTHING_DICT = {
                  "[Ss]carves|[Gg]loves?|[Tt]ies?|[Ss]ocks|[T|t]ote",
     "swimwear": "[Ss]wim|[Bb]ikini|[Rr]ash(?: )?[Gg]uard|[Ss]urf"
 }
+
+URL = "https://api.peachsconemarket.com"
+JWT = ""
 
 def cdFile(file: str) -> None:
     abspath = os.path.abspath(file)
@@ -86,8 +90,96 @@ def getType(string: str):
 
     lastString = p[len(p) - 1]
 
-    for i in reDict:
-        if re.search(reDict[i], lastString):
+    for i in CLOTHING_DICT:
+        if re.search(CLOTHING_DICT[i], lastString):
             return i
 
     return "other"
+
+class Clothing:
+    def __init__(self, name: str, imageUrl: list[str], productUrl: str, storeId: int, type: str, gender: list[str]):
+        self.name = name
+        self.imageUrl = imageUrl
+        self.productUrl = productUrl
+        self.storeId = storeId
+        self.type = type
+        self.gender = gender
+
+    def toDict(self):
+        jsonObj = {
+            "name": self.name,
+            "imageUrl": self.imageUrl,
+            "productUrl": self.productUrl,
+            "storeId": str(self.storeId),
+            "type": self.type,
+            "gender": self.gender
+        }
+
+        return jsonObj
+
+    def toString(self):
+        return str(self.toDict())
+
+    def createClothing(self, token: str):
+        item = self.checkClothing(self.productUrl)
+        if item is not None:
+            return item
+
+        header = {
+            "Authorization": "Bearer " + token,
+            "Content-Type": "application/json"
+        }
+
+        r = requests.post(URL + "/scraper/clothing", headers=header, json=self.toDict())
+        try:
+            return r.json()["id"]
+        except KeyError:
+            print("Could not create clothing: " + str(r))
+            return None
+    
+    @staticmethod
+    def checkClothing(url):
+        header = {
+            "Authorization": "Bearer " + JWT
+        }
+
+        r = requests.get(URL + "/scraper/checkClothing?url=" + url, headers=header)
+
+        if r.status_code == 200 and "{}" not in r.json():
+            try:
+                if r.json()["id"]:
+                    return True
+            except KeyError:
+                return False
+        return False
+    
+class Store:
+    def __init__(self, name: str, url: str):
+        self.name = name
+        self.url = url
+        self.id = -1
+
+    def toDict(self):
+        jsonObj = {
+            "name": self.name,
+            "url": self.url
+        }
+
+        return jsonObj
+
+    def toString(self):
+        return str(self.toDict())
+
+    def createStore(self):
+        headers = {
+            "Authorization": "Bearer " + JWT,
+            "Content-Type": "application/json"
+        }
+
+        r = requests.post(url=URL + "/scraper/store", headers=headers, json=self.toDict())
+        try:
+            self.id = r.json()["id"]
+            return 
+        except KeyError:
+            print("Could not create store: " + r)
+            exit()
