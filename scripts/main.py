@@ -34,7 +34,7 @@ async def main():
     store.createStore()
 
     basicUrl = info["url"]
-    queue = [basicUrl]
+    queue = ["https://bonobos.com/products/herringbone-5-pocket-pants?color=naval%20blue", basicUrl]
 
     session = requests_html.AsyncHTMLSession()
     indexed = []
@@ -47,13 +47,8 @@ async def main():
 
         response = await session.get(url, headers = scrapertools.getHeaders())
         response.html.arender()
-        scrapertools.printMessage("Got " + response.status_code + " from url.")
-
-        with open("test/bonobos.html","w") as file:
-            file.write(response.text)
-
-
         scrapertools.printMessage("Received from " + url + " status code " + str(response.status_code))
+
         if not response.status_code == 200:
             nonAcceptCount += 1
             if nonAcceptCount > 10:
@@ -86,23 +81,21 @@ async def main():
         #Checks if current page is clothing
         for regex in info["clothingRegex"]:
             search = re.search(regex, url)
+            print(url, regex, str(search is not None))
             if search is not None:
                 try:
                     #Gets name
                     name = soup.find("h1", {"class":info["nameIdentifier"]}).text
                     #Get all images
-                    imageDiv = soup.find("div", {"class": info["imageIdentifier"]}).text
+                    imageDiv = soup.find("div", {"class": info["imageIdentifier"]})
                     imageSrc = []
-
-                    for img in imageDiv.findAll("img"):
+                    for img in imageDiv.find_all("img"):
                         imageSrc.append(img['src'])
-                    
                     if "breadcrumbsIdentifier" in info.keys():
                         search = soup.find("nav", {"aria-label": info["breadcrumbsIdentifier"]})
                         if search == None:
                             search = soup.find("div", {"class": info["breadcrumbsIdentifier"]})
-
-                        for link in search.findAll("a"):
+                        for link in search.find_all("a"):
                             gender = scrapertools.getGender(link.text)
                             if gender != "other":
                                 break
@@ -111,12 +104,12 @@ async def main():
                     else:
                         gender = "other"
                     clothingType = scrapertools.getType(name)
-
                     clothing = scrapertools.Clothing(name, imageSrc, url, store.id, clothingType, gender)
                     clothing.createClothing()
                     scrapertools.printMessage("Created " + clothing.toString())
-                except Exception:
-                    continue
+                except Exception as e:
+                    scrapertools.printMessage(f"Exception occured while scraping {url}: {str(e)}")
+                    break
                 
 
 if __name__ == "__main__":

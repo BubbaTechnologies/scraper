@@ -83,7 +83,7 @@ def getCLOTHING_DICT():
 def getType(string: str):
     string = cleanString(string)
 
-    p = re.findall(all(), string)
+    p = re.findall(getCLOTHING_DICT(), string)
 
     if len(p) < 1:
         return "other"
@@ -120,13 +120,13 @@ class Clothing:
     def toString(self):
         return str(self.toDict())
 
-    def createClothing(self, token: str):
+    def createClothing(self):
         item = self.checkClothing(self.productUrl)
         if item is not None:
             return item
 
         header = {
-            "Authorization": "Bearer " + token,
+            "Authorization": "Bearer " + JWT,
             "Content-Type": "application/json"
         }
 
