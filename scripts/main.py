@@ -34,7 +34,7 @@ async def main():
     store.createStore()
 
     basicUrl = info["url"]
-    queue = ["https://bonobos.com/products/herringbone-5-pocket-pants?color=naval%20blue", basicUrl]
+    queue = [basicUrl]
 
     session = requests_html.AsyncHTMLSession()
     indexed = []
@@ -81,7 +81,6 @@ async def main():
         #Checks if current page is clothing
         for regex in info["clothingRegex"]:
             search = re.search(regex, url)
-            print(url, regex, str(search is not None))
             if search is not None:
                 try:
                     #Gets name
@@ -90,7 +89,7 @@ async def main():
                     imageDiv = soup.find("div", {"class": info["imageIdentifier"]})
                     imageSrc = []
                     for img in imageDiv.find_all("img"):
-                        imageSrc.append(img['src'])
+                        imageSrc.append(img['srcset'].split()[0])
 
                     if "breadcrumbsIdentifier" in info.keys():
                         search = soup.find("nav", {"aria-label": info["breadcrumbsIdentifier"]})
