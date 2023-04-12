@@ -4,6 +4,6 @@
     "webpageRegex": ["/shop/.+"], 
     "clothingRegex": ["/products/.+"], 
     "nameIdentifier": "summary_name__RYDzS", 
-    "imageIdentifier": "pdp_desktop_images_carousel__guRlH", 
+    "imageIdentifier": "thumbnail_gallery_component__cFcya", 
     "gender": "male"
 }

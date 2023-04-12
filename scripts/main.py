@@ -18,7 +18,6 @@ async def main():
     response = requests.post("https://api.peachsconemarket.com/login", headers={"Content-Type":"application/json"}, json = data)
     scrapertools.JWT = json.loads(response.text)["jwt"]
 
-
     #Opens file
     filename = input()
     jsonFile = open(filename, "r")
@@ -29,7 +28,7 @@ async def main():
     store.createStore()
 
     basicUrl = info["url"]
-    queue = ["https://shop.lululemon.com/p/accessories/Crossbody-Camera-Bag/_/prod10870477", basicUrl]
+    queue = [basicUrl]
 
     session = requests_html.AsyncHTMLSession()
     indexed = []
@@ -41,12 +40,14 @@ async def main():
         indexed.append(url)
 
         response = await session.get(url, headers = scrapertools.getHeaders())
-        response.html.arender()
+        await response.html.arender(scrolldown=5000)
+        
         scrapertools.printMessage("Received from " + url + " status code " + str(response.status_code))
 
         if not response.status_code == 200:
             nonAcceptCount += 1
             if nonAcceptCount > 10:
+                await session.close()
                 exit()
             else:
                 continue
@@ -85,8 +86,14 @@ async def main():
                     #Get all images
                     imageDiv = soup.find("div", {"class": info["imageIdentifier"]})
                     imageSrc = []
+
                     for img in imageDiv.find_all("img"):
-                        imageSrc.append(img['srcset'].split()[0])
+                        if img.has_attr('srcset'):
+                            imageSrc.append(img['srcset'].split()[0])
+                        else:
+                            imageUrl = img['src']
+                            if re.match("(https://|/)", imageUrl):
+                                imageSrc.append(imageUrl)
 
                     if "breadcrumbsIdentifier" in info.keys():
                         search = soup.find("nav", {"aria-label": info["breadcrumbsIdentifier"]})
@@ -102,6 +109,11 @@ async def main():
                         gender = "other"
                     clothingType = scrapertools.getType(name)
                     clothing = scrapertools.Clothing(name, imageSrc, url, store.id, clothingType, gender)
+                    print(clothing.toString())
+                    
+                    await session.close()
+                    exit()
+
                     clothing.createClothing()
                     scrapertools.printMessage("Created " + clothing.toString())
                 except Exception as e:
@@ -111,6 +123,7 @@ async def main():
         
         time.sleep(random.randint(0,3))           
         await session.get(url, headers = scrapertools.getHeaders())
+        exit()
 
         
                 

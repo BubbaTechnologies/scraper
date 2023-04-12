@@ -15,7 +15,7 @@ USER_AGENTS = ["Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KH
 
 CLOTHING_DICT = {
     "top": "[Tt]ops?|[- ]Shirts?|[Jj]ersey|[Tt]ees?|[Cc]ardigan|[Bb]lazer|[Ff]lannel|[Ss]weater|[Pp]olo|[Vv]est",
-    "bottom": "[Jj]eans?|[Ss]horts?|[Pp]ants?|[Tt]rousers|[Jj]oggers|[Ll]eggings|[Ss]lacks",
+    "bottom": "[Jj]eans?|[Ss]horts?|[Pp]ants?|[Tt]rousers|[Jj]oggers|[Ll]eggings|[Ss]lacks|[Cc]hino",
     "underclothing": "[Uu]nderwear|[Bb]oxer|[Bb]rief[s]*|[Tt]hong|[Pp]ant(?:ies|y)|[Bb]ra(?:lette)?|[Cc]orset|[Gg]arter|[Bb]abydoll|[Tt]edd(?:ies|y)",
     "shoes": "[Ss]hoes?|[Ss]andals|[Ss]lides|[Bb]oots?|[Ss]neakers?|[Hh]eels?|[Ss]tilettos?|[Ff]latforms?|[Ww]edges?|[Pp]umps?",
     "jacket": "[Jj]acket|[Hh]oodie|[Pp]ullover",
@@ -56,10 +56,10 @@ def cleanString(string: str):
 
 def getGender(string: str):
     string = cleanString(string)
-    if re.search("([Me][ae]n)", string):
+    if re.search("([Mm][ae]n)|([Mm]ale)", string):
         return "male"
 
-    if re.search("([Ww]om[ae]n)", string):
+    if re.search("([Ww]om[ae]n)|([Ff]emale)", string):
         return "female"
 
     if re.search("([Gg])irl", string):
