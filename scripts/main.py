@@ -91,6 +91,7 @@ async def main():
                     imageSrc = []
                     for img in imageDiv.find_all("img"):
                         imageSrc.append(img['src'])
+
                     if "breadcrumbsIdentifier" in info.keys():
                         search = soup.find("nav", {"aria-label": info["breadcrumbsIdentifier"]})
                         if search == None:
