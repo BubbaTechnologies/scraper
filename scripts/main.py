@@ -109,10 +109,6 @@ async def main():
                         gender = "other"
                     clothingType = scrapertools.getType(name)
                     clothing = scrapertools.Clothing(name, imageSrc, url, store.id, clothingType, gender)
-                    print(clothing.toString())
-                    
-                    await session.close()
-                    exit()
 
                     clothing.createClothing()
                     scrapertools.printMessage("Created " + clothing.toString())
@@ -124,7 +120,7 @@ async def main():
         time.sleep(random.randint(0,3))           
         await session.get(url, headers = scrapertools.getHeaders())
         exit()
-    session.close()
+    await session.close()
 
         
                 
