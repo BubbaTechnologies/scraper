@@ -1,0 +1,13 @@
+{
+    "name": "Lululemon",
+    "url": "https://shop.lululemon.com",
+    "webpageRegex": [
+        "/c/.+"
+    ],
+    "clothingRegex": [
+        "/p/.+"
+    ],
+    "nameIdentifier": "OneLinkNoTx product-title_title__i8NUw",
+    "imageIdentifier": "product-images-carousel_swiperContainer__3gVXO",
+    "breadcrumbsIdentifier": "Breadcrumb"
+}
