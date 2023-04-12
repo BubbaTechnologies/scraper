@@ -62,7 +62,7 @@ async def main():
         for a in soup.find_all('a', href = True):
             for regex in info["webpageRegex"] + info["clothingRegex"]:
                 search = re.search(regex, a["href"])
-                if search is not None and search.group(0) not in indexed and not scrapertools.Clothing.checkClothing(a["href"]):
+                if search is not None and search.group(0) not in indexed:
                     urlString = search.group(0)
                     indexed.append(urlString)
 
