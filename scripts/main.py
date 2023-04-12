@@ -119,7 +119,6 @@ async def main():
         
         time.sleep(random.randint(0,3))           
         await session.get(url, headers = scrapertools.getHeaders())
-        exit()
     await session.close()
 
         
