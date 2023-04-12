@@ -2,15 +2,10 @@
 #Feburary 5th, 2023
 
 import scrapertools
-import json
-import requests_html
-import time
-import random
+import requests_html, requests, json, re, asyncio
+import time, random, os, sys
 from bs4 import BeautifulSoup
-import re
-import asyncio
-import requests
-import os
+
 
 async def main():
     #Connect to api
@@ -34,7 +29,7 @@ async def main():
     store.createStore()
 
     basicUrl = info["url"]
-    queue = [basicUrl]
+    queue = ["https://shop.lululemon.com/p/accessories/Crossbody-Camera-Bag/_/prod10870477", basicUrl]
 
     session = requests_html.AsyncHTMLSession()
     indexed = []
@@ -55,6 +50,8 @@ async def main():
                 exit()
             else:
                 continue
+        else:
+            nonAcceptCount = 0
             
         #Resets nonAcceptCount when accepted
         nonAcceptCount = 0
@@ -108,8 +105,14 @@ async def main():
                     clothing.createClothing()
                     scrapertools.printMessage("Created " + clothing.toString())
                 except Exception as e:
-                    scrapertools.printMessage(f"Exception occured while scraping {url}: {str(e)}")
+                    _,_,traceback = sys.exc_info()
+                    scrapertools.printMessage(f"Exception occured while scraping {url} at line number {traceback.tb_lineno}: {str(e)}")
                     break
+        
+        time.sleep(random.randint(0,3))           
+        await session.get(url, headers = scrapertools.getHeaders())
+
+        
                 
 
 if __name__ == "__main__":
