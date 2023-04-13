@@ -5,6 +5,13 @@ import scrapertools
 import requests_html, requests, json, re, asyncio
 import time, random, os, sys
 from bs4 import BeautifulSoup
+import io, datetime
+
+
+async def exitProgram(session:requests_html.AsyncHTMLSession, file: io.TextIOWrapper):
+    file.close()
+    await session.close()
+    exit()
 
 
 async def main():
@@ -34,21 +41,29 @@ async def main():
     indexed = []
     nonAcceptCount = 0
 
+    filepath = "output/errors.out"
+    if os.path.exists(filepath):
+        errorFile = open(filepath, "a")
+    else:
+        errorFile = open(filepath,"w")
+
     while not len(queue) == 0:
         time.sleep(random.randint(2,7))
         url = queue.pop(0)
         indexed.append(url)
 
-        response = await session.get(url, headers = scrapertools.getHeaders())
+        requestHeaders = scrapertools.getHeaders()
+        response = await session.get(url, headers = requestHeaders)
         await response.html.arender(scrolldown=5000)
         
         scrapertools.printMessage("Received from " + url + " status code " + str(response.status_code))
 
         if not response.status_code == 200:
+            errorFile.write(datetime.datetime.now().strftime("%H:%M:%S") + f": Recieved {response.status_code} from {url} using {requestHeaders}\n" )
+
             nonAcceptCount += 1
             if nonAcceptCount > 10:
-                await session.close()
-                exit()
+                await exitProgram(session, errorFile)
             else:
                 continue
         else:
@@ -122,7 +137,7 @@ async def main():
         if random.randint(0,1) == 1:           
             await session.get(url, headers = scrapertools.getHeaders())
             time.sleep(random.randint(0,3))
-    await session.close()
+    exitProgram(session,errorFile)
 
         
                 
