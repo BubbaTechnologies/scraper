@@ -52,7 +52,12 @@ def printMessage(message: str) -> None:
 
 def getHeaders() -> dict[str, str]:
     headers = {
-        'User-Agent': random.choice(USER_AGENTS)
+        'User-Agent': random.choice(USER_AGENTS),
+        'Connection': 'keep-alive',
+        'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Encoding':'gzip, deflate',
+        'Accept-Language':'en-US,en;q=0.9',
+        'Upgrade-Insecure-Requests':'1'
     }
     return headers
 
@@ -62,7 +67,7 @@ def cleanString(string: str):
 
 def getGender(string: str):
     string = cleanString(string)
-    
+
     if re.search("([Ww]om[ae]n)|([Ff]emale)", string):
         return "female"
 
