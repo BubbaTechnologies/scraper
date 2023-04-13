@@ -62,11 +62,12 @@ def cleanString(string: str):
 
 def getGender(string: str):
     string = cleanString(string)
-    if re.search("([Mm][ae]n)|([Mm]ale)", string):
-        return "male"
-
+    
     if re.search("([Ww]om[ae]n)|([Ff]emale)", string):
         return "female"
+
+    if re.search("([Mm][ae]n)|([Mm]ale)", string):
+        return "male"
 
     if re.search("([Gg])irl", string):
         return "girl"

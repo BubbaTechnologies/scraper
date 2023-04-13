@@ -101,6 +101,7 @@ async def main():
                             search = soup.find("div", {"class": info["breadcrumbsIdentifier"]})
                         for link in search.find_all("a"):
                             gender = scrapertools.getGender(link.text)
+                            print(link.text , gender)
                             if gender != "other":
                                 break
                     elif "gender" in info.keys():
@@ -117,8 +118,10 @@ async def main():
                     scrapertools.printMessage(f"Exception occured while scraping {url} at line number {traceback.tb_lineno}: {str(e)}")
                     break
         
-        time.sleep(random.randint(0,3))           
-        await session.get(url, headers = scrapertools.getHeaders())
+        time.sleep(random.randint(0,3))
+        if random.randint(0,1) == 1:           
+            await session.get(url, headers = scrapertools.getHeaders())
+            time.sleep(random.randint(0,3))
     await session.close()
 
         
