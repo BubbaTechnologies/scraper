@@ -16,7 +16,6 @@ async def exitProgram(session:requests_html.AsyncHTMLSession, file: io.TextIOWra
 
 async def main():
     #Connect to api
-
     data = {
         "username": os.getenv("PEACHSCONE_API_USERNAME"),
         "password": os.getenv("PEACHSCONE_API_PASSWORD")
@@ -53,7 +52,7 @@ async def main():
         indexed.append(url)
 
         requestHeaders = scrapertools.getHeaders()
-        response = await session.get(url, headers = requestHeaders)
+        response = await session.get(url, headers = requestHeaders, proxies=scrapertools.getProxy())
         await response.html.arender(scrolldown=5000)
         
         scrapertools.printMessage("Received from " + url + " status code " + str(response.status_code))
@@ -134,7 +133,7 @@ async def main():
         
         time.sleep(random.randint(0,3))
         if random.randint(0,1) == 1:           
-            await session.get(url, headers = scrapertools.getHeaders())
+            await session.get(url, headers = scrapertools.getHeaders(), proxies=scrapertools.getProxy())
             time.sleep(random.randint(0,3))
     exitProgram(session,errorFile)
 

@@ -38,6 +38,10 @@ CLOTHING_DICT = {
 
 URL = "https://api.peachsconemarket.com"
 JWT = ""
+proxyLogin = {
+        "username": os.getenv("SMARTPROXY_USERNAME"),
+        "password": os.getenv("SMARTPROXY_PASSWORD")
+    }
 
 def cdFile(file: str) -> None:
     abspath = os.path.abspath(file)
@@ -115,6 +119,13 @@ def getType(string: str):
             return i
 
     return "other"
+
+def getProxy():
+    proxy = {
+        "HTTP":f"http://{proxyLogin['username']}:{proxyLogin['password']}@us.smartproxy.com:10000",
+        "HTTPS":f"http://{proxyLogin['username']}:{proxyLogin['password']}@us.smartproxy.com:10000"
+    }
+    return proxy
 
 class Clothing:
     def __init__(self, name: str, imageUrl: list[str], productUrl: str, storeId: int, type: str, gender: list[str]):
