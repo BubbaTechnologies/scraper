@@ -52,18 +52,21 @@ async def main():
         indexed.append(url)
 
         requestHeaders = scrapertools.getHeaders()
-        response = await session.get(url, headers = requestHeaders, proxies=scrapertools.getProxy())
+        response = await session.get(url, headers = requestHeaders)
         await response.html.arender(scrolldown=5000)
         
-        scrapertools.printMessage("Received from " + url + " status code " + str(response.status_code))
+        scrapertools.printMessage("Received from " + url + " status code " + str(response.status_code) + ".")
 
         if not response.status_code == 200:
-            errorFile.write(datetime.datetime.now().strftime("%H:%M:%S") + f": Recieved {response.status_code} from {url} using {requestHeaders}\n" )
+            errorFile.write(datetime.datetime.now().strftime("%H:%M:%S") + f": Recieved {response.status_code} from {url} using {requestHeaders}.\n" )
 
             nonAcceptCount += 1
             if nonAcceptCount > 10:
                 await exitProgram(session, errorFile)
             else:
+                if random.randint(0,1) == 1:           
+                    await session.get(basicUrl, headers = scrapertools.getHeaders())
+                    time.sleep(random.randint(0,3))
                 continue
         else:
             nonAcceptCount = 0
@@ -133,7 +136,7 @@ async def main():
         
         time.sleep(random.randint(0,3))
         if random.randint(0,1) == 1:           
-            await session.get(url, headers = scrapertools.getHeaders(), proxies=scrapertools.getProxy())
+            await session.get(basicUrl, headers = scrapertools.getHeaders())
             time.sleep(random.randint(0,3))
     exitProgram(session,errorFile)
 

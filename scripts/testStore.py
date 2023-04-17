@@ -9,6 +9,11 @@ from bs4 import BeautifulSoup
 clothingArray = []
 websites = []
 
+async def backToMain(basicUrl: str, session):
+    response = await session.get(basicUrl, headers = scrapertools.getHeaders())
+    scrapertools.printMessage("Received from " + basicUrl + " status code " + str(response.status_code))
+    time.sleep(random.randint(0,3))
+
 
 async def main():
     #Opens file
@@ -46,6 +51,8 @@ async def main():
                 await session.close()
                 return
             else:
+                if random.randint(0,1) == 1:           
+                    await backToMain(basicUrl, session)
                 continue
         else:
             nonAcceptCount = 0
@@ -118,8 +125,7 @@ async def main():
         
         time.sleep(random.randint(0,3))
         if random.randint(0,1) == 1:           
-            await session.get(url, headers = scrapertools.getHeaders())
-            time.sleep(random.randint(0,3))
+            await backToMain(basicUrl, session)
     await session.close()
     return
 
