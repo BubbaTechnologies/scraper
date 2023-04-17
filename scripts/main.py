@@ -116,7 +116,6 @@ async def main():
                             search = soup.find("div", {"class": info["breadcrumbsIdentifier"]})
                         for link in search.find_all("a"):
                             gender = scrapertools.getGender(link.text)
-                            print(link.text , gender)
                             if gender != "other":
                                 break
                     elif "gender" in info.keys():

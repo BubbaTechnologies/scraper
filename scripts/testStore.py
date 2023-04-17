@@ -2,26 +2,15 @@
 #Feburary 5th, 2023
 
 import scrapertools
-import requests_html, requests, json, re, asyncio
-import time, random, os, sys
+import requests_html, json, re, asyncio
+import time, random, sys
 from bs4 import BeautifulSoup
-import io, datetime
 
-
-async def exitProgram(session:requests_html.AsyncHTMLSession, file: io.TextIOWrapper):
-    file.close()
-    await session.close()
-    exit()
+clothingArray = []
+websites = []
 
 
 async def main():
-    #Connect to api
-
-    data = {
-        "username": os.getenv("PEACHSCONE_API_USERNAME"),
-        "password": os.getenv("PEACHSCONE_API_PASSWORD")
-    }
-
     #Opens file
     filename = input()
     jsonFile = open(filename, "r")
@@ -38,16 +27,12 @@ async def main():
     indexed = []
     nonAcceptCount = 0
 
-    filepath = "output/errors.out"
-    if os.path.exists(filepath):
-        errorFile = open(filepath, "a")
-    else:
-        errorFile = open(filepath,"w")
-
-    while not len(queue) == 0:
+    while not len(queue) == 0 and not len(websites) > 40:
         time.sleep(random.randint(2,7))
         url = queue.pop(0)
         indexed.append(url)
+        websites.append(url)
+
 
         requestHeaders = scrapertools.getHeaders()
         response = await session.get(url, headers = requestHeaders)
@@ -56,11 +41,10 @@ async def main():
         scrapertools.printMessage("Received from " + url + " status code " + str(response.status_code))
 
         if not response.status_code == 200:
-            errorFile.write(datetime.datetime.now().strftime("%H:%M:%S") + f": Recieved {response.status_code} from {url} using {requestHeaders}\n" )
-
             nonAcceptCount += 1
             if nonAcceptCount > 10:
-                await exitProgram(session, errorFile)
+                await session.close()
+                return
             else:
                 continue
         else:
@@ -85,13 +69,17 @@ async def main():
                         urlString = basicUrl + urlString
                     
                     scrapertools.printMessage(f"Appending {urlString} to queue.")
-                    queue.append(urlString)
+                    if regex in info["clothingRegex"]:
+                        queue.insert(0,urlString)
+                    else:
+                        queue.append(urlString)
                     break
 
         #Checks if current page is clothing
         for regex in info["clothingRegex"]:
             search = re.search(regex, url)
             if search is not None:
+                clothingArray.append(urlString)
                 try:
                     #Gets name
                     name = soup.find("h1", {"class":info["nameIdentifier"]}).text
@@ -113,7 +101,6 @@ async def main():
                             search = soup.find("div", {"class": info["breadcrumbsIdentifier"]})
                         for link in search.find_all("a"):
                             gender = scrapertools.getGender(link.text)
-                            print(link.text , gender)
                             if gender != "other":
                                 break
                     elif "gender" in info.keys():
@@ -133,10 +120,27 @@ async def main():
         if random.randint(0,1) == 1:           
             await session.get(url, headers = scrapertools.getHeaders())
             time.sleep(random.randint(0,3))
-    exitProgram(session,errorFile)
+    await session.close()
+    return
 
         
                 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except Exception as e:
+        _,_,traceback = sys.exc_info()
+        scrapertools.printMessage(f"Exception occured at line number {traceback.tb_lineno}: {str(e)}")
+    
+    if (len(websites) > 40):
+        print("Success!")
+    else:
+        print("Unsuccessful!")
+    
+    print(f"Scraped {len(websites)} websites:")
+    for site in websites:
+        print(f"{site}")
+    print(f"Scraped {len(clothingArray)} clothing:")
+    for site in clothingArray:
+        print(f"{site}")
