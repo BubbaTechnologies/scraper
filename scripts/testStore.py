@@ -34,10 +34,11 @@ async def main():
 
     while not len(queue) == 0 and not len(websites) > 40:
         time.sleep(random.randint(2,7))
+
+        urlIndex = random.randrange(len(queue))
         url = queue.pop(0)
         indexed.append(url)
         websites.append(url)
-
 
         requestHeaders = scrapertools.getHeaders()
         response = await session.get(url, headers = requestHeaders)
@@ -51,12 +52,11 @@ async def main():
                 await session.close()
                 return
             else:
-                if random.randint(0,1) == 1:           
+                time.sleep(15)
+                if random.randint(0,1) == 1:       
                     await backToMain(basicUrl, session)
                 continue
-        else:
-            nonAcceptCount = 0
-            
+
         #Resets nonAcceptCount when accepted
         nonAcceptCount = 0
 

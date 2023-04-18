@@ -13,6 +13,10 @@ async def exitProgram(session:requests_html.AsyncHTMLSession, file: io.TextIOWra
     await session.close()
     exit()
 
+async def backToMain(basicUrl: str, session):
+    response = await session.get(basicUrl, headers = scrapertools.getHeaders())
+    scrapertools.printMessage("Received from " + basicUrl + " status code " + str(response.status_code) + '.')
+    time.sleep(random.randint(0,3))
 
 async def main():
     #Connect to api
@@ -48,11 +52,13 @@ async def main():
 
     while not len(queue) == 0:
         time.sleep(random.randint(2,7))
-        url = queue.pop(0)
+
+        urlIndex = random.randrange(len(queue))
+        url = queue.pop(urlIndex)
         indexed.append(url)
 
         requestHeaders = scrapertools.getHeaders()
-        response = await session.get(url, headers = requestHeaders)
+        response = await session.get(url, headers = requestHeaders, proxies=scrapertools.getProxy())
         await response.html.arender(scrolldown=5000)
         
         scrapertools.printMessage("Received from " + url + " status code " + str(response.status_code) + ".")
@@ -63,13 +69,11 @@ async def main():
             nonAcceptCount += 1
             if nonAcceptCount > 10:
                 await exitProgram(session, errorFile)
-            else:
-                if random.randint(0,1) == 1:           
-                    await session.get(basicUrl, headers = scrapertools.getHeaders())
-                    time.sleep(random.randint(0,3))
+            else:   
+                time.sleep(5)
+                if random.randint(0,1) == 1:       
+                    await backToMain(basicUrl, session)
                 continue
-        else:
-            nonAcceptCount = 0
             
         #Resets nonAcceptCount when accepted
         nonAcceptCount = 0
@@ -136,11 +140,8 @@ async def main():
         
         time.sleep(random.randint(0,3))
         if random.randint(0,1) == 1:           
-            await session.get(basicUrl, headers = scrapertools.getHeaders())
-            time.sleep(random.randint(0,3))
+            await backToMain(basicUrl, session)
     exitProgram(session,errorFile)
-
-        
                 
 
 if __name__ == "__main__":

@@ -39,6 +39,14 @@ CLOTHING_DICT = {
 URL = "https://api.peachsconemarket.com"
 JWT = ""
 
+PROXY = {
+    "http":f"http://customer-{os.getenv('PROXY_USERNAME')}:{os.getenv('PROXY_PASSWORD')}@us-pr.oxylabs.io:10000/",
+    "https":f"http://customer-{os.getenv('PROXY_USERNAME')}:{os.getenv('PROXY_PASSWORD')}@us-pr.oxylabs.io:10000/"
+}
+
+def getProxy():
+    return PROXY
+
 def cdFile(file: str) -> None:
     abspath = os.path.abspath(file)
     directoryName = os.path.dirname(abspath)
@@ -67,6 +75,12 @@ def getHeaders() -> dict[str, str]:
             'no-cache','max-age=0'
         ])
     }
+
+    if random.randint(0,1) == 1:
+        headers['Referer'] = random.choice([
+            "https://www.google.com","https://search.yahoo.com","https://www.bing.com"
+        ])
+
     return headers
 
 def cleanString(string: str):
@@ -115,14 +129,6 @@ def getType(string: str):
             return i
 
     return "other"
-
-# def getProxy():
-#     proxyUrl = f"http://{proxyLogin['username']}:{proxyLogin['password']}@us.smartproxy.com:7000"
-#     proxy = {
-#         "HTTP":proxyUrl,
-#         "HTTPS":proxyUrl
-#     }
-#     return proxy
 
 class Clothing:
     def __init__(self, name: str, imageUrl: list[str], productUrl: str, storeId: int, type: str, gender: list[str]):
