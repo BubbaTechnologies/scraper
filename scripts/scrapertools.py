@@ -146,7 +146,7 @@ class Clothing:
             "productUrl": self.productUrl,
             "storeId": str(self.storeId),
             "type": self.type,
-            "gender": self.gender
+            "gender": [self.gender]
         }
 
         return jsonObj
