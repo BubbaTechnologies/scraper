@@ -1,0 +1,1 @@
+{"name": "Buck Mason", "url": "https://www.buckmason.com", "webpageRegex": ["/collections/(?!products).*"], "clothingRegex": ["/products/.+"], "api": true, "nameKey": "title", "imageKey": "images", "genderKey": "type"}

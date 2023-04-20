@@ -15,7 +15,7 @@ def main():
     data["url"] = input("Store URL: ")
 
     #Checks url input
-    urlCheck = re.fullmatch("https://(www|shop)\..+\.(com|co)", data["url"])
+    urlCheck = re.fullmatch("http(s)?://((www|shop)\.)?.+\.(com|co)", data["url"])
     if not urlCheck:
         raise ValueError("Invalid URL address format.")
 
@@ -33,18 +33,25 @@ def main():
         regex = input("Clothing Page Regex " + str(i + 1) + ": ")
         data["clothingRegex"].append(regex)
     
-    data["nameIdentifier"] = input("Name Identifier: ")
-    data["imageIdentifier"] = input("Image Div Identifier: ")
+    if input("Is there an API? (Yes/No) ").lower() == "yes":
+        data["api"] = True
+        data["nameKey"] = input("Name Key: ")
+        data["imageKey"] = input("Image Key: ")
+        data["genderKey"] = input("Gender Key: ")
+    else:
+        data["api"] = False
+        data["nameIdentifier"] = input("Name Identifier: ")
+        data["imageIdentifier"] = input("Image Div Identifier: ")
 
-    if input("Are there breadcrumbs? (Yes/No) ").lower() == "yes":
-        data["breadcrumbsIdentifier"] = input("Breadcrumbs Identifier: ")
-    elif input("Is there a specific gender? (Yes/No) ").lower() == "yes":
-        data["gender"] = input("Gender: (Male/Female/Boy/Girl) ").lower()
-        if data["gender"] not in ["male", "female", "boy", "girl"]:
-            data["gender"] = "other"
+        if input("Are there breadcrumbs? (Yes/No) ").lower() == "yes":
+            data["breadcrumbsIdentifier"] = input("Breadcrumbs Identifier: ")
+        elif input("Is there a specific gender? (Yes/No) ").lower() == "yes":
+            data["gender"] = input("Gender: (Male/Female/Boy/Girl) ").lower()
+            if data["gender"] not in ["male", "female", "boy", "girl"]:
+                data["gender"] = "other"
 
-    with open("../info/" + data["name"].lower() + ".json", 'w') as file:
-        print("Writing file " + scrapertools.pwd() + data["name"] + ".json")
+    with open("../info/" + data["name"].lower().replace(" ","_") + ".json", 'w') as file:
+        print("Writing file " + scrapertools.pwd() + "/" + data["name"].lower().replace(" ","_") + ".json")
         json.dump(data, file)
 
 

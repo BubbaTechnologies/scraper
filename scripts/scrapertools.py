@@ -7,18 +7,17 @@ import re
 import random
 import requests
 
-USER_AGENTS = ["Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36",
-               "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36",
-               "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36",
-               "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36",
-               "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36",
-               "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36",
-               "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36 Avast/111.0.20716.147",
-               "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36 Edg/112.0.1722.34",
-               "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36 Edg/111.0.1661.62",
-               "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0",
-               "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.4 Safari/605.1.15",
-               ]
+USER_AGENTS = [
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.4 Safari/605.1.15",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.41",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.41",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/109.0",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0"
+]
+
+REFERER = ["https://www.google.com","https://search.yahoo.com","https://www.bing.com"]
 
 CLOTHING_DICT = {
     "top": "[Tt]ops?|[- ]Shirts?|[Jj]ersey|[Tt]ees?|[Cc]ardigan|[Bb]lazer|[Ff]lannel|[Ss]weater|[Pp]olo|[Vv]est",
@@ -44,7 +43,7 @@ PROXY = {
     "https":f"http://customer-{os.getenv('PROXY_USERNAME')}:{os.getenv('PROXY_PASSWORD')}@us-pr.oxylabs.io:10000/"
 }
 
-def getProxy():
+def getProxies():
     return PROXY
 
 def cdFile(file: str) -> None:
@@ -58,29 +57,20 @@ def pwd() -> str:
 def printMessage(message: str) -> None:
     print(datetime.datetime.now().strftime("%H:%M:%S") + ": " + message)
 
-def getHeaders() -> dict[str, str]:
-    headers = {
-        'User-Agent': random.choice(USER_AGENTS),
-        'Connection': 'keep-alive',
-        'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Encoding':'gzip, deflate',
-        'Accept-Language':'en-US,en;q=0.9',
-        'Upgrade-Insecure-Requests':'1',
-        'Sec-Fetch-Dest':'document',
-        'Sec-Fetch-Mode':'navigate',
-        'Sec-Fetch-Site': random.choice([
-            'none','same-origin','same-site','cross-site'
-        ]),
-        'Cache-Control': random.choice([
-            'no-cache','max-age=0'
-        ])
-    }
-
-    if random.randint(0,1) == 1:
-        headers['Referer'] = random.choice([
-            "https://www.google.com","https://search.yahoo.com","https://www.bing.com"
-        ])
-
+def getHeaders(useReferer=False) -> dict[str, str]:
+    headers = {"Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Encoding":"gzip,deflate",
+        "Accept-Language":"en-US,en;q=0.9",
+        "Cache-Control":"no-cache",
+        "Connection":"keep-alive",
+        "Pragma":"no-cache",
+        "Sec-Fetch-Dest":"document",
+        "Sec-Fetch-Mode":"navigate",
+        "Sec-Fetch-Site":"none"
+        }
+    headers["User-Agent"] = random.choice(USER_AGENTS)
+    if useReferer:
+        headers["Referer"] = random.choice(REFERER)
     return headers
 
 def cleanString(string: str):

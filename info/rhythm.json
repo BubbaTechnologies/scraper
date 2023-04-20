@@ -1,0 +1,14 @@
+{
+    "name": "Rhythm",
+    "url": "https://rhythmlivin.com",
+    "webpageRegex": [
+        "/collections/(?!products).*"
+    ],
+    "clothingRegex": [
+        "/products/.+"
+    ],
+    "api": true,
+    "nameKey": "title",
+    "imageKey": "images",
+    "genderKey": "type"
+}

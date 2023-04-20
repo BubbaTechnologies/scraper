@@ -14,9 +14,9 @@ async def exitProgram(session:requests_html.AsyncHTMLSession, file: io.TextIOWra
     exit()
 
 async def backToMain(basicUrl: str, session):
-    response = await session.get(basicUrl, headers = scrapertools.getHeaders())
+    response = await session.get(basicUrl, headers = scrapertools.getHeaders(useReferer=True))
     scrapertools.printMessage("Received from " + basicUrl + " status code " + str(response.status_code) + '.')
-    time.sleep(random.randint(0,3))
+    time.sleep(random.randint(2,10))
 
 async def main():
     #Connect to api
@@ -51,96 +51,106 @@ async def main():
         errorFile = open(filepath,"w")
 
     while not len(queue) == 0:
-        time.sleep(random.randint(2,7))
+        try:
+            urlIndex = random.randrange(len(queue))
+            url = queue.pop(urlIndex)
+            indexed.append(url)
 
-        urlIndex = random.randrange(len(queue))
-        url = queue.pop(urlIndex)
-        indexed.append(url)
-
-        requestHeaders = scrapertools.getHeaders()
-        response = await session.get(url, headers = requestHeaders, proxies=scrapertools.getProxy())
-        await response.html.arender(scrolldown=5000)
-        
-        scrapertools.printMessage("Received from " + url + " status code " + str(response.status_code) + ".")
-
-        if not response.status_code == 200:
-            errorFile.write(datetime.datetime.now().strftime("%H:%M:%S") + f": Recieved {response.status_code} from {url} using {requestHeaders}.\n" )
-
-            nonAcceptCount += 1
-            if nonAcceptCount > 10:
-                await exitProgram(session, errorFile)
-            else:   
-                time.sleep(5)
-                if random.randint(0,1) == 1:       
-                    await backToMain(basicUrl, session)
-                continue
+            requestHeaders = scrapertools.getHeaders()
+            response = await session.get(url, headers = requestHeaders, proxies=scrapertools.getProxies())
+            await response.html.arender(scrolldown=5000)
             
-        #Resets nonAcceptCount when accepted
-        nonAcceptCount = 0
+            scrapertools.printMessage("Received from " + url + " status code " + str(response.status_code) + ".")
 
-        #Filters through links
-        soup = BeautifulSoup(response.text, "html.parser")
-        for a in soup.find_all('a', href = True):
-            for regex in info["webpageRegex"] + info["clothingRegex"]:
-                search = re.search(regex, a["href"])
-                if search is not None and search.group(0) not in indexed:
-                    urlString = search.group(0)
-                    indexed.append(urlString)
+            if not response.status_code == 200:
+                errorFile.write(datetime.datetime.now().strftime("%H:%M:%S") + f": Recieved {response.status_code} from {url} using {requestHeaders}.\n" )
 
-                    #Checks for basicUrl
-                    basicUrlRegex = basicUrl.replace(".", "\.")
-                    search = re.search(basicUrlRegex, urlString)
-                    if search == None:
-                        urlString = basicUrl + urlString
-                    
-                    scrapertools.printMessage(f"Appending {urlString} to queue.")
-                    queue.append(urlString)
-                    break
+                nonAcceptCount += 1
+                if nonAcceptCount > 10:
+                    await exitProgram(session, errorFile)
+                else:   
+                    time.sleep(5)
+                    if random.randint(0,1) == 1:       
+                        await backToMain(basicUrl, session)
+                    continue
+                
+            #Resets nonAcceptCount when accepted
+            nonAcceptCount = 0
 
-        #Checks if current page is clothing
-        for regex in info["clothingRegex"]:
-            search = re.search(regex, url)
-            if search is not None:
-                try:
-                    #Gets name
-                    name = soup.find("h1", {"class":info["nameIdentifier"]}).text
-                    #Get all images
-                    imageDiv = soup.find("div", {"class": info["imageIdentifier"]})
-                    imageSrc = []
+            #Filters through links
+            soup = BeautifulSoup(response.text, "html.parser")
+            for a in soup.find_all('a', href = True):
+                for regex in info["webpageRegex"] + info["clothingRegex"]:
+                    search = re.search(regex, a["href"])
+                    if search is not None and search.group(0) not in indexed:
+                        urlString = search.group(0)
+                        indexed.append(urlString)
 
-                    for img in imageDiv.find_all("img"):
-                        if img.has_attr('srcset'):
-                            imageSrc.append(img['srcset'].split()[0])
-                        else:
-                            imageUrl = img['src']
-                            if re.match("(https://|/)", imageUrl):
-                                imageSrc.append(imageUrl)
-
-                    if "breadcrumbsIdentifier" in info.keys():
-                        search = soup.find("nav", {"aria-label": info["breadcrumbsIdentifier"]})
+                        #Checks for basicUrl
+                        basicUrlRegex = basicUrl.replace(".", "\.")
+                        search = re.search(basicUrlRegex, urlString)
                         if search == None:
-                            search = soup.find("div", {"class": info["breadcrumbsIdentifier"]})
-                        for link in search.find_all("a"):
-                            gender = scrapertools.getGender(link.text)
-                            if gender != "other":
-                                break
-                    elif "gender" in info.keys():
-                        gender = scrapertools.getGender(info["gender"])
-                    else:
-                        gender = "other"
-                    clothingType = scrapertools.getType(name)
-                    clothing = scrapertools.Clothing(name, imageSrc, url, store.id, clothingType, gender)
+                            urlString = basicUrl + urlString
+                        
+                        scrapertools.printMessage(f"Appending {urlString} to queue.")
+                        queue.append(urlString)
+                        break
 
-                    clothing.createClothing()
-                    scrapertools.printMessage("Created " + clothing.toString())
-                except Exception as e:
-                    _,_,traceback = sys.exc_info()
-                    scrapertools.printMessage(f"Exception occured while scraping {url} at line number {traceback.tb_lineno}: {str(e)}")
-                    break
+            #Checks if current page is clothing
+            for regex in info["clothingRegex"]:
+                search = re.search(regex, url)
+                if search is not None:
+                        if info["api"]:
+                            apiResponse = json.loads(requests.get(url + ".js").text)
+                            name = apiResponse[info['nameKey']]
+                            clothingType = scrapertools.getType(name)
+                            imageSrc = apiResponse[info['imageKey']]
+                            gender = scrapertools.getGender(apiResponse[info['genderKey']])
+                            if gender == "other" and "tags" in apiResponse.keys():
+                                for tag in apiResponse["tags"]:
+                                    gender = scrapertools.getGender(tag)
+                                    if gender != "other":
+                                        break
+                        else:
+                            #Gets name
+                            name = soup.find("h1", {"class":info["nameIdentifier"]}).text
+                            #Get all images
+                            imageDiv = soup.find("div", {"class": info["imageIdentifier"]})
+                            imageSrc = []
+
+                            for img in imageDiv.find_all("img"):
+                                if img.has_attr('srcset'):
+                                    imageSrc.append(img['srcset'].split()[0])
+                                else:
+                                    imageUrl = img['src']
+                                    if re.match("(https://|/)", imageUrl):
+                                        imageSrc.append(imageUrl)
+
+                            if "breadcrumbsIdentifier" in info.keys():
+                                search = soup.find("nav", {"aria-label": info["breadcrumbsIdentifier"]})
+                                if search == None:
+                                    search = soup.find("div", {"class": info["breadcrumbsIdentifier"]})
+                                for link in search.find_all("a"):
+                                    gender = scrapertools.getGender(link.text)
+                                    if gender != "other":
+                                        break
+                            elif "gender" in info.keys():
+                                gender = scrapertools.getGender(info["gender"])
+                            else:
+                                gender = "other"
+                            clothingType = scrapertools.getType(name)
+                        clothing = scrapertools.Clothing(name, imageSrc, url, store.id, clothingType, gender)
+
+                        clothing.createClothing()
+                        scrapertools.printMessage("Created " + clothing.toString())
+            time.sleep(random.randint(2,10))
+            if random.randint(0,1) == 1:           
+                await backToMain(basicUrl, session)
+        except Exception as e:
+            _,_,traceback = sys.exc_info()
+            scrapertools.printMessage(f"Exception occured while scraping {url} at line number {traceback.tb_lineno}: {str(e)}")
+            continue
         
-        time.sleep(random.randint(0,3))
-        if random.randint(0,1) == 1:           
-            await backToMain(basicUrl, session)
     exitProgram(session,errorFile)
                 
 
