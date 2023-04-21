@@ -37,7 +37,12 @@ def main():
         data["api"] = True
         data["nameKey"] = input("Name Key: ")
         data["imageKey"] = input("Image Key: ")
-        data["genderKey"] = input("Gender Key: ")
+        if input("Is there a specific gender? (Yes/No) ").lower() == "yes":
+            data["gender"] = input("Gender: (Male/Female/Boy/Girl) ").lower()
+            if data["gender"] not in ["male", "female", "boy", "girl"]:
+                data["gender"] = "other"
+        else:
+            data["genderKey"] = input("Gender Key: ")
     else:
         data["api"] = False
         data["nameIdentifier"] = input("Name Identifier: ")

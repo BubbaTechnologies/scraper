@@ -18,6 +18,24 @@ async def backToMain(basicUrl: str, session):
     scrapertools.printMessage("Received from " + basicUrl + " status code " + str(response.status_code) + '.')
     time.sleep(random.randint(2,10))
 
+#Parses Json Structure
+def getJsonRoute(routeList:list, level: int, jsonObj: dict):
+    returnList = []
+
+    if len(routeList) - 1 == level:
+        return jsonObj[routeList[level]]
+
+    if (routeList[level] == "*"):
+        for i in range(len(jsonObj)):
+            print(jsonObj[i])
+            returnList.append(getJsonRoute(routeList, level + 1, jsonObj[i]))
+    else:
+        returnList.append(getJsonRoute(routeList, level + 1, jsonObj[routeList[level]]))
+
+    if len(returnList) == 1:
+        return returnList[0]
+    return returnList
+
 async def main():
     #Connect to api
     data = {
@@ -101,18 +119,23 @@ async def main():
                 search = re.search(regex, url)
                 if search is not None:
                         if info["api"]:
-                            apiResponse = json.loads(requests.get(url + ".js").text)
-                            name = apiResponse[info['nameKey']]
+                            apiResponse = json.loads(requests.get(url + ".js", headers={"Accept":"application/json"}).text)
+
+                            name = getJsonRoute(info["nameKey"].split("/"), 0, apiResponse)
                             clothingType = scrapertools.getType(name)
-                            imageSrc = apiResponse[info['imageKey']]
+                            imageSrc = getJsonRoute(info["imageKey"].split("/"), 0, apiResponse)
+
                             for i in range(len(imageSrc)):
-                                imageSrc[i] = "https://" + imageSrc[i][2:]
-                            gender = scrapertools.getGender(apiResponse[info['genderKey']])
-                            if gender == "other" and "tags" in apiResponse.keys():
-                                for tag in apiResponse["tags"]:
-                                    gender = scrapertools.getGender(tag)
-                                    if gender != "other":
-                                        break
+                                if "//" == imageSrc[i][:2]:
+                                    imageSrc[i] = "https://" + imageSrc[i][2:]
+
+                            if "genderKey" in info.keys():
+                                gender = scrapertools.getGender(getJsonRoute(info["genderKey"].split("/"), 0, apiResponse))
+                                if gender == "other" and "tags" in apiResponse.keys():
+                                    for tag in apiResponse["tags"]:
+                                        gender = scrapertools.getGender(tag)
+                                        if gender != "other":
+                                            break
                         else:
                             #Gets name
                             name = soup.find("h1", {"class":info["nameIdentifier"]}).text
@@ -136,11 +159,13 @@ async def main():
                                     gender = scrapertools.getGender(link.text)
                                     if gender != "other":
                                         break
-                            elif "gender" in info.keys():
-                                gender = scrapertools.getGender(info["gender"])
-                            else:
-                                gender = "other"
                             clothingType = scrapertools.getType(name)
+
+                        if "gender" in info.keys():
+                            gender = scrapertools.getGender(info["gender"])
+                        else: 
+                            gender = "other"
+
                         clothing = scrapertools.Clothing(name, imageSrc, url, store.id, clothingType, gender)
 
                         clothing.createClothing()

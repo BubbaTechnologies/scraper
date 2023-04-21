@@ -1,1 +1,14 @@
-{"name": "Vuori", "url": "https://vuoriclothing.com", "webpageRegex": ["/collections/(?!products).*"], "clothingRegex": ["/products/.+"], "api": true, "nameKey": "title", "imageKey": "images", "genderKey": "type"}
+{
+    "name": "Vuori",
+    "url": "https://vuoriclothing.com",
+    "webpageRegex": [
+        "/collections/(?!products).*"
+    ],
+    "clothingRegex": [
+        "/products/.+"
+    ],
+    "api": true,
+    "nameKey": "title",
+    "imageKey": "images",
+    "genderKey": "type"
+}
