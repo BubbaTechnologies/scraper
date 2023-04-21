@@ -58,7 +58,7 @@ async def main():
 
             requestHeaders = scrapertools.getHeaders()
             response = await session.get(url, headers = requestHeaders, proxies=scrapertools.getProxies())
-            await response.html.arender(scrolldown=5000, timeout=10)
+            await response.html.arender(scrolldown=5000, timeout=20)
             
             scrapertools.printMessage("Received from " + url + " status code " + str(response.status_code) + ".")
 
@@ -153,7 +153,7 @@ async def main():
             scrapertools.printMessage(f"Exception occured while scraping {url} at line number {traceback.tb_lineno}: {str(e)}")
             continue
         
-    exitProgram(session,errorFile)
+    await exitProgram(session,errorFile)
                 
 
 if __name__ == "__main__":
