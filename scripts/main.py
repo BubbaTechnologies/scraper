@@ -7,6 +7,7 @@ import time, random, os, sys
 from bs4 import BeautifulSoup
 import io, datetime
 
+TIMEOUT = 30
 
 async def exitProgram(session:requests_html.AsyncHTMLSession, file: io.TextIOWrapper):
     file.close()
@@ -76,7 +77,7 @@ async def main():
 
             requestHeaders = scrapertools.getHeaders()
             response = await session.get(url, headers = requestHeaders, proxies=scrapertools.getProxies())
-            await response.html.arender(scrolldown=5000, timeout=20)
+            await response.html.arender(scrolldown=5000, sleep = 2, timeout=TIMEOUT)
             
             scrapertools.printMessage("Received from " + url + " status code " + str(response.status_code) + ".")
 
