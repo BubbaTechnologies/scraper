@@ -106,7 +106,7 @@ async def main():
                             clothingType = scrapertools.getType(name)
                             imageSrc = apiResponse[info['imageKey']]
                             for i in range(len(imageSrc)):
-                                imageSrc[i] = imageSrc[i][2:]
+                                imageSrc[i] = "https://" + imageSrc[i][2:]
                             gender = scrapertools.getGender(apiResponse[info['genderKey']])
                             if gender == "other" and "tags" in apiResponse.keys():
                                 for tag in apiResponse["tags"]:
