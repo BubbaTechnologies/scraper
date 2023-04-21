@@ -84,7 +84,11 @@ async def main():
                 errorFile.write(datetime.datetime.now().strftime("%H:%M:%S") + f": Recieved {response.status_code} from {url} using {requestHeaders}.\n" )
 
                 nonAcceptCount += 1
-                if nonAcceptCount > 10:
+                if nonAcceptCount > 10 and not scrapertools.PROXY_ACTIVE:
+                    scrapertools.PROXY_ACTIVE = True
+                    nonAcceptCount = 0
+                    continue
+                elif nonAcceptCount > 10:
                     await exitProgram(session, errorFile)
                 else:   
                     time.sleep(5)

@@ -42,9 +42,13 @@ PROXY = {
     "http":f"http://customer-{os.getenv('PROXY_USERNAME')}:{os.getenv('PROXY_PASSWORD')}@us-pr.oxylabs.io:10000/",
     "https":f"http://customer-{os.getenv('PROXY_USERNAME')}:{os.getenv('PROXY_PASSWORD')}@us-pr.oxylabs.io:10000/"
 }
+PROXY_ACTIVE=False
 
 def getProxies():
-    return PROXY
+    if PROXY_ACTIVE:
+        return PROXY
+    else:
+        return None
 
 def cdFile(file: str) -> None:
     abspath = os.path.abspath(file)
