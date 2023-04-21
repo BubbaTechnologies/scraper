@@ -58,7 +58,7 @@ async def main():
 
             requestHeaders = scrapertools.getHeaders()
             response = await session.get(url, headers = requestHeaders, proxies=scrapertools.getProxies())
-            await response.html.arender(scrolldown=5000)
+            await response.html.arender(scrolldown=5000, timeout=10)
             
             scrapertools.printMessage("Received from " + url + " status code " + str(response.status_code) + ".")
 
