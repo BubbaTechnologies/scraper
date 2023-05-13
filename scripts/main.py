@@ -148,6 +148,7 @@ async def main():
                             imageDiv = soup.find("div", {"class": info["imageIdentifier"]})
                             imageSrc = []
 
+                            #TODO: Edit image resolution
                             for img in imageDiv.find_all("img"):
                                 if img.has_attr('srcset'):
                                     imageSrc.append(img['srcset'].split()[0])

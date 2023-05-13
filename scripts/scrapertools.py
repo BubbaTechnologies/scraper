@@ -20,20 +20,23 @@ USER_AGENTS = [
 REFERER = ["https://www.google.com","https://search.yahoo.com","https://www.bing.com"]
 
 CLOTHING_DICT = {
-    "top": "[Tt]ops?|[- ]Shirts?|[Jj]ersey|[Tt]ees?|[Cc]ardigan|[Bb]lazer|[Ff]lannel|[Ss]weater|[Pp]olo|[Vv]est",
-    "bottom": "[Jj]eans?|[Ss]horts?|[Pp]ants?|[Tt]rousers|[Jj]oggers|[Ll]eggings|[Ss]lacks|[Cc]hino",
+    "top": "[Tt]ops?|[- ]Shirts?|[Jj]ersey|[Tt]ees?|[Cc]ardigan|[Bb]lazer|[Ff]lannel|[Ss]weater|[Pp]olo|[Vv]est|[Tt]urtleneck|[Hh]enley|[Pp]opover|[Hh]alf[- ][Zz]ip|[Bb]utton[- ]Down|[Cc]rew ([Nn]eck)?|[Tt]ank$|[Vv]-[Nn]eck",
+    "bottom": "[Jj]eans?|[Ss]horts?|[Pp]ants?|[Tt]rouser[s]?|[Jj]ogger[s]?|[Ll]eggings|[Ss]lacks|[Cc]hino|[Hh]igh-[Rr]ise",
     "underclothing": "[Uu]nderwear|[Bb]oxer|[Bb]rief[s]*|[Tt]hong|[Pp]ant(?:ies|y)|[Bb]ra(?:lette)?|[Cc]orset|[Gg]arter|[Bb]abydoll|[Tt]edd(?:ies|y)",
     "shoes": "[Ss]hoes?|[Ss]andals|[Ss]lides|[Bb]oots?|[Ss]neakers?|[Hh]eels?|[Ss]tilettos?|[Ff]latforms?|[Ww]edges?|[Pp]umps?",
-    "jacket": "[Jj]acket|[Hh]oodie|[Pp]ullover",
+    "jacket": "[Jj]acket|[Hh]oodie|[Pp]ullover|[Ss]hacket|[Aa]norak|[Pp]arka|[Bb]omber|[Cc]oat|[Ss]weatshirt",
     "sleepwear": "[Ss]leepwear|[Pp]ajamas?|[Nn]ightie|[Rr]obe|[Ss]lip|[Cc]ami(?:sole)?",
     "skirt": "[Ss]kirt|[Ss]kort",
-    "one piece": "[Bb]odysuit|[Rr]omper|[Dd]ress|[Jj]umpsuit",
+    "one piece": "[Bb]odysuit|[Rr]omper|[Jj]umpsuit|[Oo]ne Piece|[Pp]laysuit",
+    "dress":"[Dd]ress",
     "accessory": "[Tt]ights|[Ss]tockings|[Tt]high(?: )?[Hh]ighs?|[Bb]ackpack|[Pp]urse|[Bb]ag|[Bb]elt|" \
                  "[Pp]erfume|[Cc]ologne|[Hh]at|[Gg]lasses|[Ww]atch|[Nn]ecklace|[Ww]allet|[Pp]in|[Cc]uff(?:s|links)" \
                  "[Pp]ocket [Ss]quares|[Cc]lip|[Rr]ing|[Ee]arings|[Pp]endant|[Bb]raclet|[Bb]rooches?|[Bb]ands?|" \
-                 "[Ss]carves|[Gg]loves?|[Tt]ies?|[Ss]ocks|[T|t]ote",
-    "swimwear": "[Ss]wim|[Bb]ikini|[Rr]ash(?: )?[Gg]uard|[Ss]urf"
+                 "[Ss]carves|[Gg]loves?|[Tt]ies?|[Ss]ocks|[T|t]ote|[Pp]ocket [Ss]quare|[Cc]ap",
+    "swimwear": "[Ss]wim|[Bb]ikini|[Rr]ash(?: )?[Gg]uard|[Ss]urf|[Tt]runk[s]?"
 }
+
+INVALID_REGEX = "[Gg]ift card"
 
 URL = "https://api.peachsconemarket.com"
 JWT = ""
