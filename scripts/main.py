@@ -148,7 +148,6 @@ async def main():
                             imageDiv = soup.find("div", {"class": info["imageIdentifier"]})
                             imageSrc = []
 
-                            #TODO: Edit image resolution
                             for img in imageDiv.find_all("img"):
                                 if img.has_attr('srcset'):
                                     imageSrc.append(img['srcset'].split()[0])
@@ -171,6 +170,14 @@ async def main():
                             gender = scrapertools.getGender(info["gender"])
                         else: 
                             gender = "other"
+
+                        #Edits imageUrls for better resolution
+                        for i in range(imageSrc):
+                            imageUrl = imageSrc[i]
+                            match = re.search("(\?|&)(w|wid|sw)=[0-9]+&?", imageUrl)
+                            if match:
+                                match2 = re.search("[0-9]+", match.group(0))
+                                imageSrc[i] = imageUrl[:match.start()+match2.start()] + "720" + imageUrl[match.start()+match2.end():]
 
                         clothing = scrapertools.Clothing(name, imageSrc, url, store.id, clothingType, gender)
 
