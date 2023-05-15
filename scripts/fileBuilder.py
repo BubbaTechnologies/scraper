@@ -35,6 +35,7 @@ def main():
     
     if input("Is there an API? (Yes/No) ").lower() == "yes":
         data["api"] = True
+        data["apiUrlEncoding"] = input("API Url Encoding: ")
         data["nameKey"] = input("Name Key: ")
         data["imageKey"] = input("Image Key: ")
         if input("Is there a specific gender? (Yes/No) ").lower() == "yes":
@@ -43,6 +44,8 @@ def main():
                 data["gender"] = "other"
         else:
             data["genderKey"] = input("Gender Key: ")
+            if input("Is there tags? (Yes/No) ").lower() == "yes":
+                data["tagsKey"] = input("Tags Key: ")
     else:
         data["api"] = False
         data["nameIdentifier"] = input("Name Identifier: ")

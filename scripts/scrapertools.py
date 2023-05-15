@@ -210,3 +210,21 @@ class Store:
         except KeyError:
             print("Could not create store: " + r)
             exit()
+
+#Parses Json Structure
+def getJsonRoute(routeList:list, level: int, jsonObj: dict):
+    returnList = []
+
+    if len(routeList) - 1 == level:
+        return jsonObj[routeList[level]]
+
+    if (routeList[level] == "*"):
+        for i in range(len(jsonObj)):
+            print(jsonObj[i])
+            returnList.append(getJsonRoute(routeList, level + 1, jsonObj[i]))
+    else:
+        returnList.append(getJsonRoute(routeList, level + 1, jsonObj[routeList[level]]))
+
+    if len(returnList) == 1:
+        return returnList[0]
+    return returnList

@@ -14,28 +14,26 @@ async def exitProgram(session:requests_html.AsyncHTMLSession, file: io.TextIOWra
     await session.close()
     exit()
 
-async def backToMain(basicUrl: str, session):
-    response = await session.get(basicUrl, headers = scrapertools.getHeaders(useReferer=True))
-    scrapertools.printMessage("Received from " + basicUrl + " status code " + str(response.status_code) + '.')
+async def backToMain(baseUrl: str, session):
+    response = await session.get(baseUrl, headers = scrapertools.getHeaders(useReferer=True))
+    scrapertools.printMessage("Received from " + baseUrl + " status code " + str(response.status_code) + '.')
     time.sleep(random.randint(2,10))
 
-#Parses Json Structure
-def getJsonRoute(routeList:list, level: int, jsonObj: dict):
-    returnList = []
-
-    if len(routeList) - 1 == level:
-        return jsonObj[routeList[level]]
-
-    if (routeList[level] == "*"):
-        for i in range(len(jsonObj)):
-            print(jsonObj[i])
-            returnList.append(getJsonRoute(routeList, level + 1, jsonObj[i]))
+def getApiUrl(baseUrl: str, productUrl: str, apiUrl: str):
+    route = productUrl[len(baseUrl):]
+    baseMatch = re.search("{baseUrl}", apiUrl)
+    if baseMatch:
+        apiUrl = apiUrl[:baseMatch.start()] + baseUrl + apiUrl[baseMatch.end():]
     else:
-        returnList.append(getJsonRoute(routeList, level + 1, jsonObj[routeList[level]]))
+        scrapertools.printMessage("JSON Error! No {baseUrl} in apiUrlEncoding.")
+        exit()
 
-    if len(returnList) == 1:
-        return returnList[0]
-    return returnList
+    routeMatch = re.search("{route}", apiUrl)
+    if routeMatch:
+        apiUrl = apiUrl[:routeMatch.start()] + route + apiUrl[routeMatch.end():]
+    else:
+        scrapertools.printMessage("JSON Error! No {route} in apiUrlEncoding.")
+        exit()
 
 async def main():
     #Connect to api
@@ -56,11 +54,11 @@ async def main():
     store:scrapertools.Store = scrapertools.Store(info["name"], info["url"])
     store.createStore()
 
-    basicUrl = info["url"]
-    queue = [basicUrl]
+    baseUrl = info["url"]
+    queue = [baseUrl]
 
     session = requests_html.AsyncHTMLSession()
-    indexed = []
+    indexed = [baseUrl]
     nonAcceptCount = 0
 
     filepath = "output/errors.out"
@@ -73,7 +71,6 @@ async def main():
         try:
             urlIndex = random.randrange(len(queue))
             url = queue.pop(urlIndex)
-            indexed.append(url)
 
             requestHeaders = scrapertools.getHeaders()
             response = await session.get(url, headers = requestHeaders, proxies=scrapertools.getProxies())
@@ -94,7 +91,7 @@ async def main():
                 else:   
                     time.sleep(5)
                     if random.randint(0,1) == 1:       
-                        await backToMain(basicUrl, session)
+                        await backToMain(baseUrl, session)
                     continue
                 
             #Resets nonAcceptCount when accepted
@@ -105,43 +102,53 @@ async def main():
             for a in soup.find_all('a', href = True):
                 for regex in info["webpageRegex"] + info["clothingRegex"]:
                     search = re.search(regex, a["href"])
-                    if search is not None and search.group(0) not in indexed:
+                    if search:
                         urlString = search.group(0)
-                        indexed.append(urlString)
 
-                        #Checks for basicUrl
-                        basicUrlRegex = basicUrl.replace(".", "\.")
-                        search = re.search(basicUrlRegex, urlString)
-                        if search == None:
-                            urlString = basicUrl + urlString
+                        #Removes extra parameters
+                        search = re.search("&.+", urlString)
+                        if search:
+                            urlString = urlString[:search.start()]
                         
-                        scrapertools.printMessage(f"Appending {urlString} to queue.")
-                        queue.append(urlString)
-                        break
+                        if urlString not in indexed:
+                            indexed.append(urlString)
+                            #Checks for baseUrl
+                            baseUrlRegex = baseUrl.replace(".", "\.")
+                            search = re.search(baseUrlRegex, urlString)
+                            if search == None:
+                                urlString = baseUrl + urlString
+
+                            scrapertools.printMessage(f"Appending {urlString} to queue.")
+                            queue.append(urlString)
+                            break
 
             #Checks if current page is clothing
             for regex in info["clothingRegex"]:
                 search = re.search(regex, url)
                 if search is not None:
                         if info["api"]:
-                            apiResponse = json.loads(requests.get(url + ".js", headers={"Accept":"application/json"}).text)
+                            apiUrl = getApiUrl(baseUrl, url, info["apiUrlEncoding"])
 
-                            name = getJsonRoute(info["nameKey"].split("/"), 0, apiResponse)
+                            #Scrape API Website
+                            apiResponse = json.loads(requests.get(apiUrl, headers={"Accept":"application/json"}).text)
+
+                            name = scrapertools.getJsonRoute(info["nameKey"].split("/"), 0, apiResponse)
                             clothingType = scrapertools.getType(name)
-                            imageSrc = getJsonRoute(info["imageKey"].split("/"), 0, apiResponse)
+                            imageSrc = scrapertools.getJsonRoute(info["imageKey"].split("/"), 0, apiResponse)
 
                             for i in range(len(imageSrc)):
                                 if "//" == imageSrc[i][:2]:
                                     imageSrc[i] = "https://" + imageSrc[i][2:]
 
                             if "genderKey" in info.keys():
-                                gender = scrapertools.getGender(getJsonRoute(info["genderKey"].split("/"), 0, apiResponse))
-                                if gender == "other" and "tags" in apiResponse.keys():
-                                    for tag in apiResponse["tags"]:
+                                gender = scrapertools.getGender(scrapertools.getJsonRoute(info["genderKey"].split("/"), 0, apiResponse))
+                                if gender == "other" and "tags" in info.keys():
+                                    for tag in scrapertools.getJsonRoute(info["tagsKey"].split("/"),0, apiResponse):
                                         gender = scrapertools.getGender(tag)
                                         if gender != "other":
                                             break
                         else:
+                            #Scrape HTML content
                             #Gets name
                             name = soup.find("h1", {"class":info["nameIdentifier"]}).text
                             #Get all images
@@ -185,7 +192,7 @@ async def main():
                         scrapertools.printMessage("Created " + clothing.toString())
             time.sleep(random.randint(2,10))
             if random.randint(0,1) == 1:           
-                await backToMain(basicUrl, session)
+                await backToMain(baseUrl, session)
         except Exception as e:
             _,_,traceback = sys.exc_info()
             scrapertools.printMessage(f"Exception occured while scraping {url} at line number {traceback.tb_lineno}: {str(e)}")
