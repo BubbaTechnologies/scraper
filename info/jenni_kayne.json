@@ -1,8 +1,8 @@
 {
-    "name": "Rhythm",
-    "url": "https://rhythmlivin.com",
+    "name": "Jenni Kayne",
+    "url": "https://www.jennikayne.com",
     "webpageRegex": [
-        "/collections/(?!products).*"
+        "/collections/(?!products|home).*"
     ],
     "clothingRegex": [
         "/products/.+"
@@ -11,6 +11,5 @@
     "apiUrlEncoding": "{baseUrl}{route}.js",
     "nameKey": "title",
     "imageKey": "images",
-    "genderKey": "type",
-    "tagsKey": "tags"
+    "gender": "female"
 }

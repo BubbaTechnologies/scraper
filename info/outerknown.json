@@ -1,16 +1,16 @@
 {
-    "name": "Princess Polly",
-    "url": "https://us.princesspolly.com",
+    "name": "Outerknown",
+    "url": "https://www.outerknown.com",
     "webpageRegex": [
         "/collections/(?!products).*"
     ],
     "clothingRegex": [
-        "/products/(?!e-gift-voucher).+"
+        "/products/.+"
     ],
     "api": true,
     "apiUrlEncoding": "{baseUrl}{route}.js",
     "nameKey": "title",
     "imageKey": "images",
-    "gender": "female",
+    "genderKey": "type",
     "tagsKey": "tags"
 }

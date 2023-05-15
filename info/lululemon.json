@@ -1,1 +1,16 @@
-{"name": "Lululemon", "url": "https://shop.lululemon.com", "webpageRegex": ["/c/.+"], "clothingRegex": ["/p/.+"], "api": true, "apiUrlEncoding": "{baseUrl}/api{route}", "nameKey": "data/attributes/product-summary/product-name", "imageKey": "data/attributes/product-summary/sku-sku-images", "genderKey": "data/attributes/product-summary/gender", "tagsKey": "data/attributes/product-summary/product-category"}
+{
+    "name": "Lululemon",
+    "url": "https://shop.lululemon.com",
+    "webpageRegex": [
+        "/c/.+"
+    ],
+    "clothingRegex": [
+        "/p/.+"
+    ],
+    "api": true,
+    "apiUrlEncoding": "{baseUrl}/api{route}",
+    "nameKey": "data/attributes/product-summary/product-name",
+    "imageKey": "data/attributes/product-summary/sku-sku-images",
+    "genderKey": "data/attributes/product-summary/gender",
+    "tagsKey": "data/attributes/product-summary/product-category"
+}
