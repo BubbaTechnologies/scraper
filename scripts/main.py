@@ -87,6 +87,11 @@ async def main():
                     scrapertools.PROXY_ACTIVE = True
                     nonAcceptCount = 0
                     continue
+                elif len(queue) == 0 and not scrapertools.PROXY_ACTIVE:
+                    queue = [baseUrl]
+                    scrapertools.PROXY_ACTIVE = True
+                    nonAcceptCount = 0
+                    continue
                 elif nonAcceptCount > 10:
                     await exitProgram(session, errorFile)
                 else:   
