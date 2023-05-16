@@ -21,7 +21,7 @@ REFERER = ["https://www.google.com","https://search.yahoo.com","https://www.bing
 
 CLOTHING_DICT = {
     "top": "[Tt]ops?|[- ]Shirts?|[Jj]ersey|[Tt]ees?|[Cc]ardigan|[Bb]lazer|[Ff]lannel|[Ss]weater|[Pp]olo|[Vv]est|[Tt]urtleneck|[Hh]enley|[Pp]opover|[Hh]alf[- ][Zz]ip|[Bb]utton[- ]Down|[Cc]rew( [Nn]eck)?|[Tt]ank$|[Vv]-[Nn]eck",
-    "bottom": "[Jj]eans?|[Ss]horts?|[Pp]ants?|[Tt]rouser[s]?|[Jj]ogger[s]?|[Ll]eggings|[Ss]lacks|[Cc]hino|[Hh]igh-[Rr]ise",
+    "bottom": "[Jj]eans?|[Ss]horts?|[Pp]ants?|[Tt]rouser[s]?|[Jj]ogger[s]?|[Ll]egging(s)?|[Ss]lacks|[Cc]hino|[Hh]igh-[Rr]ise",
     "underclothing": "[Uu]nderwear|[Bb]oxer|[Bb]rief[s]?|[Tt]hong|[Pp]ant(?:ies|y)|[Bb]ra(?:lette)?|[Cc]orset|[Gg]arter|[Bb]abydoll|[Tt]edd(?:ies|y)",
     "shoes": "[Ss]hoes?|[Ss]andals|[Ss]lides|[Bb]oots?|[Ss]neakers?|[Hh]eels?|[Ss]tilettos?|[Ff]latforms?|[Ww]edges?|[Pp]umps?",
     "jacket": "[Jj]acket|[Hh]oodie|[Pp]ullover|[Ss]hacket|[Aa]norak|[Pp]arka|[Bb]omber|[Cc]oat|[Ss]weatshirt",
@@ -114,9 +114,9 @@ def getCLOTHING_DICT():
 def getType(string: str):
     string = cleanString(string)
 
-    *_, p = re.finditer(getCLOTHING_DICT(), string)
-
-    if p:  
+    reIter = re.finditer(getCLOTHING_DICT(), string)
+    if len(tuple(reIter)) > 0:
+        *_,p = reIter
         for i in CLOTHING_DICT:
             if re.search(CLOTHING_DICT[i], p.group()):
                 return i
