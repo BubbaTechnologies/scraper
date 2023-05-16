@@ -14,12 +14,12 @@ async def exitProgram(session:requests_html.AsyncHTMLSession, file: io.TextIOWra
     await session.close()
     exit()
 
-async def backToMain(baseUrl: str, session):
+async def backToMain(baseUrl: str, session) -> None:
     response = await session.get(baseUrl, headers = scrapertools.getHeaders(useReferer=True))
     scrapertools.printMessage("Received from " + baseUrl + " status code " + str(response.status_code) + '.')
     time.sleep(random.randint(2,10))
 
-def getApiUrl(baseUrl: str, productUrl: str, apiUrl: str):
+def getApiUrl(baseUrl: str, productUrl: str, apiUrl: str) -> str:
     route = productUrl[len(baseUrl):]
     baseMatch = re.search("{baseUrl}", apiUrl)
     if baseMatch:
@@ -34,6 +34,7 @@ def getApiUrl(baseUrl: str, productUrl: str, apiUrl: str):
     else:
         scrapertools.printMessage("JSON Error! No {route} in apiUrlEncoding.")
         exit()
+    return apiUrl
 
 async def main():
     #Connect to api
