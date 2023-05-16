@@ -179,7 +179,7 @@ async def main():
                             gender = "other"
 
                         #Edits imageUrls for better resolution
-                        for i in range(imageSrc):
+                        for i in range(len(imageSrc)):
                             imageUrl = imageSrc[i]
                             match = re.search("(\?|&)(w|wid|sw)=[0-9]+&?", imageUrl)
                             if match:
