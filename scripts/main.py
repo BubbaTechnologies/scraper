@@ -61,6 +61,7 @@ async def main():
     session = requests_html.AsyncHTMLSession()
     indexed = [baseUrl]
     nonAcceptCount = 0
+    proxyRequests = 0
 
     filepath = "output/errors.out"
     if os.path.exists(filepath):
@@ -72,6 +73,11 @@ async def main():
         try:
             urlIndex = random.randrange(len(queue))
             url = queue.pop(urlIndex)
+
+            if proxyRequests > 750:
+                await exitProgram(session, errorFile)
+            elif scrapertools.PROXY_ACTIVE:
+                proxyRequests += 1
 
             requestHeaders = scrapertools.getHeaders()
             response = await session.get(url, headers = requestHeaders, proxies=scrapertools.getProxies())
@@ -88,6 +94,7 @@ async def main():
                     nonAcceptCount = 0
                     continue
                 elif len(queue) == 0 and not scrapertools.PROXY_ACTIVE:
+                    #If baseUrl bounces
                     queue = [baseUrl]
                     scrapertools.PROXY_ACTIVE = True
                     nonAcceptCount = 0
