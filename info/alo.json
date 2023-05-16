@@ -5,7 +5,7 @@
         "/collections/(?!products).*"
     ],
     "clothingRegex": [
-        "/products/.+"
+        "/products/(?!gift-card).+"
     ],
     "api": true,
     "apiUrlEncoding": "{baseUrl}{route}.js",
