@@ -74,6 +74,7 @@ async def main():
             urlIndex = random.randrange(len(queue))
             url = queue.pop(urlIndex)
 
+            #Limit proxy requests
             if proxyRequests > 750:
                 await exitProgram(session, errorFile)
             elif scrapertools.PROXY_ACTIVE:
