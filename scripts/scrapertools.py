@@ -42,13 +42,14 @@ URL = "https://api.peachsconemarket.com"
 JWT = ""
 
 PROXY = {
-    "http":f"http://customer-{os.getenv('PROXY_USERNAME')}-cc-us:{os.getenv('PROXY_PASSWORD')}@pr.oxylabs.io:7777/",
-    "https":f"http://customer-{os.getenv('PROXY_USERNAME')}-cc-us:{os.getenv('PROXY_PASSWORD')}@pr.oxylabs.io:7777/"
+    "http":f"http://customer-{os.getenv('PROXY_USERNAME')}:{os.getenv('PROXY_PASSWORD')}@us-pr.oxylabs.io:10000",
+    "https":f"http://customer-{os.getenv('PROXY_USERNAME')}:{os.getenv('PROXY_PASSWORD')}@us-pr.oxylabs.io:10000"
 }
 PROXY_ACTIVE=False
 
 def getProxies():
     if PROXY_ACTIVE:
+        print(PROXY)
         return PROXY
     else:
         return None
