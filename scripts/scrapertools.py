@@ -49,7 +49,6 @@ PROXY_ACTIVE=False
 
 def getProxies():
     if PROXY_ACTIVE:
-        print(PROXY)
         return PROXY
     else:
         return None
