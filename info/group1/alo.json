@@ -1,0 +1,15 @@
+{
+    "name": "Alo",
+    "url": "https://www.aloyoga.com",
+    "webpageRegex": [
+        "/collections/(?!products).*"
+    ],
+    "clothingRegex": [
+        "/products/(?!gift-card).+"
+    ],
+    "api": true,
+    "apiUrlEncoding": "{baseUrl}{route}.js",
+    "nameKey": "title",
+    "imageKey": "images",
+    "gender": "female"
+}

@@ -1,0 +1,16 @@
+{
+    "name": "Princess Polly",
+    "url": "https://us.princesspolly.com",
+    "webpageRegex": [
+        "/collections/(?!products).*"
+    ],
+    "clothingRegex": [
+        "/products/(?!e-gift-voucher).+"
+    ],
+    "api": true,
+    "apiUrlEncoding": "{baseUrl}{route}.js",
+    "nameKey": "title",
+    "imageKey": "images",
+    "gender": "female",
+    "tagsKey": "tags"
+}

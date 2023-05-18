@@ -1,0 +1,16 @@
+{
+    "name": "Outerknown",
+    "url": "https://www.outerknown.com",
+    "webpageRegex": [
+        "/collections/(?!products).*"
+    ],
+    "clothingRegex": [
+        "/products/.+"
+    ],
+    "api": true,
+    "apiUrlEncoding": "{baseUrl}{route}.js",
+    "nameKey": "title",
+    "imageKey": "images",
+    "genderKey": "type",
+    "tagsKey": "tags"
+}

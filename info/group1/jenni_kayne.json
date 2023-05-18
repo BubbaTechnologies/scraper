@@ -1,0 +1,15 @@
+{
+    "name": "Jenni Kayne",
+    "url": "https://www.jennikayne.com",
+    "webpageRegex": [
+        "/collections/(?!products|home).*"
+    ],
+    "clothingRegex": [
+        "/products/.+"
+    ],
+    "api": true,
+    "apiUrlEncoding": "{baseUrl}{route}.js",
+    "nameKey": "title",
+    "imageKey": "images",
+    "gender": "female"
+}
