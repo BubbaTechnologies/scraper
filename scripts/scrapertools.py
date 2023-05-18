@@ -126,7 +126,7 @@ def getType(string: str):
     return "other"
 
 class Clothing:
-    def __init__(self, name: str, imageUrl: list[str], productUrl: str, storeId: int, type: str, gender: list[str]):
+    def __init__(self, name: str, imageUrl: list[str], productUrl: str, storeId: int, type: str, gender: str):
         self.name = name
         self.imageUrl = imageUrl
         self.productUrl = productUrl
@@ -141,7 +141,7 @@ class Clothing:
             "productUrl": self.productUrl,
             "storeId": str(self.storeId),
             "type": self.type,
-            "gender": [self.gender]
+            "gender": self.gender
         }
 
         return jsonObj

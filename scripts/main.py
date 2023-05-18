@@ -189,8 +189,6 @@ async def main():
 
                         if "gender" in info.keys():
                             gender = scrapertools.getGender(info["gender"])
-                        else: 
-                            gender = "other"
 
                         #Edits imageUrls for better resolution
                         for i in range(len(imageSrc)):
