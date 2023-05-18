@@ -156,7 +156,7 @@ async def main():
 
                             if "genderKey" in info.keys():
                                 gender = scrapertools.getGender(scrapertools.getJsonRoute(info["genderKey"].split("/"), 0, apiResponse))
-                                if gender == "other" and "tags" in info.keys():
+                                if gender == "other" and "tagsKey" in info.keys():
                                     for tag in scrapertools.getJsonRoute(info["tagsKey"].split("/"),0, apiResponse):
                                         gender = scrapertools.getGender(tag)
                                         if gender != "other":
