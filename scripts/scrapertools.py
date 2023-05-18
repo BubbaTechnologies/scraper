@@ -6,6 +6,7 @@ import os
 import re
 import random
 import requests
+from itertools import tee
 
 USER_AGENTS = [
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.4 Safari/605.1.15",
@@ -115,8 +116,9 @@ def getType(string: str):
     string = cleanString(string)
 
     reIter = re.finditer(getCLOTHING_DICT(), string)
+
     if len(tuple(reIter)) > 0:
-        *_,p = reIter
+        *_,p = re.finditer(getCLOTHING_DICT(), string)
         for i in CLOTHING_DICT:
             if re.search(CLOTHING_DICT[i], p.group()):
                 return i
