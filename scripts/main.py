@@ -197,7 +197,8 @@ async def main():
                             if match:
                                 match2 = re.search("[0-9]+", match.group(0))
                                 imageSrc[i] = imageUrl[:match.start()+match2.start()] + "720" + imageUrl[match.start()+match2.end():]
-                                
+                            
+                            imageUrl = imageSrc[i]
                             match = re.search("(\?|&)(h)=[0-9]+&?", imageUrl)
                             if match:
                                 match2 = re.search("[0-9]+", match.group(0))
