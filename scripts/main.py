@@ -192,17 +192,15 @@ async def main():
 
                         #Edits imageUrls for better resolution
                         for i in range(len(imageSrc)):
-                            imageUrl = imageSrc[i]
-                            match = re.search("(\?|&)(w|wid|sw)=[0-9]+&?", imageUrl)
+                            match = re.search("(\?|&)(w|wid|sw)=[0-9]+&?", imageSrc[i])
                             if match:
                                 match2 = re.search("[0-9]+", match.group(0))
-                                imageSrc[i] = imageUrl[:match.start()+match2.start()] + "720" + imageUrl[match.start()+match2.end():]
+                                imageSrc[i] = imageSrc[i][:match.start()+match2.start()] + "720" + imageSrc[i][match.start()+match2.end():]
                             
-                            imageUrl = imageSrc[i]
-                            match = re.search("(\?|&)(h)=[0-9]+&?", imageUrl)
+                            match = re.search("(\?|&)(h)=[0-9]+&?", imageSrc[i])
                             if match:
                                 match2 = re.search("[0-9]+", match.group(0))
-                                imageSrc[i] = imageUrl[:match.start()+match2.start()] + "720" + imageUrl[match.start()+match2.end():]
+                                imageSrc[i] = imageSrc[i][:match.start()+match2.start()] + "720" + imageSrc[i][match.start()+match2.end():]
 
                         clothing = scrapertools.Clothing(name, imageSrc, url, store.id, clothingType, gender)
 
