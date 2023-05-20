@@ -2,7 +2,7 @@
     "name": "Lululemon",
     "url": "https://shop.lululemon.com",
     "webpageRegex": [
-        "/c/.+"
+        "/c/[^_]+"
     ],
     "clothingRegex": [
         "/p/.+"

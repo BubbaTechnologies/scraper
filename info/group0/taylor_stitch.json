@@ -1,0 +1,15 @@
+{
+    "name": "Taylor Stitch",
+    "url": "https://www.taylorstitch.com",
+    "webpageRegex": [
+        "/collections/(?!products).*"
+    ],
+    "clothingRegex": [
+        "/products/.+"
+    ],
+    "api": true,
+    "apiUrlEncoding": "{baseUrl}{route}.js",
+    "nameKey": "title",
+    "imageKey": "images",
+    "gender": "male"
+}
