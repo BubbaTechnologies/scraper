@@ -187,6 +187,10 @@ async def main():
                                         break
                             clothingType = scrapertools.getType(name)
 
+                        if clothingType == "invalid":
+                            scrapertools.printMessage(f"Skipping {url} due to invalid type.")
+                            break
+
                         if "gender" in info.keys():
                             gender = scrapertools.getGender(info["gender"])
 
@@ -206,6 +210,7 @@ async def main():
 
                         clothing.createClothing()
                         scrapertools.printMessage("Created " + clothing.toString())
+                        break
             time.sleep(random.randint(2,10))
             if random.randint(0,1) == 1:           
                 await backToMain(baseUrl, session)
