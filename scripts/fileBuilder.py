@@ -4,9 +4,17 @@
 import json
 import scrapertools
 import re
+import os
 
 def main():
     scrapertools.cdFile(__file__)
+
+    groupNumber = input("Group Number: ")
+    try:
+        int(groupNumber)
+    except:
+        print("Invalid groupnumber input.")
+        exit()
 
     data = {}
 
@@ -57,8 +65,10 @@ def main():
             data["gender"] = input("Gender: (Male/Female/Boy/Girl) ").lower()
             if data["gender"] not in ["male", "female", "boy", "girl"]:
                 data["gender"] = "other"
-
-    with open("../info/" + data["name"].lower().replace(" ","_") + ".json", 'w') as file:
+    if not os.path.exists(f"../info/group{groupNumber}"):
+        os.mkdir(f"../info/group{groupNumber}")
+    
+    with open(f"../info/group{groupNumber}" + data["name"].lower().replace(" ","_") + ".json", 'w') as file:
         print("Writing file " + scrapertools.pwd() + "/" + data["name"].lower().replace(" ","_") + ".json")
         json.dump(data, file)
 
