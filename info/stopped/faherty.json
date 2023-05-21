@@ -1,0 +1,17 @@
+{
+    "name": "Faherty",
+    "url": "https://fahertybrand.com",
+    "webpageRegex": [
+        "/collections/(?!products).*"
+    ],
+    "clothingRegex": [
+        "/products/.+"
+    ],
+    "api": true,
+    "apiUrlEncoding": "{baseUrl}{route}.js",
+    "nameKey": "title",
+    "imageKey": "images",
+    "featuredImageKey":"featured_image",
+    "genderKey": "type",
+    "tagsKey": "tags"
+}
