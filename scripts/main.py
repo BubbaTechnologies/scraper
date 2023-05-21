@@ -147,7 +147,13 @@ async def main():
                             apiResponse = json.loads(requests.get(apiUrl, headers={"Accept":"application/json"}).text)
 
                             name = scrapertools.getJsonRoute(info["nameKey"].split("/"), 0, apiResponse)
-                            clothingType = scrapertools.getType(name)
+                            if "typeInTags" in info.keys() and info["typeInTags"]:
+                                for tag in scrapertools.getJsonRoute(info["tagsKey"].split("/"),0, apiResponse):
+                                    clothingType = scrapertools.getType(tag)
+                                    if clothingType != "other":
+                                        break
+                            else:
+                                clothingType = scrapertools.getType(name)
                             imageSrc = scrapertools.getJsonRoute(info["imageKey"].split("/"), 0, apiResponse)
 
                             if "featuredImageKey" in info.key():

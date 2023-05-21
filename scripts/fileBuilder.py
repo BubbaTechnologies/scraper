@@ -57,6 +57,10 @@ def main():
             data["genderKey"] = input("Gender Key: ")
             if input("Is there tags? (Yes/No) ").lower() == "yes":
                 data["tagsKey"] = input("Tags Key: ")
+                if input("Is the type in tags? (Yes/No) ").lower() == "yes":
+                    data["typeInTags"] = True
+                else:
+                    data["typeInTags"] = False
     else:
         data["api"] = False
         data["nameIdentifier"] = input("Name Identifier: ")

@@ -13,5 +13,6 @@
     "imageKey": "images",
     "featuredImageKey":"featured_image",
     "genderKey": "type",
-    "tagsKey": "tags"
+    "tagsKey": "tags",
+    "typeInTags": true
 }
