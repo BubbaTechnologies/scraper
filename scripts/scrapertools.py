@@ -89,7 +89,7 @@ def cleanString(string: str):
     return string
 
 def getGender(string: str):
-    string = cleanString(string)
+    string = cleanString(string).lower()
 
     if re.search("([Ww]om[ae]n)|([Ff]emale)", string):
         return "female"
@@ -116,7 +116,7 @@ def getCLOTHING_DICT():
     return re
 
 def getType(string: str):
-    string = cleanString(string)
+    string = cleanString(string).lower()
 
     reIter = re.finditer(getCLOTHING_DICT(), string)
 
