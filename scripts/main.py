@@ -150,6 +150,14 @@ async def main():
                             clothingType = scrapertools.getType(name)
                             imageSrc = scrapertools.getJsonRoute(info["imageKey"].split("/"), 0, apiResponse)
 
+                            if "featuredImageKey" in info.key():
+                                featuredImage = scrapertools.getJsonRoute(info["featuredImageKey"].split("/"), 0, apiResponse)
+                                if featuredImage in imageSrc:
+                                    imageSrc.remove(featuredImage)
+                                    imageSrc.append(featuredImage)
+                                else:
+                                    imageSrc.append(featuredImage)
+
                             for i in range(len(imageSrc)):
                                 if "//" == imageSrc[i][:2]:
                                     imageSrc[i] = "https://" + imageSrc[i][2:]

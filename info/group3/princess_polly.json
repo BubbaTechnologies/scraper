@@ -11,6 +11,7 @@
     "apiUrlEncoding": "{baseUrl}{route}.js",
     "nameKey": "title",
     "imageKey": "images",
+    "featuredImageKey":"featured_image",
     "gender": "female",
     "tagsKey": "tags"
 }

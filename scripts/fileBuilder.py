@@ -46,6 +46,9 @@ def main():
         data["apiUrlEncoding"] = input("API Url Encoding: ")
         data["nameKey"] = input("Name Key: ")
         data["imageKey"] = input("Image Key: ")
+        if input("Is there a featured image? (Yes/No)").lower() == "yes":
+            data["featuredImageKey"] = input("Featured Image Key: ")
+
         if input("Is there a specific gender? (Yes/No) ").lower() == "yes":
             data["gender"] = input("Gender: (Male/Female/Boy/Girl) ").lower()
             if data["gender"] not in ["male", "female", "boy", "girl"]:
@@ -65,6 +68,7 @@ def main():
             data["gender"] = input("Gender: (Male/Female/Boy/Girl) ").lower()
             if data["gender"] not in ["male", "female", "boy", "girl"]:
                 data["gender"] = "other"
+
     if not os.path.exists(f"../info/group{groupNumber}"):
         os.mkdir(f"../info/group{groupNumber}")
     
