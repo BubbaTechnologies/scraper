@@ -156,7 +156,7 @@ async def main():
                                 clothingType = scrapertools.getType(name)
                             imageSrc = scrapertools.getJsonRoute(info["imageKey"].split("/"), 0, apiResponse)
 
-                            if "featuredImageKey" in info.key():
+                            if "featuredImageKey" in info.keys():
                                 featuredImage = scrapertools.getJsonRoute(info["featuredImageKey"].split("/"), 0, apiResponse)
                                 if featuredImage in imageSrc:
                                     imageSrc.remove(featuredImage)
