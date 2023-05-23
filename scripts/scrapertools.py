@@ -131,7 +131,6 @@ def getType(string: str):
 
     return "other"
 
-
 def removeDescriptors(string: str)->str:
     #Removes any parenthesis
     parentheisMatch = re.search("\(.+\)", string)
