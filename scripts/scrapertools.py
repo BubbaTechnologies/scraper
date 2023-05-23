@@ -137,11 +137,11 @@ def removeDescriptors(string: str)->str:
     if parentheisMatch:
         string = string[:parentheisMatch.start()] + string[parentheisMatch.end():]
 
-    dashMatch = re.search(" - .+", string)
+    dashMatch = re.search("( - ).+", string)
     if dashMatch:
         string = string[:dashMatch.start()] + string[dashMatch.end():]
     
-    verticalLineMatch = re.search(" | .+", string) 
+    verticalLineMatch = re.search("( \| ).+", string) 
     if verticalLineMatch:
         string = string[:verticalLineMatch.start()] + string[verticalLineMatch.end():]
     
