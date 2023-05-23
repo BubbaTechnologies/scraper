@@ -137,15 +137,11 @@ def removeDescriptors(string: str)->str:
     if parentheisMatch:
         string = string[:parentheisMatch.start()] + string[parentheisMatch.end():]
 
-    dashMatch = re.search("( - ).+", string)
-    if dashMatch:
-        string = string[:dashMatch.start()] + string[dashMatch.end():]
-    
-    verticalLineMatch = re.search("( \| ).+", string) 
-    if verticalLineMatch:
-        string = string[:verticalLineMatch.start()] + string[verticalLineMatch.end():]
-    
-    return string
+    descriptorMatch = re.search("( - | \| |\*).+", string)
+    if descriptorMatch:
+        string = string[:descriptorMatch.start()] + string[descriptorMatch.end():]
+
+    return string.title()
 
 class Clothing:
     def __init__(self, name: str, imageUrl: list[str], productUrl: str, storeId: int, type: str, gender: str):
