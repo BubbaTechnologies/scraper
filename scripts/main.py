@@ -19,23 +19,6 @@ async def backToMain(baseUrl: str, session) -> None:
     scrapertools.printMessage("Received from " + baseUrl + " status code " + str(response.status_code) + '.')
     time.sleep(random.randint(2,10))
 
-def getApiUrl(baseUrl: str, productUrl: str, apiUrl: str) -> str:
-    route = productUrl[len(baseUrl):]
-    baseMatch = re.search("{baseUrl}", apiUrl)
-    if baseMatch:
-        apiUrl = apiUrl[:baseMatch.start()] + baseUrl + apiUrl[baseMatch.end():]
-    else:
-        scrapertools.printMessage("JSON Error! No {baseUrl} in apiUrlEncoding.")
-        exit()
-
-    routeMatch = re.search("{route}", apiUrl)
-    if routeMatch:
-        apiUrl = apiUrl[:routeMatch.start()] + route + apiUrl[routeMatch.end():]
-    else:
-        scrapertools.printMessage("JSON Error! No {route} in apiUrlEncoding.")
-        exit()
-    return apiUrl
-
 async def main():
     #Connect to api
     data = {
@@ -141,12 +124,12 @@ async def main():
                 search = re.search(regex, url)
                 if search is not None:
                         if info["api"]:
-                            apiUrl = getApiUrl(baseUrl, url, info["apiUrlEncoding"])
+                            apiUrl = scrapertools.getApiUrl(baseUrl, url, info["apiUrlEncoding"])
 
                             #Scrape API Website
                             apiResponse = json.loads(requests.get(apiUrl, headers={"Accept":"application/json"}).text)
 
-                            name = scrapertools.getJsonRoute(info["nameKey"].split("/"), 0, apiResponse)
+                            name = scrapertools.removeDescriptors(scrapertools.getJsonRoute(info["nameKey"].split("/"), 0, apiResponse))
                             if "typeInTags" in info.keys() and info["typeInTags"]:
                                 for tag in scrapertools.getJsonRoute(info["tagsKey"].split("/"),0, apiResponse):
                                     clothingType = scrapertools.getType(tag)
@@ -178,7 +161,7 @@ async def main():
                         else:
                             #Scrape HTML content
                             #Gets name
-                            name = soup.find("h1", {"class":info["nameIdentifier"]}).text
+                            name = scrapertools.removeDescriptors(soup.find("h1", {"class":info["nameIdentifier"]}).text)
                             #Get all images
                             imageDiv = soup.find("div", {"class": info["imageIdentifier"]})
                             imageSrc = []
@@ -222,8 +205,8 @@ async def main():
 
                         clothing = scrapertools.Clothing(name, imageSrc, url, store.id, clothingType, gender)
 
-                        clothing.createClothing()
-                        scrapertools.printMessage("Created " + clothing.toString())
+                        if clothing.createClothing():
+                            scrapertools.printMessage("Created " + clothing.toString())
                         break
             time.sleep(random.randint(2,10))
             if random.randint(0,1) == 1:           

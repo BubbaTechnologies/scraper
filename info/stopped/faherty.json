@@ -8,7 +8,7 @@
         "/products/.+"
     ],
     "api": true,
-    "apiUrlEncoding": "{baseUrl}{route}.js",
+    "apiUrlEncoding": "{baseUrl}{route}.js{parameters}",
     "nameKey": "title",
     "imageKey": "images",
     "featuredImageKey":"featured_image",

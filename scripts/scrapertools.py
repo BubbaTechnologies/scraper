@@ -20,10 +20,10 @@ USER_AGENTS = [
 REFERER = ["https://www.google.com","https://search.yahoo.com","https://www.bing.com"]
 
 CLOTHING_DICT = {
-    "top": "[Tt]ops?|(-| )[Ss]hirt(s)?|[Jj]ersey|[Tt]ees?|[Cc]ardigan|[Bb]lazer|[Ff]lannel|[Ss]weater|[Pp]olo|[Vv]est|[Tt]urtleneck"\
+    "top": "[Tt]ops?|(-| )[Ss]hirt(s)?|[Jj]ersey|[Tt]ee(s)?|[Cc]ardigan|[Bb]lazer|[Ff]lannel|[Ss]weater|[Pp]olo|[Vv]est|[Tt]urtleneck"\
         "|[Hh]enley|[Pp]opover|[Hh]alf[- ][Zz]ip|[Bb]utton(-| )[Dd]own|[Cc]rew( [Nn]eck)?|[Tt]ank( |$)|[Vv]-[Nn]eck|[Cc]ami|[Ww]affle [Kk]nit|"\
         "[Ff]leece",
-    "bottom": "[Jj]eans?|[Ss]horts?|[Pp]ants?|[Tt]rouser[s]?|[Jj]ogger[s]?|[Ll]egging(s)?|[Ss]lacks|[Cc]hino|[Hh]igh-[Rr]ise|[Jj]umper",
+    "bottom": "[Jj]eans?|[Ss]hort[s]?|[Pp]ants?|[Tt]rouser[s]?|[Jj]ogger[s]?|[Ll]egging(s)?|[Ss]lacks|[Cc]hino|[Hh]igh-[Rr]ise|[Jj]umper",
     "underclothing": "[Uu]nderwear|[Bb]oxer|[Bb]rief[s]?|[Tt]hong|[Pp]ant(?:ies|y)|[Bb]ra(?:lette)?|[Cc]orset|[Gg]arter|[Bb]abydoll|[Tt]edd(?:ies|y)",
     "shoes": "[Ss]hoes?|[Ss]andals|[Ss]lides|[Bb]oots?|[Ss]neakers?|[Hh]eels?|[Ss]tilettos?|[Ff]latforms?|[Ww]edges?|[Pp]umps?",
     "swimwear": "[Ss]wim|[Bb]ikini|[Rr]ash(?: )?[Gg]uard|[Ss]urf|[Tt]runk[s]?|[Ww]etsuit( [Jj]acket)?",
@@ -131,6 +131,23 @@ def getType(string: str):
 
     return "other"
 
+
+def removeDescriptors(string: str)->str:
+    #Removes any parenthesis
+    parentheisMatch = re.search("\(.+\)", string)
+    if parentheisMatch:
+        string = string[:parentheisMatch.start()] + string[parentheisMatch.end():]
+
+    dashMatch = re.search(" - .+")
+    if dashMatch:
+        string = string[:dashMatch.start()] + string[dashMatch.end():]
+    
+    verticalLineMatch = re.search(" | .+") 
+    if verticalLineMatch:
+        string = string[:dashMatch.start()] + string[dashMatch.end():]
+    
+    return string
+
 class Clothing:
     def __init__(self, name: str, imageUrl: list[str], productUrl: str, storeId: int, type: str, gender: str):
         self.name = name
@@ -232,3 +249,31 @@ def getJsonRoute(routeList:list, level: int, jsonObj: dict):
     if len(returnList) == 1:
         return returnList[0]
     return returnList
+
+def getApiUrl(baseUrl: str, productUrl: str, apiUrl: str) -> str:
+    #Removes base url from productUrl
+    route = productUrl[len(baseUrl):]
+
+    #If parameters removes from route
+    parametersMatch = re.search("{parameters}", apiUrl)
+    if parametersMatch:
+        parameters = re.search(r"\?.+$", route)
+        if parameters:
+            route = route[:len(route) - len(parameters.group())]
+            apiUrl = apiUrl[:parametersMatch.start()] + parameters.group() + apiUrl[parametersMatch.end():]
+
+    baseMatch = re.search("{baseUrl}", apiUrl)
+    if baseMatch:
+        apiUrl = apiUrl[:baseMatch.start()] + baseUrl + apiUrl[baseMatch.end():]
+    else:
+        scrapertools.printMessage("JSON Error! No {baseUrl} in apiUrlEncoding.")
+        exit()
+
+    routeMatch = re.search("{route}", apiUrl)
+    if routeMatch:
+        apiUrl = apiUrl[:routeMatch.start()] + route + apiUrl[routeMatch.end():]
+    else:
+        scrapertools.printMessage("JSON Error! No {route} in apiUrlEncoding.")
+        exit()
+
+    return apiUrl
