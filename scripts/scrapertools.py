@@ -6,6 +6,7 @@ import os
 import re
 import random
 import requests
+import string as stringLibrary
 
 USER_AGENTS = [
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.4 Safari/605.1.15",
@@ -141,7 +142,7 @@ def removeDescriptors(string: str)->str:
     if descriptorMatch:
         string = string[:descriptorMatch.start()] + string[descriptorMatch.end():]
 
-    return string.title()
+    return stringLibrary.capwords(string, " ")
 
 class Clothing:
     def __init__(self, name: str, imageUrl: list[str], productUrl: str, storeId: int, type: str, gender: str):
