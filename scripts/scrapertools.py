@@ -143,7 +143,7 @@ def removeDescriptors(string: str)->str:
     
     verticalLineMatch = re.search(" | .+", string) 
     if verticalLineMatch:
-        string = string[:dashMatch.start()] + string[dashMatch.end():]
+        string = string[:verticalLineMatch.start()] + string[verticalLineMatch.end():]
     
     return string
 
