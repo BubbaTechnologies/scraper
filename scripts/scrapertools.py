@@ -265,14 +265,14 @@ def getApiUrl(baseUrl: str, productUrl: str, apiUrl: str) -> str:
     if baseMatch:
         apiUrl = apiUrl[:baseMatch.start()] + baseUrl + apiUrl[baseMatch.end():]
     else:
-        scrapertools.printMessage("JSON Error! No {baseUrl} in apiUrlEncoding.")
+        printMessage("JSON Error! No {baseUrl} in apiUrlEncoding.")
         exit()
 
     routeMatch = re.search("{route}", apiUrl)
     if routeMatch:
         apiUrl = apiUrl[:routeMatch.start()] + route + apiUrl[routeMatch.end():]
     else:
-        scrapertools.printMessage("JSON Error! No {route} in apiUrlEncoding.")
+        printMessage("JSON Error! No {route} in apiUrlEncoding.")
         exit()
 
     return apiUrl
