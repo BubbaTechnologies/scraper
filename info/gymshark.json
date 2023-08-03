@@ -1,0 +1,27 @@
+{
+    "name": "Gymshark",
+    "url": "https://www.gymshark.com",
+    "loadJavascript": true,
+    "catalogPageInformation": {
+        "regex": [
+            "/collections/.+"
+        ],
+        "api": null
+    },
+    "productPageInformation": {
+        "regex": [
+            "/products/.+"
+        ],
+        "api": {
+            "apiUrlEncoding": "{baseUrl}{route}.js",
+            "nameRoute": "title",
+            "imageRoute": "images",
+            "featuredImageRoute": "featured_image",
+            "genderRoute": "type",
+            "clothingDescription": {
+                "route": "description",
+                "regex": null
+            }
+        }
+    }
+}

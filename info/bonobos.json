@@ -1,0 +1,24 @@
+{
+    "name": "Bonobos",
+    "url": "https://www.bonobos.com",
+    "catalogPageInformation": {
+        "regex": [
+            "/shop/.+"
+        ],
+        "api": null
+    },
+    "productPageInformation": {
+        "regex": [
+            "/products/[^&]+"
+        ],
+        "identifiers": {
+            "nameIdentifier": "summary_name__RYDzS",
+            "imageDivIdentifier": "thumbnail_gallery_component__cFcya",
+            "gender": "male",
+            "clothingDescription": {
+                "divIdentifier": "summary_description__eycow",
+                "regex": null
+            }
+        }
+    }
+}

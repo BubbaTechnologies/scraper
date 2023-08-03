@@ -4,81 +4,103 @@
 import json
 import scrapertools
 import re
-import os
+from typing import List
+
+
+def checkGender(inp: str)->str:
+    if inp not in ["male", "female", "boy", "girl"]:
+        return "other"
+    return inp
+
+def getTagRegex()->List[str]:
+    regex = {}
+    if input("Use default clothing tag regex? (Yes/No) ").lower() == "no":
+        print("Please see README.md tags section for information about formatting.")
+        while True:
+            inputKey = input("Clothing Tag (Press Enter to Quit): ")
+            if inputKey == "":
+                break
+            regex[inputKey] = []
+            for i in range(int(input(f"Regex count for {inputKey}: "))):
+                regex[inputKey].append(input(f"{inputKey} Regex " + str(i + 1) + ": "))
+        return regex
+    
 
 def main():
-    scrapertools.cdFile(__file__)
-
-    groupNumber = input("Group Number: ")
     try:
-        int(groupNumber)
-    except:
-        print("Invalid group number input.")
-        exit()
+        scrapertools.cdFile(__file__)
 
-    data = {}
+        data = {}
 
-    #Gets input
-    data["name"] = input("Store Name: ")
-    data["url"] = input("Store URL: ")
+        #Gets input
+        data["name"] = input("Store Name: ")
+        data["url"] = input("Store URL: ")
 
-    #Checks url input
-    urlCheck = re.fullmatch("http(s)?://((www|shop)\.)?.+\.(com|co)", data["url"])
-    if not urlCheck:
-        raise ValueError("Invalid URL address format.")
+        #Checks url input
+        urlCheck = re.fullmatch("http(?:s)?://(?:(?:www|shop)\.)?.+\.(?:com|co|co\.uk)", data["url"])
+        if not urlCheck:
+            raise ValueError("Invalid URL address format.")
+        
+        data["loadJavascript"] = input("Load Javascript? (Yes/No) ").lower() == "yes"
+        
+        catalogInformationKey = "catalogPageInformation"
+        data[catalogInformationKey] = {
+            "regex": []
+            }
+        count = int(input("Catalog Regex Count: "))
 
-    data["webpageRegex"] = []
-    count = int(input("Webpage Regex Count: "))
+        for i in range(0, count):
+            data[catalogInformationKey]["regex"].append(input("Catalog Regex " + str(i + 1) + ": "))
 
-    for i in range(0, count):
-        regex = input("Webpage Regex " + str(i + 1) + ": ")
-        data["webpageRegex"].append(regex)
+        data[catalogInformationKey]["api"] = None
+        if input("Is there a catalog page API? (Yes/No) ").lower() == "yes":
+            data[catalogInformationKey]["api"] = {}
+            print("See README.md for instructions on how to encode catalog page API url.")
+            data[catalogInformationKey]["api"]["urlEncoding"] = input("Catalog API Url Encoding: ")
+            data[catalogInformationKey]["api"]["productRoute"] = input("Product Route: ")
 
-    data["clothingRegex"] = []
-    count = int(input("Clothing Page Regex Count: "))
 
-    for i in range(0, count):
-        regex = input("Clothing Page Regex " + str(i + 1) + ": ")
-        data["clothingRegex"].append(regex)
-    
-    if input("Is there an API? (Yes/No) ").lower() == "yes":
-        data["api"] = True
-        data["apiUrlEncoding"] = input("API Url Encoding: ")
-        data["nameKey"] = input("Name Key: ")
-        data["imageKey"] = input("Image Key: ")
-        if input("Is there a featured image? (Yes/No)").lower() == "yes":
-            data["featuredImageKey"] = input("Featured Image Key: ")
+        productInfromationKey = "productPageInformation"
+        data[productInfromationKey] = {}
+        data[productInfromationKey]["regex"] = []
+        for i in range(0, int(input("Product Page Regex Count: "))):
+            data[productInfromationKey]["regex"].append(input("Product Page Regex " + str(i + 1) + ": "))
+        
+        if input("Is there an product page API? (Yes/No) ").lower() == "yes":
+            data[productInfromationKey]["api"] = {}
+            print("See README.md for instructions on how to encode product page API url.")
+            data[productInfromationKey]["api"]["apiUrlEncoding"] = input("API Url Encoding: ")
+            data[productInfromationKey]["api"]["nameRoute"] = input("Name Route: ")
+            data[productInfromationKey]["api"]["imageRoute"] = input("Image Route: ")
+            if input("Is there a featured image? (Yes/No) ").lower() == "yes":
+                data[productInfromationKey]["api"]["featuredImageRoute"] = input("Featured Image Route: ")
 
-        if input("Is there a specific gender? (Yes/No) ").lower() == "yes":
-            data["gender"] = input("Gender: (Male/Female/Boy/Girl) ").lower()
-            if data["gender"] not in ["male", "female", "boy", "girl"]:
-                data["gender"] = "other"
+            if input("Is there a specific gender? (Yes/No) ").lower() == "yes":
+                data[productInfromationKey]["api"]["gender"] = checkGender(input("Gender: (Male/Female/Boy/Girl) ").lower())
+            else:
+                data[productInfromationKey]["api"]["genderRoute"] = input("Gender Route: ")
         else:
-            data["genderKey"] = input("Gender Key: ")
-            if input("Is there tags? (Yes/No) ").lower() == "yes":
-                data["tagsKey"] = input("Tags Key: ")
-                if input("Is the type in tags? (Yes/No) ").lower() == "yes":
-                    data["typeInTags"] = True
-                else:
-                    data["typeInTags"] = False
-    else:
-        data["api"] = False
-        data["nameIdentifier"] = input("Name Identifier: ")
-        data["imageIdentifier"] = input("Image Div Identifier: ")
+            data[productInfromationKey]["identifiers"] = {}
+            data[productInfromationKey]["identifiers"]["nameIdentifier"] = input("Name Identifier: ")
+            data[productInfromationKey]["identifiers"]["imageDivIdentifier"] = input("Image Div Identifier: ")
 
-        if input("Are there breadcrumbs? (Yes/No) ").lower() == "yes":
-            data["breadcrumbsIdentifier"] = input("Breadcrumbs Identifier: ")
-        elif input("Is there a specific gender? (Yes/No) ").lower() == "yes":
-            data["gender"] = input("Gender: (Male/Female/Boy/Girl) ").lower()
-            if data["gender"] not in ["male", "female", "boy", "girl"]:
-                data["gender"] = "other"
+            if input("Are there breadcrumbs? (Yes/No) ").lower() == "yes":
+                data[productInfromationKey]["identifiers"]["breadcrumbsIdentifier"] = input("Breadcrumbs Identifier: ")
+            elif input("Is there a specific gender? (Yes/No) ").lower() == "yes":
+                data[productInfromationKey]["identifiers"]["gender"] = checkGender(input("Gender: (Male/Female/Boy/Girl) ").lower())
 
-    if not os.path.exists(f"../info/group{groupNumber}"):
-        os.mkdir(f"../info/group{groupNumber}")
-    
-    with open(f"../info/group{groupNumber}/" + data["name"].lower().replace(" ","_") + ".json", 'w') as file:
-        print("Writing file " + scrapertools.pwd() + "/" + data["name"].lower().replace(" ","_") + ".json")
-        json.dump(data, file)
+        if "api" in data[productInfromationKey].keys():
+            data[productInfromationKey]["api"]["clothingDescription"] = {"route": input("Clothing Description Route: ")}
+            data[productInfromationKey]["api"]["clothingDescription"]["regex"] = getTagRegex()
+        else:
+            data[productInfromationKey]["identifiers"]["clothingDescription"] = {"divIdentifier": input("Clothing Description Div Identifier: ")}
+            data[productInfromationKey]["identifiers"]["clothingDescription"]["regex"] = getTagRegex()
+
+        with open(f"../info/" + data["name"].lower().replace(" ","_") + ".json", 'w') as file:
+            print("Writing file " + scrapertools.pwd() + "/" + data["name"].lower().replace(" ","_") + ".json")
+            json.dump(data, file)
+    except Exception as e:
+        print("Error: " + str(e))
 
 
 if __name__ == "__main__":

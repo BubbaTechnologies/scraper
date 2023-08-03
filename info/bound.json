@@ -1,0 +1,27 @@
+{
+    "name": "Bound",
+    "url": "https://wearebound.co.uk",
+    "loadJavascript": true,
+    "catalogPageInformation": {
+        "regex": [
+            "/collections/[a-z0-9A-Z-]+$"
+        ],
+        "api": null
+    },
+    "productPageInformation": {
+        "regex": [
+            "/collections/[a-z0-9A-Z-]+/products/.+"
+        ],
+        "api": {
+            "apiUrlEncoding": "{baseUrl}{route}.js",
+            "nameRoute": "title",
+            "imageRoute": "images",
+            "featuredImageRoute": "featured_image",
+            "gender": "male",
+            "clothingDescription": {
+                "route": "description",
+                "regex": null
+            }
+        }
+    }
+}

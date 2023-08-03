@@ -1,12 +1,17 @@
 #Matthew Groholski
-#Feburary 4th, 2023
+#August 2nd, 2023
+
+from typing import List
 
 import datetime
 import os
-import re
+import re2 as re
 import random
-import requests
 import string as stringLibrary
+import properties
+
+from typing import Dict
+from classes import Relation
 
 USER_AGENTS = [
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.4 Safari/605.1.15",
@@ -21,42 +26,41 @@ USER_AGENTS = [
 REFERER = ["https://www.google.com","https://search.yahoo.com","https://www.bing.com"]
 
 CLOTHING_DICT = {
-    "top": "[Tt]ops?|(-| )[Ss]hirt(s)?|[Jj]ersey|[Tt]ee(s)?|[Cc]ardigan|[Bb]lazer|[Ff]lannel|[Ss]weater|[Pp]olo|[Vv]est|[Tt]urtleneck"\
-        "|[Hh]enley|[Pp]opover|[Hh]alf[- ][Zz]ip|[Bb]utton(-| )[Dd]own|[Cc]rew( [Nn]eck)?|[Tt]ank( |$)|[Vv]-[Nn]eck|[Cc]ami|[Ww]affle [Kk]nit|"\
-        "[Ff]leece",
-    "bottom": "[Jj]eans?|[Ss]hort[s]?|[Pp]ants?|[Tt]rouser[s]?|[Jj]ogger[s]?|[Ll]egging(s)?|[Ss]lacks|[Cc]hino|[Hh]igh-[Rr]ise|[Jj]umper",
-    "underclothing": "[Uu]nderwear|[Bb]oxer|[Bb]rief[s]?|[Tt]hong|[Pp]ant(?:ies|y)|[Bb]ra(?:lette)?|[Cc]orset|[Gg]arter|[Bb]abydoll|[Tt]edd(?:ies|y)",
-    "shoes": "[Ss]hoes?|[Ss]andals|[Ss]lides|[Bb]oots?|[Ss]neakers?|[Hh]eels?|[Ss]tilettos?|[Ff]latforms?|[Ww]edges?|[Pp]umps?",
-    "swimwear": "[Ss]wim|[Bb]ikini|[Rr]ash(?: )?[Gg]uard|[Ss]urf|[Tt]runk[s]?|[Ww]etsuit( [Jj]acket)?",
-    "jacket": "[Jj]acket|[Hh]oodie|[Pp]ullover|[Ss]hacket|[Aa]norak|[Pp]arka|[Bb]omber|[Cc]oat|[Ss]weatshirt|[Aa]norak",
-    "sleepwear": "[Ss]leepwear|[Pp]ajamas?|[Nn]ightie|[Rr]obe",
-    "skirt": "[Ss]kirt|[Ss]kort",
-    "set":"[S|s]et",
-    "one piece": "[Bb]odysuit|[Rr]omper|[Jj]umpsuit|[Oo]ne [Pp]iece|[Pp]laysuit",
-    "dress":"[Dd]ress",
-    "accessory": "[Tt]ights|[Ss]tockings|[Tt]high(?: )?[Hh]ighs?|[Bb]ackpack|[Pp]urse|[Bb]ag|[Bb]elt|" \
-                 "[Pp]erfume|[Cc]ologne|[Hh]at|[Gg]lasses|[Ww]atch|[Nn]ecklace|[Ww]allet|[Pp]in|[Cc]uff(?:s|links)" \
-                 "[Pp]ocket [Ss]quares|[Cc]lip|[Rr]ing|[Ee]arings|[Pp]endant|[Bb]raclet|[Bb]rooches?|[Bb]ands?|" \
-                 "[Ss]carves|[Gg]loves?|[Tt]ies?|[Ss]ocks|[T|t]ote|[Pp]ocket [Ss]quare|[Cc]ap|[Cc]hoker|[Bb]eanie",
+    "shirt":"(?:^|[- ])([Ss]hirts?)|(?:^| )(Jersey)|(?:^| )([Tt]ees?)|(?:(^| )([Pp]olo))|(?:^| )([Cc]rew (?:[Nn]eck)?)|(?:^| )([Vv]-[Nn]eck)",
+    "top":"(?:^| )([Tt]ops?)|(?:^| )([Cc]ami)|(?:^| )([Cc]orset)|(?:^| )([Bb]odysuit)",
+    "long sleeve":"(?:^| )([Ff]lannel)|(?:^| )([Tt]urtleneck)|(?:^| )([Hh]enley)|(?:^|\s)([Bb]utton(?:-|\s)[Dd]own)|(?^| )([Ll]ong [Ss]leeve)|(?:^| )([Ww]affle [Kk]nit)",
+    "sweatshirt":"(?:^| )([Hh]oodie)|(?:^| )([Ss]weatshirt)",
+    "tanks":"(?:^| )([Tt]anks? (?:[Tt]op))",
+    "bras":"(?:^| )([Bb]ra(?:lette)?)",
+    "dresses":"(?:^| )([Dd]ress)",
+    "jackets & vests":"((?:^| )[Cc]ardigan)|(?:^| )([Bb]lazer)|(?:^| )([Ss]weater)|(?:^| )([Vv]est)|(?:^| )([Pp]opover)|(?:^| )([Hh]alf[- ][Zz]ip)|(?:^| )([Ff]leece)"\
+        "|(?:^| )([Jj]acket)|(?:^| )([Hh]oodie)|(?:^| )([Pp]ullover)|"\
+        "(?:^| )([Ss]hacket)|(?:^| )([Aa]norak)|(?:^| )([Pp]arka)|(?:^| )([Bb]omber)|(?:^| )([Cc]oat)|(?:^| )([Ss]weatshirt)|(?:^| )([Aa]norak)",
+    "shorts":"(?:^| )([Ss]horts?)",
+    "jeans":"(?:^| )([Jj]eans)",
+    "leggings":"(?:^| )([Ll]eggings?)",
+    "rompers & jumpers":"(?:^| )([Jj]umper)|(?:^| )([Oo]nesie)|(?:^| )([Pp]laysuit)|(?:^| )([Rr]omper)|(?:^| )([Jj]umpsuit)",
+    "skirt":"(?:^| )([Ss]kirt)|(?:^| )([Ss]kort)",
+    "pants":"(?:^| )([Pp]ants?)|(?:^| )([Tt]rousers?)|(?:^| )([Jj]oggers?)|(?:^| )([Ss]lacks)|(?:^| )([Cc]hinos?)|(?:^| )([Hh]igh[- ][Rr]ise)|(?:^| )([Ss]weatpants?)",
+    "sets":"(?:^| )([S|s]ets?)",
+    "sleepwear":"(?:^| )([Ss]leepwear)|(?:^| )([Pp]ajamas?)|(?:^| )([Nn]ightie)|(?:^| )([Rr]obe)",
+    "swimwear":"(?:^| )([Ss]wim)|(?:^| )([Bb]ikini)|(?:^| )([Rr]ash(?: )?[Gg]uard)|(?:^| )([Ss]urf(?![- ]?[Bb]oard))|(?:^| )([Tt]runk[s]?)|(?:^| )([Ww]et(?:[Ss]uit)?)|(?:^| )([Oo]ne[- ][Pp]iece)",
+    "shoes":"(?:^| )([Ss]hoes?)|(?:^| )([Ss]andals)|(?:^| )([Ss]lides)|(?:^| )([Bb]oots?)|(?:^| )([Ss]neakers?)|(?:^| )([Hh]eels?)|(?:^| )([Ss]tilettos?)|(?:^| )([Ff]latforms?)|(?:^| )([Ww]edges?)|(?:^| )([Pp]umps?)",
+    "suits & tuxedos":"(?:^| )([Ss]uit)|(?:^| )([Tt]uxedo)",
+    "underclothing":"(?:^| )([Uu]nderwear)|(?:^| )([Bb]oxers?)|(?:^| )([Bb]riefs?)|(?:^| )([Tt]hong)|(?:^| )([Pp]ant(?:ies|y))|(?:^| )([Gg]arter)|(?:^| )([Bb]abydoll)|(?:^| )([Tt]edd(?:ies|y(?! ?[Bb]ear)))",
+    "accessories":"(?:^| )([Tt]ights)|(?:^| )([Ss]tockings)|(?:^| )([Tt]high(?: )?[Hh]ighs?)|(?:^| )([Bb]ackpack)|(?:^| )([Pp]urse)|(?:^| )([Bb]ag)|(?:^| )([Bb]elt)|(?:^| )(" \
+                 "[Pp]erfume)|(?:^| )([Cc]ologne)|(?:^| )([Hh]at)|(?:^| )([Gg]lasses)|(?:^| )([Ww]atch)|(?:^| )([Nn]ecklace)|(?:^| )([Ww]allet)|(?:^| )([Pp]in)|(?:^| )([Cc]uff(?:s|links))|" \
+                 "[Pp]ocket [Ss]quares)|(?:^| )([Cc]lip|(?:^| )([Rr]ing|(?:^| )([Ee]arings|(?:^| )([Pp]endant|(?:^| )([Bb]raclet|(?:^| )([Bb]rooches?|(?:^| )([Bb]ands?|(?:^| )(" \
+                 "(?:^| )([Ss]carves)|(?:^| )([Gg]loves?)|(?:^| )([Tt]ies?)|(?:^| )([Ss]ocks)|(?:^| )([T|t]ote)|(?:^| )([Pp]ocket [Ss]quare)|(?:^| )([Cc]ap)|(?:^| )([Cc]hoker)|(?:^| )([Bb]eanie)"
+}
+
+TAG_DICT = {
+    "active": "([Ww]orking out)|([Tt]raining)|([Pp]ractice)|([Ss]port)|([Ww]orkouts?)|([Ss]weat(?!pants?))|([Rr]un(?:ning)?)"
 }
 
 INVALID_REGEX = "[Gg]ift [Cc]ard"
 
-URL = "https://api.peachsconemarket.com"
-JWT = ""
-
-PROXY = {
-    "http":f"http://customer-{os.getenv('PROXY_USERNAME')}:{os.getenv('PROXY_PASSWORD')}@us-pr.oxylabs.io:10000",
-    "https":f"http://customer-{os.getenv('PROXY_USERNAME')}:{os.getenv('PROXY_PASSWORD')}@us-pr.oxylabs.io:10000"
-}
-PROXY_ACTIVE=False
-
-def getProxies():
-    if PROXY_ACTIVE:
-        return PROXY
-    else:
-        return None
-
+# File Builder Tools
 def cdFile(file: str) -> None:
     abspath = os.path.abspath(file)
     directoryName = os.path.dirname(abspath)
@@ -65,8 +69,9 @@ def cdFile(file: str) -> None:
 def pwd() -> str:
     return os.getcwd()
 
-def printMessage(message: str) -> None:
-    print(datetime.datetime.now().strftime("%H:%M:%S") + ": " + message)
+#Networking tools
+def getProxies():
+    return properties.PROXY
 
 def getHeaders(useReferer=False) -> dict[str, str]:
     headers = {"Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
@@ -84,10 +89,7 @@ def getHeaders(useReferer=False) -> dict[str, str]:
         headers["Referer"] = random.choice(REFERER)
     return headers
 
-def cleanString(string: str):
-    string = string.strip("\n").replace("\xa0", " ").strip()
-    return string
-
+#Data Scraping
 def getGender(string: str):
     string = cleanString(string).lower()
 
@@ -108,30 +110,22 @@ def getGender(string: str):
 
     return "other"
 
-def getCLOTHING_DICT():
-    re = ""
-    for s in CLOTHING_DICT.values():
-        re += s + "|"
-    re = re[:len(re) - 1]
-    return re
-
 def getType(string: str):
     string = cleanString(string).lower()
 
     if re.search(INVALID_REGEX, string):
         return "invalid"
     
-    reIter = re.finditer(getCLOTHING_DICT(), string)
-    if len(tuple(reIter)) > 0:
-        listString = string.split(" ")
-        listString.reverse()
-        for p in re.finditer(getCLOTHING_DICT(),' '.join(listString)):
-            for i in CLOTHING_DICT:
-                if re.search(CLOTHING_DICT[i], p.group()):
-                    return i
+    listString = string.split(" ")
+    listString.reverse()
+    for p in re.finditer(getCLOTHING_DICT(), ' '.join(listString)):
+        for i in CLOTHING_DICT:
+            if re.search(CLOTHING_DICT[i], p.group()):
+                return i
 
     return "other"
 
+#TODO: Beginning descriptors
 def removeDescriptors(string: str)->str:
     #Removes any parenthesis
     parentheisMatch = re.search("\(.+\)", string)
@@ -144,119 +138,13 @@ def removeDescriptors(string: str)->str:
 
     return stringLibrary.capwords(string, " ")
 
-class Clothing:
-    def __init__(self, name: str, imageUrl: list[str], productUrl: str, storeId: int, type: str, gender: str):
-        self.name = name
-        self.imageUrl = imageUrl
-        self.productUrl = productUrl
-        self.storeId = storeId
-        self.type = type
-        self.gender = gender
-
-    def toDict(self):
-        jsonObj = {
-            "name": self.name,
-            "imageUrl": self.imageUrl,
-            "productUrl": self.productUrl,
-            "storeId": str(self.storeId),
-            "type": self.type,
-            "gender": self.gender
-        }
-
-        return jsonObj
-
-    def toString(self):
-        return str(self.toDict())
-
-    def createClothing(self):
-        header = {
-            "Authorization": "Bearer " + JWT,
-            "Content-Type": "application/json"
-        }
-
-        r = requests.post(URL + "/scraper/clothing", headers=header, json=self.toDict())
-        try:
-            return r.json()["id"]
-        except KeyError:
-            print("Could not create clothing: " + str(r))
-            return None
-    
-    @staticmethod
-    def checkClothing(url):
-        header = {
-            "Authorization": "Bearer " + JWT
-        }
-
-        r = requests.get(URL + "/scraper/checkClothing?url=" + url, headers=header)
-
-        if r.status_code == 200 and "{}" not in r.json():
-            try:
-                if r.json()["id"]:
-                    return True
-            except KeyError:
-                return False
-        return False
-    
-class Store:
-    def __init__(self, name: str, url: str):
-        self.name = name
-        self.url = url
-        self.id = -1
-
-    def toDict(self):
-        jsonObj = {
-            "name": self.name,
-            "url": self.url
-        }
-
-        return jsonObj
-
-    def toString(self):
-        return str(self.toDict())
-
-    def createStore(self):
-        headers = {
-            "Authorization": "Bearer " + JWT,
-            "Content-Type": "application/json"
-        }
-
-        r = requests.post(url=URL + "/scraper/store", headers=headers, json=self.toDict())
-        try:
-            self.id = r.json()["id"]
-            return 
-        except KeyError:
-            print("Could not create store: " + r)
-            exit()
-
-#Parses Json Structure
-def getJsonRoute(routeList:list, level: int, jsonObj: dict):
-    returnList = []
-
-    if len(routeList) - 1 == level:
-        return jsonObj[routeList[level]]
-
-    if (routeList[level] == "*"):
-        for i in range(len(jsonObj)):
-            print(jsonObj[i])
-            returnList.append(getJsonRoute(routeList, level + 1, jsonObj[i]))
-    else:
-        returnList.append(getJsonRoute(routeList, level + 1, jsonObj[routeList[level]]))
-
-    if len(returnList) == 1:
-        return returnList[0]
-    return returnList
-
 def getApiUrl(baseUrl: str, productUrl: str, apiUrl: str) -> str:
     #Removes base url from productUrl
     route = productUrl[len(baseUrl):]
-
-    #If parameters removes from route
-    parametersMatch = re.search("{parameters}", apiUrl)
-    if parametersMatch:
-        parameters = re.search(r"\?.+$", route)
-        if parameters:
-            route = route[:len(route) - len(parameters.group())]
-            apiUrl = apiUrl[:parametersMatch.start()] + parameters.group() + apiUrl[parametersMatch.end():]
+    parameters = re.search(r"\?.+$", route)
+    if parameters:
+        route = route[:len(route) - len(parameters.group())]
+        parameters = parameters.group(0)
 
     baseMatch = re.search("{baseUrl}", apiUrl)
     if baseMatch:
@@ -272,4 +160,56 @@ def getApiUrl(baseUrl: str, productUrl: str, apiUrl: str) -> str:
         printMessage("JSON Error! No {route} in apiUrlEncoding.")
         exit()
 
+    parametersMatch = re.search("{parameters}", apiUrl)
+    if parametersMatch:
+        apiUrl = apiUrl[:parametersMatch.start()] + parameters + apiUrl[parametersMatch.end():]
+
     return apiUrl
+
+def getJsonRoute(route: str, urlParameters:Dict[str, str])->str:
+    for i in re.finditer("(?:{param:)(.+?)(?:})", route):
+        try:
+            route = route[:i.start()] + urlParameters[i.group(1)] + route[i.end():]
+        except:
+            printMessage("No URL parameter {0}.".format(i.group(1)))
+    return route
+
+#Parses Json Structure
+def parseJson(routeList: List[str], jsonObj):
+    if len(routeList) == 0:
+        return jsonObj
+    
+    currentRoute: str = routeList.pop(0)
+
+    #Checks for condition
+    conditionSearch: re.Match = re.search("\[.+\]", currentRoute)
+    if conditionSearch:
+        condition = currentRoute[conditionSearch.start()+1:conditionSearch.end()-1]
+        try:
+            operator = Relation(re.search("(>=|>|=|!=|<|<=)",condition).group(1))
+            key, value = condition.strip().split(operator.value)
+            currentRoute = currentRoute[:conditionSearch.start()]
+            for i in jsonObj[currentRoute]:
+                if operator.compute(str(i[key]), str(value)):
+                    return parseJson(routeList, i)
+        except:
+            printMessage("Invalid JSON route: {0}".format(currentRoute))
+            exit()
+            
+    #No condition
+    return parseJson(routeList, jsonObj[currentRoute])
+
+#Misc
+def printMessage(message: str) -> None:
+    print(datetime.datetime.now().strftime("%H:%M:%S") + ": " + message)
+
+def cleanString(string: str):
+    string = string.strip("\n").replace("\xa0", " ").strip()
+    return string
+
+def getCLOTHING_DICT():
+    re = ""
+    for s in CLOTHING_DICT.values():
+        re += s + "|"
+    re = re[:len(re) - 1]
+    return re

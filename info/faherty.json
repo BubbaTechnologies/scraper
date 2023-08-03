@@ -1,0 +1,29 @@
+{
+    "name": "Faherty",
+    "url": "https://fahertybrand.com",
+    "catalogPageInformation": {
+        "regex": [
+            "/collections/(?!products).+"
+        ],
+        "api": {
+            "urlEncoding": "https://44sx5s.a.searchspring.io/api/search/search.json?resultsFormat=native&siteId=44sx5s&bgfilter.collection_handle={pageName}",
+            "productRoute": "results"
+        }
+    },
+    "productPageInformation": {
+        "regex": [
+            "/products/.+"
+        ],
+        "api": {
+            "apiUrlEncoding": "{baseUrl}{route}.js",
+            "nameRoute": "title",
+            "imageRoute": "images",
+            "featuredImageRoute": "featured_image",
+            "genderRoute": "type",
+            "clothingDescription": {
+                "route": "description",
+                "regex": null
+            }
+        }
+    }
+}
