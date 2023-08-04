@@ -16,15 +16,11 @@ def getTagRegex()->List[str]:
     regex = {}
     if input("Use default clothing tag regex? (Yes/No) ").lower() == "no":
         print("Please see README.md tags section for information about formatting.")
-        while True:
-            inputKey = input("Clothing Tag (Press Enter to Quit): ")
-            if inputKey == "":
-                break
-            regex[inputKey] = []
-            for i in range(int(input(f"Regex count for {inputKey}: "))):
-                regex[inputKey].append(input(f"{inputKey} Regex " + str(i + 1) + ": "))
+        for i in scrapertools.TAG_DICT.keys():
+            regex[i] = []
+            for i in range(int(input(f"Regex count for {i}: "))):
+                regex[i].append(input(f"{i} Regex " + str(i + 1) + ": "))
         return regex
-    
 
 def main():
     try:
@@ -72,8 +68,8 @@ def main():
             data[productInfromationKey]["api"]["apiUrlEncoding"] = input("API Url Encoding: ")
             data[productInfromationKey]["api"]["nameRoute"] = input("Name Route: ")
             data[productInfromationKey]["api"]["imageRoute"] = input("Image Route: ")
-            if input("Is there a featured image? (Yes/No) ").lower() == "yes":
-                data[productInfromationKey]["api"]["featuredImageRoute"] = input("Featured Image Route: ")
+            # if input("Is there a featured image? (Yes/No) ").lower() == "yes":
+            #     data[productInfromationKey]["api"]["featuredImageRoute"] = input("Featured Image Route: ")
 
             if input("Is there a specific gender? (Yes/No) ").lower() == "yes":
                 data[productInfromationKey]["api"]["gender"] = checkGender(input("Gender: (Male/Female/Boy/Girl) ").lower())

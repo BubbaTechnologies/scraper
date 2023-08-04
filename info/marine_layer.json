@@ -1,1 +1,27 @@
-{"name": "Marine Layer", "url": "https://www.marinelayer.com", "loadJavascript": true, "catalogPageInformation": {"regex": ["/collections/[a-z0-9A-Z-]+$"], "api": null}, "productPageInformation": {"regex": ["/collections/[a-z0-9A-Z-]+/products/.+"], "api": {"apiUrlEncoding": "{baseUrl}{route}.js", "nameRoute": "title", "imageRoute": "images", "featuredImageRoute": "featured_image", "genderRoute": "type", "clothingDescription": {"route": "description", "regex": null}}}}
+{
+    "name": "Marine Layer",
+    "url": "https://www.marinelayer.com",
+    "loadJavascript": true,
+    "catalogPageInformation": {
+        "regex": [
+            "/collections/[a-z0-9A-Z-]+$"
+        ],
+        "api": null
+    },
+    "productPageInformation": {
+        "regex": [
+            "/collections/[a-z0-9A-Z-]+/products/.+"
+        ],
+        "api": {
+            "apiUrlEncoding": "{baseUrl}{route}.js",
+            "nameRoute": "title",
+            "imageRoute": "images",
+            "featuredImageRoute": "featured_image",
+            "genderRoute": "type",
+            "clothingDescription": {
+                "route": "description",
+                "regex": null
+            }
+        }
+    }
+}

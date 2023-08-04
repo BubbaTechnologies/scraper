@@ -4,6 +4,7 @@ import os
 SCRAPER_TIMEOUT_SECONDS = 30
 SLEEP_FLOOR_SECONDS = 2
 SLEEP_CEIL_SECONDS = 10
+IMAGE_WIDTH_PIXELS = 750
 
 #API Settings
 API_URL = "https://api.peachsconemarket.com"

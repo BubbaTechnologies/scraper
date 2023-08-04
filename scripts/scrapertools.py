@@ -125,20 +125,44 @@ def getType(string: str):
 
     return "other"
 
-#TODO: Beginning descriptors
+
+def getTags(string: str, customRegex: Dict[str,List[str]] = None)->List[str]:
+    string = cleanString(string).lower()
+
+    regexDict = TAG_DICT
+    if customRegex:
+        regexDict = customRegex
+
+    tags = []
+    for p in re.finditer(getTagRegex(regexDict), string):
+        for i in regexDict:
+            if re.search(regexDict[i], p.group()):
+                tags.append(i)
+    return tags
+
 def removeDescriptors(string: str)->str:
     #Removes any parenthesis
     parentheisMatch = re.search("\(.+\)", string)
     if parentheisMatch:
         string = string[:parentheisMatch.start()] + string[parentheisMatch.end():]
 
-    descriptorMatch = re.search("( - | \| |\*).+", string)
+    #TODO: Beginning Descriptors
+    descriptorMatch = re.search("( \| |\*).+", string)
     if descriptorMatch:
         string = string[:descriptorMatch.start()] + string[descriptorMatch.end():]
 
     return stringLibrary.capwords(string, " ")
 
-def getApiUrl(baseUrl: str, productUrl: str, apiUrl: str) -> str:
+def getCatalogApiUrl(url: str, regexList: List[str], urlEncoding: str):
+    try:
+        for i in re.finditer("{regex\[([0-9]+)\]\[([0-9]+)\]}", urlEncoding):
+            replacement = re.search(regexList[int(i.group(1))], url).group(int(i.group(2)))
+            urlEncoding = urlEncoding[:i.start()] + replacement + urlEncoding[i.end():]
+        return urlEncoding
+    except Exception as e:
+        printMessage("Invalid catalog API url encoding. Exception: " + e)
+
+def getProductApiUrl(baseUrl: str, productUrl: str, apiUrl: str) -> str:
     #Removes base url from productUrl
     route = productUrl[len(baseUrl):]
     parameters = re.search(r"\?.+$", route)
@@ -175,29 +199,36 @@ def getJsonRoute(route: str, urlParameters:Dict[str, str])->str:
     return route
 
 #Parses Json Structure
-def parseJson(routeList: List[str], jsonObj):
+def parseJson(routeList: List[str], jsonObj)->List:
     if len(routeList) == 0:
         return jsonObj
     
-    currentRoute: str = routeList.pop(0)
-
+    currentRoute: str = routeList[0]
+    returnList = []
     #Checks for condition
-    conditionSearch: re.Match = re.search("\[.+\]", currentRoute)
-    if conditionSearch:
-        condition = currentRoute[conditionSearch.start()+1:conditionSearch.end()-1]
+    condition: re.Match = re.search("\[(.+)(=|!=|<=|<|>|>=)(.+)\]", currentRoute)
+    if condition:
         try:
-            operator = Relation(re.search("(>=|>|=|!=|<|<=)",condition).group(1))
-            key, value = condition.strip().split(operator.value)
-            currentRoute = currentRoute[:conditionSearch.start()]
+            operator = Relation(condition.group(2))
+            key, value = (condition.group(1), condition.group(3))
+            currentRoute = currentRoute[:condition.start()]
             for i in jsonObj[currentRoute]:
                 if operator.compute(str(i[key]), str(value)):
-                    return parseJson(routeList, i)
+                    returnList.append(parseJson(routeList[1:], i))
         except:
             printMessage("Invalid JSON route: {0}".format(currentRoute))
             exit()
-            
+
+    #Checks for all operator
+    operator: re.Match = re.search("\[(\*)\]", currentRoute)
+    if operator:
+        for i in jsonObj[currentRoute[:operator.start()]]:
+            returnList.append(parseJson(routeList[1:], i))
+        return returnList
+        
     #No condition
-    return parseJson(routeList, jsonObj[currentRoute])
+    returnList.append(parseJson(routeList[1:], jsonObj[currentRoute]))
+    return returnList
 
 #Misc
 def printMessage(message: str) -> None:
@@ -211,5 +242,12 @@ def getCLOTHING_DICT():
     re = ""
     for s in CLOTHING_DICT.values():
         re += s + "|"
-    re = re[:len(re) - 1]
+    re = re[:-1]
+    return re
+
+def getTagRegex(regexDict: Dict):
+    re = ""
+    for s in regexDict.values():
+        re += s + "|"
+    re = re[:-1]
     return re

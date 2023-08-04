@@ -49,14 +49,14 @@ class Relation(Enum):
                 return (a>=b)
 
 class Clothing:
-    def __init__(self, name: str, imageUrl: list[str], productUrl: str, storeId: int, type: str, gender: str):
+    def __init__(self, name: str, imageUrl: list[str], productUrl: str, type: str, gender: str, tags: list[str]):
         self.name = name
         self.imageUrl = imageUrl
         self.productUrl = productUrl
-        self.storeId = storeId
+        self.storeId: int = None
         self.type = type
         self.gender = gender
-        self.tags = []
+        self.tags = tags
 
     def toDict(self):
         dictObj = {
