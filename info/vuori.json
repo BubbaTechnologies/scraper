@@ -1,1 +1,26 @@
-{"name": "Vuori", "url": "https://vuoriclothing.com", "catalogPageInformation": {"regex": ["/collections/(?!products).+"], "api": null}, "productPageInformation": {"regex": ["/products/.+"], "api": {"apiUrlEncoding": "{baseUrl}{route}.js", "nameRoute": "title", "imageRoute": "images", "featuredImageRoute": "featured_image", "genderRoute": "type", "clothingDescription": {"route": "description", "regex": null}}}}
+{
+    "name": "Vuori",
+    "url": "https://vuoriclothing.com",
+    "catalogPageInformation": {
+        "regex": [
+            "/collections/(?!products).+"
+        ],
+        "api": null
+    },
+    "productPageInformation": {
+        "regex": [
+            "/products/.+"
+        ],
+        "api": {
+            "apiUrlEncoding": "{baseUrl}{route}.js",
+            "nameRoute": "title",
+            "imageRoute": "images",
+            "featuredImageRoute": "featured_image",
+            "genderRoute": "type",
+            "clothingDescription": {
+                "route": "description",
+                "regex": null
+            }
+        }
+    }
+}
