@@ -52,13 +52,13 @@ def scheduleJobs(totalGroups:int):
                     groupNumber = robinCounter
                     robinCounter = (robinCounter + 1) % totalGroups
                 job = cron.new(command="cd /home/mgroholski/scraper && SHELL=/bin/bash && echo {0} | bash /home/mgroholski/scraper/scripts/run.sh".format(groupNumber))
-                job.day.on(i)
+                job.dow.on(i)
                 job.minute.on(0)
                 job.hour.on(j * 2)
 
                 #Schedules clean up
                 job = cron.new(command="cd /home/mgroholski/scraper && SHELL=/bin/bash && bash /home/mgroholski/scraper/scripts/shutdown.py".format(groupNumber))
-                job.day.on(i)
+                job.dow.on(i)
                 job.minute.on(58)
                 job.hour.on(2 * j + 1)
 
