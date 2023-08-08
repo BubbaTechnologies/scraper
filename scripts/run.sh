@@ -3,8 +3,9 @@
 DATE=$(date -d '2 hours ago' "+%Y-%m-%d-%H")
 read GROUP
 
-#Loads enviorment variables
+#Loads enviorment 
 bash ./scripts/login.sh
+source ./.venv/bin/activate
 
 for i in ./info/group$GROUP/*
 do
