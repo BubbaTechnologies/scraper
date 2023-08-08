@@ -5,7 +5,7 @@ from typing import List
 
 import datetime
 import os
-import re2 as re
+import re
 import random
 import string as stringLibrary
 import properties
@@ -28,29 +28,29 @@ REFERER = ["https://www.google.com","https://search.yahoo.com","https://www.bing
 CLOTHING_DICT = {
     "shirt":"(?:^|[- ])([Ss]hirts?)|(?:^| )(Jersey)|(?:^| )([Tt]ees?)|(?:(^| )([Pp]olo))|(?:^| )([Cc]rew (?:[Nn]eck)?)|(?:^| )([Vv]-[Nn]eck)",
     "top":"(?:^| )([Tt]ops?)|(?:^| )([Cc]ami)|(?:^| )([Cc]orset)|(?:^| )([Bb]odysuit)",
-    "long sleeve":"(?:^| )([Ff]lannel)|(?:^| )([Tt]urtleneck)|(?:^| )([Hh]enley)|(?:^|\s)([Bb]utton(?:-|\s)[Dd]own)|(?^| )([Ll]ong [Ss]leeve)|(?:^| )([Ww]affle [Kk]nit)",
+    "long sleeve":"(?:^| )([Ff]lannel)|(?:^| )([Tt]urtleneck)|(?:^| )([Hh]enley)|(?:^|\s)([Bb]utton(?:-|\s)[Dd]own)|(?:^| )([Ll]ong [Ss]leeve)|(?:^| )([Ww]affle [Kk]nit)",
     "sweatshirt":"(?:^| )([Hh]oodie)|(?:^| )([Ss]weatshirt)",
-    "tanks":"(?:^| )([Tt]anks? (?:[Tt]op))",
-    "bras":"(?:^| )([Bb]ra(?:lette)?)",
-    "dresses":"(?:^| )([Dd]ress)",
-    "jackets & vests":"((?:^| )[Cc]ardigan)|(?:^| )([Bb]lazer)|(?:^| )([Ss]weater)|(?:^| )([Vv]est)|(?:^| )([Pp]opover)|(?:^| )([Hh]alf[- ][Zz]ip)|(?:^| )([Ff]leece)"\
+    "tank":"(?:^| )([Tt]anks?(?: [Tt]op)?)",
+    "bra":"(?:^| )([Bb]ra(?:lette)?)",
+    "dress":"(?:^| )([Dd]ress)",
+    "jacket & vest":"((?:^| )[Cc]ardigan)|(?:^| )([Bb]lazer)|(?:^| )([Ss]weater)|(?:^| )([Vv]est)|(?:^| )([Pp]opover)|(?:^| )([Hh]alf[- ][Zz]ip)|(?:^| )([Ff]leece)"\
         "|(?:^| )([Jj]acket)|(?:^| )([Hh]oodie)|(?:^| )([Pp]ullover)|"\
-        "(?:^| )([Ss]hacket)|(?:^| )([Aa]norak)|(?:^| )([Pp]arka)|(?:^| )([Bb]omber)|(?:^| )([Cc]oat)|(?:^| )([Ss]weatshirt)|(?:^| )([Aa]norak)",
+        "(?:^| )([Ss]hacket)|(?:^| )([Aa]norak)|(?:^| )([Pp]arka)|(?:^| )([Bb]omber)|(?:^| )([Cc]oat)|(?:^| )([Ss]weatshirt)|(?:^| )([Aa]norak)|(?:^| )([Ww]ind [Bb]reaker)",
     "shorts":"(?:^| )([Ss]horts?)",
-    "jeans":"(?:^| )([Jj]eans)",
+    "jeans":"(?:^| )([Jj]eans?)",
     "leggings":"(?:^| )([Ll]eggings?)",
-    "rompers & jumpers":"(?:^| )([Jj]umper)|(?:^| )([Oo]nesie)|(?:^| )([Pp]laysuit)|(?:^| )([Rr]omper)|(?:^| )([Jj]umpsuit)",
+    "romper & jumper":"(?:^| )([Jj]umper)|(?:^| )([Oo]nesie)|(?:^| )([Pp]laysuit)|(?:^| )([Rr]omper)|(?:^| )([Jj]umpsuit)",
     "skirt":"(?:^| )([Ss]kirt)|(?:^| )([Ss]kort)",
     "pants":"(?:^| )([Pp]ants?)|(?:^| )([Tt]rousers?)|(?:^| )([Jj]oggers?)|(?:^| )([Ss]lacks)|(?:^| )([Cc]hinos?)|(?:^| )([Hh]igh[- ][Rr]ise)|(?:^| )([Ss]weatpants?)",
-    "sets":"(?:^| )([S|s]ets?)",
+    "set":"(?:^| )([S|s]ets?)",
     "sleepwear":"(?:^| )([Ss]leepwear)|(?:^| )([Pp]ajamas?)|(?:^| )([Nn]ightie)|(?:^| )([Rr]obe)",
     "swimwear":"(?:^| )([Ss]wim)|(?:^| )([Bb]ikini)|(?:^| )([Rr]ash(?: )?[Gg]uard)|(?:^| )([Ss]urf(?![- ]?[Bb]oard))|(?:^| )([Tt]runk[s]?)|(?:^| )([Ww]et(?:[Ss]uit)?)|(?:^| )([Oo]ne[- ][Pp]iece)",
     "shoes":"(?:^| )([Ss]hoes?)|(?:^| )([Ss]andals)|(?:^| )([Ss]lides)|(?:^| )([Bb]oots?)|(?:^| )([Ss]neakers?)|(?:^| )([Hh]eels?)|(?:^| )([Ss]tilettos?)|(?:^| )([Ff]latforms?)|(?:^| )([Ww]edges?)|(?:^| )([Pp]umps?)",
-    "suits & tuxedos":"(?:^| )([Ss]uit)|(?:^| )([Tt]uxedo)",
+    "suit & tuxedo":"(?:^| )([Ss]uit)|(?:^| )([Tt]uxedo)",
     "underclothing":"(?:^| )([Uu]nderwear)|(?:^| )([Bb]oxers?)|(?:^| )([Bb]riefs?)|(?:^| )([Tt]hong)|(?:^| )([Pp]ant(?:ies|y))|(?:^| )([Gg]arter)|(?:^| )([Bb]abydoll)|(?:^| )([Tt]edd(?:ies|y(?! ?[Bb]ear)))",
     "accessories":"(?:^| )([Tt]ights)|(?:^| )([Ss]tockings)|(?:^| )([Tt]high(?: )?[Hh]ighs?)|(?:^| )([Bb]ackpack)|(?:^| )([Pp]urse)|(?:^| )([Bb]ag)|(?:^| )([Bb]elt)|(?:^| )(" \
                  "[Pp]erfume)|(?:^| )([Cc]ologne)|(?:^| )([Hh]at)|(?:^| )([Gg]lasses)|(?:^| )([Ww]atch)|(?:^| )([Nn]ecklace)|(?:^| )([Ww]allet)|(?:^| )([Pp]in)|(?:^| )([Cc]uff(?:s|links))|" \
-                 "[Pp]ocket [Ss]quares)|(?:^| )([Cc]lip|(?:^| )([Rr]ing|(?:^| )([Ee]arings|(?:^| )([Pp]endant|(?:^| )([Bb]raclet|(?:^| )([Bb]rooches?|(?:^| )([Bb]ands?|(?:^| )(" \
+                 "(?:^| )([Pp]ocket [Ss]quares)|(?:^| )([Cc]lip)|(?:^| )([Rr]ing)|(?:^| )([Ee]arings)|(?:^| )([Pp]endant)|(?:^| )([Bb]raclet)|(?:^| )([Bb]rooches?)|(?:^| )([Bb]ands?)|" \
                  "(?:^| )([Ss]carves)|(?:^| )([Gg]loves?)|(?:^| )([Tt]ies?)|(?:^| )([Ss]ocks)|(?:^| )([T|t]ote)|(?:^| )([Pp]ocket [Ss]quare)|(?:^| )([Cc]ap)|(?:^| )([Cc]hoker)|(?:^| )([Bb]eanie)"
 }
 
@@ -126,19 +126,21 @@ def getType(string: str):
     return "other"
 
 
-def getTags(string: str, customRegex: Dict[str,List[str]] = None)->List[str]:
-    string = cleanString(string).lower()
+def getTags(strings: List[str], customRegex: Dict[str,List[str]] = None)->List[str]:
+    for i in range(len(strings)):
+        strings.insert(i, cleanString(strings.pop(i)).lower())
 
     regexDict = TAG_DICT
     if customRegex:
         regexDict = customRegex
 
-    tags = []
-    for p in re.finditer(getTagRegex(regexDict), string):
-        for i in regexDict:
-            if re.search(regexDict[i], p.group()):
-                tags.append(i)
-    return tags
+    tags = set()
+    for string in strings:
+        for p in re.finditer(getTagRegex(regexDict), string):
+            for i in regexDict:
+                if re.search(regexDict[i], p.group()):
+                    tags.add(i)
+    return list(tags)
 
 def removeDescriptors(string: str)->str:
     #Removes any parenthesis
@@ -147,7 +149,7 @@ def removeDescriptors(string: str)->str:
         string = string[:parentheisMatch.start()] + string[parentheisMatch.end():]
 
     #TODO: Beginning Descriptors
-    descriptorMatch = re.search("( \| |\*).+", string)
+    descriptorMatch = re.search("( - | \| |\*).+", string)
     if descriptorMatch:
         string = string[:descriptorMatch.start()] + string[descriptorMatch.end():]
 
@@ -160,7 +162,7 @@ def getCatalogApiUrl(url: str, regexList: List[str], urlEncoding: str):
             urlEncoding = urlEncoding[:i.start()] + replacement + urlEncoding[i.end():]
         return urlEncoding
     except Exception as e:
-        printMessage("Invalid catalog API url encoding. Exception: " + e)
+        printMessage("Invalid catalog API url encoding. Exception: " + str(e))
 
 def getProductApiUrl(baseUrl: str, productUrl: str, apiUrl: str) -> str:
     #Removes base url from productUrl
@@ -195,8 +197,10 @@ def getJsonRoute(route: str, urlParameters:Dict[str, str])->str:
         try:
             route = route[:i.start()] + urlParameters[i.group(1)] + route[i.end():]
         except:
-            printMessage("No URL parameter {0}.".format(i.group(1)))
-    return route
+            route = route[:i.start()] + "0" + route[i.end():]
+            printMessage("No URL parameter {0} replacing with zero index.".format(i.group(1)))
+
+    return route.split("/")
 
 #Parses Json Structure
 def parseJson(routeList: List[str], jsonObj)->List:
@@ -214,20 +218,46 @@ def parseJson(routeList: List[str], jsonObj)->List:
             currentRoute = currentRoute[:condition.start()]
             for i in jsonObj[currentRoute]:
                 if operator.compute(str(i[key]), str(value)):
-                    returnList.append(parseJson(routeList[1:], i))
+                    data = parseJson(routeList[1:], i)
+                    if type(data) == list:
+                        returnList += data
+                    else:
+                        returnList.append(data)
         except:
             printMessage("Invalid JSON route: {0}".format(currentRoute))
             exit()
+
+    #Checks for number index
+    index: re.Match = re.search("(?:\[)([0-9]+)(?:\])", currentRoute)
+    if index:
+        currentRoute = currentRoute[:index.start()]  
+        index = int(index.group(1))
+        data = parseJson(routeList[1:], jsonObj[currentRoute][index])
+        if type(data) == list:
+            returnList += data
+        else:
+            returnList.append(data)
+        return returnList
+
 
     #Checks for all operator
     operator: re.Match = re.search("\[(\*)\]", currentRoute)
     if operator:
         for i in jsonObj[currentRoute[:operator.start()]]:
-            returnList.append(parseJson(routeList[1:], i))
+            data = parseJson(routeList[1:], i)
+            if type(data) == list:
+                returnList += data
+            else:
+                returnList.append(data)
         return returnList
         
     #No condition
-    returnList.append(parseJson(routeList[1:], jsonObj[currentRoute]))
+    data = parseJson(routeList[1:], jsonObj[currentRoute])
+    if type(data) == list:
+        returnList = data
+    else:
+        returnList.append(data)
+
     return returnList
 
 #Misc
@@ -251,3 +281,13 @@ def getTagRegex(regexDict: Dict):
         re += s + "|"
     re = re[:-1]
     return re
+
+def getUrlParameters(url:str)->Dict:
+    params = re.search("(?:\?)(.+)&", url)
+    paramDict = {}
+    if params:
+        params = params.group(1)
+        for param in params.split("&"):
+            key, value = param.split("=")
+            paramDict[key] = value
+    return paramDict

@@ -2,7 +2,7 @@
 #July 22nd, 2023
 
 from bs4 import BeautifulSoup
-from typing import List, Dict, Union
+from typing import List, Dict
 
 import scrapertools
 import requests_html, requests, json, asyncio
@@ -28,20 +28,22 @@ async def createLink(route: str, baseUrl: str) -> str:
     return route
 
 async def parseApiForLinks(info:Dict, url: str):
+    parameterDict = scrapertools.getUrlParameters(url)
     apiUrl = scrapertools.getCatalogApiUrl(url, info["regex"], info["api"]["urlEncoding"])
     response = requests.get(apiUrl)
     if response.status_code == 200:
         responseAsJson = json.loads(response.text)
-        return scrapertools.parseJson(info["api"]["productRoute"].split("/"), responseAsJson)
+        return scrapertools.parseJson(scrapertools.getJsonRoute(info["api"]["productRoute"], parameterDict), responseAsJson)
     raise Exception("Recieved {0} from {1}.".format(response.status_code, apiUrl))
 
 async def parseApiForClothing(info: Dict, url: str, baseUrl: str) -> classes.Clothing:
+    parameterDict = scrapertools.getUrlParameters(url)
     apiUrl = scrapertools.getProductApiUrl(baseUrl, url, info["api"]["apiUrlEncoding"])
     response = requests.get(apiUrl)
     if response.status_code == 200:
         responseAsJson = json.loads(response.text)
-        name = scrapertools.removeDescriptors(scrapertools.parseJson(info["api"]["nameRoute"].split("/"), responseAsJson))
-        imageUrl = scrapertools.parseJson(info["api"]["images"].split("/"), responseAsJson)
+        name = scrapertools.removeDescriptors(scrapertools.parseJson(scrapertools.getJsonRoute(info["api"]["nameRoute"], parameterDict), responseAsJson)[0])
+        imageUrl = scrapertools.parseJson(scrapertools.getJsonRoute(info["api"]["imageRoute"], parameterDict), responseAsJson)
         for i in range(len(imageUrl)):
             if "//" == imageUrl[i][:2]:
                 imageUrl[i] = "https://" + imageUrl[i][2:]
@@ -50,17 +52,14 @@ async def parseApiForClothing(info: Dict, url: str, baseUrl: str) -> classes.Clo
         if "gender" in info["api"].keys():
             gender = info["api"]["gender"]
         else:
-            tags:Union[str, List[str]] = scrapertools.parseJson(info["api"]["genderRoute"].split("/"), responseAsJson)
-            if type(tags) == list:
-                for tag in tags:
-                    gender = scrapertools.getGender(tag)
-                    if gender != "other":
-                        break
-            else:
-                gender = scrapertools.getGender(tags)
+            tags:List[str] = scrapertools.parseJson(scrapertools.getJsonRoute(info["api"]["genderRoute"], parameterDict), responseAsJson)
+            for tag in tags:
+                gender = scrapertools.getGender(tag)
+                if gender != "other":
+                    break
         
-        description = scrapertools.parseJson(info["api"]["clothingDescription"]["route"].split("/"), responseAsJson)
-        tags = scrapertools.getTags(description, scrapertools.parseJson(info["api"]["clothingDescription"]["regex"].split("/"), responseAsJson))
+        description = scrapertools.parseJson(scrapertools.getJsonRoute(info["api"]["clothingDescription"]["route"], parameterDict), responseAsJson)
+        tags = scrapertools.getTags(description, info["api"]["clothingDescription"]["regex"])
         return classes.Clothing(name, imageUrl, url, type, gender, tags)
     raise Exception("Recieved {0} from {1}.".format(response.status_code, apiUrl))
 
@@ -105,21 +104,21 @@ async def parseHtmlForClothing(info: Dict, soup: str, url: str)-> classes.Clothi
     gender = scrapertools.getGender(gender)
 
     description = soup.find("div",{"class":info["identifiers"]["clothingDescription"]["divIdentifier"]}).find("p").text
-    return classes.Clothing(name, imageUrl, url, type, gender, scrapertools.getTags(description))
+    return classes.Clothing(name, imageUrl, url, type, gender, scrapertools.getTags([description]))
 
 async def main():
     #Logs into API
-    api = classes.Api()
+    # api = classes.Api()
 
     #Reads JSON information
     scrapingInfo = {}
-    filename = input("Filename: ")
+    filename = input("")
     with open(filename, "r") as jsonFile:
         scrapingInfo = json.loads(jsonFile.read())
 
     #Creates store
     store:classes.Store = classes.Store(scrapingInfo["name"], scrapingInfo["url"])
-    store.createStore(api.getJwt())
+    # store.createStore(api.getJwt())
 
     baseUrl = scrapingInfo["url"]
 
@@ -145,7 +144,7 @@ async def main():
 
             proxies = scrapertools.getProxies() if proxyActive else None
             headers = scrapertools.getHeaders()
-            response = requests_html.get(url, headers = headers, proxies=proxies)
+            response = await session.get(url, headers = headers, proxies=proxies)
             if "loadJavascript" in scrapingInfo.keys() and scrapingInfo["loadJavascript"]:
                 await response.html.arender(wait = 4, timeout=properties.SCRAPER_TIMEOUT_SECONDS)
             
@@ -172,29 +171,29 @@ async def main():
             soup = BeautifulSoup(response.text, "html.parser")
 
             results = []
-            if scrapingInfo["catalogPageInformation"]["api"]:
-                results.append(await parseApiForLinks(scrapingInfo["catalogPageInformation"], url))
+            if scrapingInfo["catalogPageInformation"]["api"] and re.search("|".join(scrapingInfo["catalogPageInformation"]["regex"]), url):
+                results += await parseApiForLinks(scrapingInfo["catalogPageInformation"], url)
             
-            results.append(await parseHtmlForLinks(scrapingInfo["catalogPageInformation"]["regex"] + scrapingInfo["productPageInformation"]["regex"], soup))
+            results += await parseHtmlForLinks(scrapingInfo["catalogPageInformation"]["regex"] + scrapingInfo["productPageInformation"]["regex"], soup)
             
             for link in results:
-                link = await createLink(link)
+                link = await createLink(link, baseUrl)
                 if link not in indexed:
-                    indexed.append(url)
-                    scrapertools.printMessage("Appending {0} to queue.".format(url))
-                    queue.append(url)
+                    indexed.append(link)
+                    scrapertools.printMessage("Appending {0} to queue.".format(link))
+                    queue.append(link)
                 else:
-                    scrapertools.printMessage("{0} indexed already.".format(url))
+                    scrapertools.printMessage("Indexed {0} already.".format(link))
             
             #If product url
             if re.search("|".join(scrapingInfo["productPageInformation"]["regex"]), url):
                 clothingResult: classes.Clothing = None
-                if scrapingInfo["productPageInformation"]["api"]:
-                    clothingResult = await parseApiForClothing()
+                if "api" in scrapingInfo["productPageInformation"].keys():
+                    clothingResult = await parseApiForClothing(scrapingInfo["productPageInformation"], url, baseUrl)
                 else:
-                    clothingResult = await parseHtmlForClothing()
+                    clothingResult = await parseHtmlForClothing(scrapingInfo["productPageInformation"], soup, url)
                 
-                if clothingResult.clothingType == "invalid":
+                if clothingResult.type == "invalid":
                     scrapertools.printMessage(f"Skipping {url} due to invalid type.")
                     continue
 
@@ -205,14 +204,19 @@ async def main():
                     width = re.search("(?:\?|&)(?:w|sw|wid)=([0-9]+)\&?", clothingResult.imageUrl[i])
                     if width:
                         clothingResult.imageUrl[i] = clothingResult.imageUrl[i][:width.start(1)] + str(properties.IMAGE_WIDTH_PIXELS) + clothingResult.imageUrl[i][width.end(1):]
-                    re.sub("(h=[0-9]+\&?)","", clothingResult.imageUrl[i])
-                
+                    clothingResult.imageUrl[i] = re.sub("(&h=[0-9]+$|h=[0-9]+\&)","", clothingResult.imageUrl[i])
+
+
+                scrapertools.printMessage("Created " + str(clothingResult))
+                # if clothingResult.createClothing(api.getJwt()):
+                #     scrapertools.printMessage("Created " + str(clothingResult))
+
             time.sleep(random.randint(2,10))
             if random.randint(0,1) == 1:           
                 await getMainPage(baseUrl, session)
         except Exception as e:
             traceback.print_exc()
-            print(e)
+            scrapertools.printMessage("Exception: " + str(e))
             pass
 
 

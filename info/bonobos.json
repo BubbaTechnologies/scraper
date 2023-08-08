@@ -3,13 +3,13 @@
     "url": "https://www.bonobos.com",
     "catalogPageInformation": {
         "regex": [
-            "/shop/.+"
+            "(?<!sign-in\\?redirect_to=)/shop/.+"
         ],
         "api": null
     },
     "productPageInformation": {
         "regex": [
-            "/products/[^&]+"
+            "(?<!sign-in\\?redirect_to=)/products/[^&]+"
         ],
         "identifiers": {
             "nameIdentifier": "summary_name__RYDzS",

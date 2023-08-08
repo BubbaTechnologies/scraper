@@ -7,7 +7,7 @@
         ],
         "api": {
             "urlEncoding": "https://44sx5s.a.searchspring.io/api/search/search.json?resultsFormat=native&siteId=44sx5s&bgfilter.collection_handle={regex[0][1]}",
-            "productRoute": "results/url"
+            "productRoute": "results[*]/url"
         }
     },
     "productPageInformation": {
