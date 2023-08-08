@@ -3,8 +3,9 @@
 
 import psutil
 import subprocess
+import re
 
 for process in psutil.process_iter():
-    if process.name().lower() == "python" or "chrom" in process.name():
-        subprocess.call(["kill", str([process.pid()])])
+    if re.search("([Pp]ython|[Cc]hrom)", process.name().lower()):
+        subprocess.call(["kill", str([process.pid])])
 

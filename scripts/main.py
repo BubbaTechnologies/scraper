@@ -107,14 +107,14 @@ async def parseHtmlForClothing(info: Dict, soup: str, url: str)-> classes.Clothi
     return classes.Clothing(name, imageUrl, url, type, gender, scrapertools.getTags([description]))
 
 async def main():
-    #Logs into API
-    api = classes.Api()
-
     #Reads JSON information
     scrapingInfo = {}
     filename = input("")
     with open(filename, "r") as jsonFile:
         scrapingInfo = json.loads(jsonFile.read())
+
+    #Logs into API
+    api = classes.Api()
 
     #Creates store
     store:classes.Store = classes.Store(scrapingInfo["name"], scrapingInfo["url"])
