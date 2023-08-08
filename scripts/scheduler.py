@@ -7,6 +7,8 @@ import properties
 import os
 import subprocess
 import re2 as re
+import math
+import random
 
 def mvFilesFromSubdirectories(path: str, moveDirectory: str):
     dirList = [f.path for f in os.scandir(path) if f.is_dir()]
@@ -22,8 +24,38 @@ def calculateRating(file)->float:
     queueCount = len(re.findall(" to queue", text))
     return clothingCreatedCount/queueCount
 
-def scheduleJobs(totalGroups:int, route:str):
-    pass
+def getGroupNumber(chance: float)->int:
+    return math.floor(math.log(chance, 1 - properties.MAX_PERCENTAGE))
+
+def scheduleJobs(totalGroups:int):
+    with CronTab(user='mgroholski') as cron:
+        #Deletes all jobs
+        cron.remove_all()
+
+        #Schedules scheduler
+        schedulerJob = cron.new(command="cd /home/mgroholski/scraper && SHELL=/bin/bash && python3 /home/mgroholski/scraper/scripts/scheduler.py")
+        schedulerJob.dow.on("TUE")
+        schedulerJob.hour.on(23)
+        schedulerJob.minute.on(59)
+
+        robinCounter = 0
+        for i in range(0,7):
+            for j in range(0, 12):
+                randomChoice = random.uniform(0.0, 1.0)
+                groupNumber = getGroupNumber(randomChoice)
+                if groupNumber >= totalGroups:
+                    groupNumber = robinCounter
+                    robinCounter = (robinCounter + 1) % totalGroups
+                job = cron.new(command="cd /home/mgroholski/scraper && SHELL=/bin/bash && echo {0} | bash /home/mgroholski/scraper/scripts/run.sh".format(groupNumber))
+                job.day.on(i)
+                job.minute.on(0)
+                job.hour.on(j * 2)
+
+                #Schedules clean up
+                job = cron.new(command="cd /home/mgroholski/scraper && SHELL=/bin/bash && bash /home/mgroholski/scraper/scripts/shutdown.py".format(groupNumber))
+                job.day.on(i)
+                job.minute.on(58)
+                job.hour.on(2 * j + 1)
 
 def main():
     #Removes old groupings

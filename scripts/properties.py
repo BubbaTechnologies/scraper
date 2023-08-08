@@ -11,6 +11,7 @@ INFO_PATH = "./info"
 OUTPUT_PATH = "./output"
 PREVIOUS_OUTPUT_RATING = 5
 SCRAPER_GROUP_MAX_AMOUNT = 3
+MAX_PERCENTAGE = 1/3
 
 #API Settings
 API_URL = "https://api.peachsconemarket.com"
