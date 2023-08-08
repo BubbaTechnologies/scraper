@@ -9,7 +9,7 @@ source ./.venv/bin/activate
 
 for i in ./info/group$GROUP/*
 do
-    fileName=$(basename $i)
+    fileName=$(basename "$i")
     fileNameWithoutExtension="${fileName%.*}"
     $outputDirectory=./output/$fileNameWithoutExtension
     if [ ! -d "$directoutputDirectoryory" ]; then
