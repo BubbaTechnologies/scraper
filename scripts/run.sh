@@ -11,9 +11,9 @@ for i in ./info/group$GROUP/*
 do
     fileName=$(basename "$i")
     fileNameWithoutExtension="${fileName%.*}"
-    $outputDirectory=./output/$fileNameWithoutExtension
+    $outputDirectory="./output/$fileNameWithoutExtension"
     if [ ! -d "$directoutputDirectoryory" ]; then
-        mkdir -p $outputDirectory
+        mkdir -p "$outputDirectory"
     fi
     echo $i | nohup python3 ./scripts/main.py > $outputDirectory/$DATE.out
 done
