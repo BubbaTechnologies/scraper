@@ -1,21 +1,23 @@
 #!/bin/bash
 
+DIRECTORY="/home/mgroholski/scraper"
+
 DATE=$(date "+%Y-%m-%d-%H")
 read GROUP
 
 #Loads enviorment 
-bash ./scripts/login.sh
-source ./.venv/bin/activate
+bash $DIRECTORY/scripts/login.sh
+source $DIRECTORY/.venv/bin/activate
 
-for file in ./info/group$GROUP/*
+for file in $DIRECTORY/info/group$GROUP/*
 do
     fileName=$(basename $file)
     fileNameWithoutExtension="${fileName%.*}"
-    outputDirectory="./output/$fileNameWithoutExtension"
+    outputDirectory="$DIRECTORY/output/$fileNameWithoutExtension"
     if [ ! -d "$directoutputDirectoryory" ]; then
         mkdir -p "$outputDirectory"
     fi
-    echo $i | nohup python3 ./scripts/main.py > $outputDirectory/$DATE.out &
+    echo $i | nohup python3 $DIRECTORY/scripts/main.py > $outputDirectory/$DATE.out &
 done
 
 exit 0
