@@ -32,6 +32,11 @@ def scheduleJobs(totalGroups:int):
         #Deletes all jobs
         cron.remove_all()
 
+        #Schedules next git pull
+        pullJob = cron.new(command="cd /home/mgroholski/scraper && git pull https://github.com/BubbaTechnologies/scraper.git")
+        pullJob.hour.on(23)
+        pullJob.minute.on(55)
+
         #Schedules scheduler
         schedulerJob = cron.new(command="cd /home/mgroholski/scraper && SHELL=/bin/bash && python3 /home/mgroholski/scraper/scripts/scheduler.py")
         schedulerJob.dow.on("TUE")
