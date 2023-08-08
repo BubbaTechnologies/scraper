@@ -90,7 +90,7 @@ def main():
             subprocess.run(["mkdir","{0}/group{1}".format(properties.INFO_PATH, str(groupNumber))])
         subprocess.run(["mv","{0}/{1}.json".format(properties.INFO_PATH, ratings[i][0]),"{0}/group{1}".format(properties.INFO_PATH, str(groupNumber))])
     
-    scheduleJobs(groupNumber, properties.INFO_PATH)
+    scheduleJobs(groupNumber)
 
 if __name__=="__main__":
     main()
