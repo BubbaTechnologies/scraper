@@ -1,17 +1,17 @@
 #!/bin/bash
 
-DATE=$(date -d '2 hours ago' "+%Y-%m-%d-%H")
+DATE=$(date "+%Y-%m-%d-%H")
 read GROUP
 
 #Loads enviorment 
 bash ./scripts/login.sh
 source ./.venv/bin/activate
 
-for i in ./info/group$GROUP/*
+for file in ./info/group$GROUP/*
 do
-    fileName=$(basename "$i")
+    fileName=$(basename $file)
     fileNameWithoutExtension="${fileName%.*}"
-    $outputDirectory="./output/$fileNameWithoutExtension"
+    outputDirectory="./output/$fileNameWithoutExtension"
     if [ ! -d "$directoutputDirectoryory" ]; then
         mkdir -p "$outputDirectory"
     fi

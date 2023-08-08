@@ -51,7 +51,7 @@ def scheduleJobs(totalGroups:int):
                 if groupNumber >= totalGroups:
                     groupNumber = robinCounter
                     robinCounter = (robinCounter + 1) % totalGroups
-                job = cron.new(command="cd /home/mgroholski/scraper && SHELL=/bin/bash && echo {0} | bash /home/mgroholski/scraper/scripts/run.sh".format(groupNumber))
+                job = cron.new(command="cd /home/mgroholski/scraper && SHELL=/bin/bash && echo {0} | bash /home/mgroholski/scraper/scripts/run.sh".format(groupNumber + 1))
                 job.dow.on(i)
                 job.minute.on(0)
                 job.hour.on(j * 2)
