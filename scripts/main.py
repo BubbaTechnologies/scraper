@@ -108,7 +108,7 @@ async def parseHtmlForClothing(info: Dict, soup: str, url: str)-> classes.Clothi
 
 async def main():
     #Logs into API
-    # api = classes.Api()
+    api = classes.Api()
 
     #Reads JSON information
     scrapingInfo = {}
@@ -118,7 +118,7 @@ async def main():
 
     #Creates store
     store:classes.Store = classes.Store(scrapingInfo["name"], scrapingInfo["url"])
-    # store.createStore(api.getJwt())
+    store.createStore(api.getJwt())
 
     baseUrl = scrapingInfo["url"]
 
@@ -206,10 +206,8 @@ async def main():
                         clothingResult.imageUrl[i] = clothingResult.imageUrl[i][:width.start(1)] + str(properties.IMAGE_WIDTH_PIXELS) + clothingResult.imageUrl[i][width.end(1):]
                     clothingResult.imageUrl[i] = re.sub("(&h=[0-9]+$|h=[0-9]+\&)","", clothingResult.imageUrl[i])
 
-
-                scrapertools.printMessage("Created " + str(clothingResult))
-                # if clothingResult.createClothing(api.getJwt()):
-                #     scrapertools.printMessage("Created " + str(clothingResult))
+                if clothingResult.createClothing(api.getJwt()):
+                    scrapertools.printMessage("Created " + str(clothingResult))
 
             time.sleep(random.randint(2,10))
             if random.randint(0,1) == 1:           

@@ -55,7 +55,7 @@ def scheduleJobs(totalGroups:int):
                 job.dow.on(i)
                 job.minute.on(0)
                 job.hour.on(j * 2)
-                
+
         #Schedules clean up
         cleanUpJob = cron.new(command="cd /home/mgroholski/scraper && SHELL=/bin/bash && bash /home/mgroholski/scraper/scripts/shutdown.py".format(groupNumber))
         cleanUpJob.minute.on(58)
