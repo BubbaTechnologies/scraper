@@ -17,7 +17,7 @@ do
     if [ ! -d "$directoutputDirectoryory" ]; then
         mkdir -p "$outputDirectory"
     fi
-    echo $i | nohup python3 $DIRECTORY/scripts/main.py > $outputDirectory/$DATE.out &
+    echo $file | nohup python3 $DIRECTORY/scripts/main.py > $outputDirectory/$DATE.out &
 done
 
 exit 0
