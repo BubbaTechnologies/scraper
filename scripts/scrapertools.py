@@ -45,7 +45,7 @@ CLOTHING_DICT = {
     "set":"(?:^| )([S|s]ets?)",
     "sleepwear":"(?:^| )([Ss]leepwear)|(?:^| )([Pp]ajamas?)|(?:^| )([Nn]ightie)|(?:^| )([Rr]obe)",
     "swimwear":"(?:^| )([Ss]wim)|(?:^| )([Bb]ikini)|(?:^| )([Rr]ash(?: )?[Gg]uard)|(?:^| )([Ss]urf(?![- ]?[Bb]oard))|(?:^| )([Tt]runk[s]?)|(?:^| )([Ww]et(?:[Ss]uit)?)|(?:^| )([Oo]ne[- ][Pp]iece)",
-    "shoes":"(?:^| )([Ss]hoes?)|(?:^| )([Ss]andals)|(?:^| )([Ss]lides)|(?:^| )([Bb]oots?)|(?:^| )([Ss]neakers?)|(?:^| )([Hh]eels?)|(?:^| )([Ss]tilettos?)|(?:^| )([Ff]latforms?)|(?:^| )([Ww]edges?)|(?:^| )([Pp]umps?)",
+    "shoes":"(?:^| )([Ss]hoes?)|(?:^| )([Ss]andals?)|(?:^| )([Ss]lides)|(?:^| )([Bb]oots?)|(?:^| )([Ss]neakers?)|(?:^| )([Hh]eels?)|(?:^| )([Ss]tilettos?)|(?:^| )([Ff]latforms?)|(?:^| )([Ww]edges?)|(?:^| )([Pp]umps?)",
     "suit & tuxedo":"(?:^| )([Ss]uit)|(?:^| )([Tt]uxedo)",
     "underclothing":"(?:^| )([Uu]nderwear)|(?:^| )([Bb]oxers?)|(?:^| )([Bb]riefs?)|(?:^| )([Tt]hong)|(?:^| )([Pp]ant(?:ies|y))|(?:^| )([Gg]arter)|(?:^| )([Bb]abydoll)|(?:^| )([Tt]edd(?:ies|y(?! ?[Bb]ear)))",
     "accessories":"(?:^| )([Tt]ights)|(?:^| )([Ss]tockings)|(?:^| )([Tt]high(?: )?[Hh]ighs?)|(?:^| )([Bb]ackpack)|(?:^| )([Pp]urse)|(?:^| )([Bb]ag)|(?:^| )([Bb]elt)|(?:^| )(" \
