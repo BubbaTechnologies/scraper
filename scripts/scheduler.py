@@ -38,7 +38,7 @@ def scheduleJobs(totalGroups:int):
         pullJob.minute.on(55)
 
         #Schedules scheduler
-        schedulerJob = cron.new(command="cd /home/mgroholski/scraper && SHELL=/bin/bash && python3 /home/mgroholski/scraper/scripts/scheduler.py")
+        schedulerJob = cron.new(command="cd /home/mgroholski/scraper && source .venv/bin/activate && SHELL=/bin/bash && python3 /home/mgroholski/scraper/scripts/scheduler.py")
         schedulerJob.dow.on("TUE")
         schedulerJob.hour.on(23)
         schedulerJob.minute.on(59)
