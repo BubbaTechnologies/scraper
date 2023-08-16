@@ -6,7 +6,7 @@ DATE=$(date "+%Y-%m-%d-%H")
 read GROUP
 
 #Loads enviorment 
-bash $DIRECTORY/scripts/login.sh
+. $DIRECTORY/scripts/login.sh
 source $DIRECTORY/.venv/bin/activate
 
 for file in $DIRECTORY/info/group$GROUP/*
