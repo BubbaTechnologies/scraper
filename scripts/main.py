@@ -127,7 +127,6 @@ async def main():
     queue = [baseUrl]
     indexed = [baseUrl]
 
-
     nonAcceptCount = 0
 
     proxyActive = False
@@ -157,6 +156,7 @@ async def main():
                     if len(queue) == 0:
                         #Resets queue
                         queue = [baseUrl]
+                    scrapertools.printMessage("Turning on Proxy.")
                     proxyActive = True
                     nonAcceptCount = 0
                 elif nonAcceptCount > 10:
