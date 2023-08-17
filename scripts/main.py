@@ -42,7 +42,6 @@ async def parseApiForClothing(info: Dict, url: str, baseUrl: str) -> classes.Clo
     response = requests.get(apiUrl)
     if response.status_code == 200:
         responseAsJson = json.loads(response.text)
-        # name = scrapertools.removeDescriptors(scrapertools.parseJson(scrapertools.getJsonRoute(info["api"]["nameRoute"], parameterDict), responseAsJson)[0])
         name = scrapertools.parseJson(scrapertools.getJsonRoute(info["api"]["nameRoute"], parameterDict), responseAsJson)[0]
         imageUrl = scrapertools.parseJson(scrapertools.getJsonRoute(info["api"]["imageRoute"], parameterDict), responseAsJson)
         for i in range(len(imageUrl)):
@@ -76,7 +75,6 @@ async def parseHtmlForLinks(regex: List[str], soup: BeautifulSoup)->List[str]:
 
 async def parseHtmlForClothing(info: Dict, soup: str, url: str)-> classes.Clothing:
     #Gets product name
-    # name = scrapertools.removeDescriptors(soup.find("h1", {"class":info["identifiers"]["nameIdentifier"]}).text)
     name = soup.find("h1", {"class":info["identifiers"]["nameIdentifier"]}).text
     type = scrapertools.getType(name)
 
