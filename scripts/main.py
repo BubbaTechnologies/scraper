@@ -127,6 +127,7 @@ async def main():
     queue = [baseUrl]
     indexed = [baseUrl]
 
+
     nonAcceptCount = 0
 
     proxyActive = False
