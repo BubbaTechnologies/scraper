@@ -189,7 +189,7 @@ def getProductApiUrl(baseUrl: str, productUrl: str, apiUrl: str) -> str:
     parametersMatch = re.search("{parameters}", apiUrl)
     if parametersMatch and parameters:
         apiUrl = apiUrl[:parametersMatch.start()] + parameters + apiUrl[parametersMatch.end():]
-    elif not parameters:
+    elif parametersMatch and not parameters:
         apiUrl = apiUrl[:parametersMatch.start()] + apiUrl[parametersMatch.end():]
 
     return apiUrl
