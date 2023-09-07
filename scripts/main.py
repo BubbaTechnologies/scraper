@@ -130,13 +130,11 @@ async def main():
         scrapingInfo = json.loads(jsonFile.read())
 
     #Logs into API
-    #TODO: Remove comment
-    # api = classes.Api()
+    api = classes.Api()
 
     #Creates store
     store:classes.Store = classes.Store(scrapingInfo["name"], scrapingInfo["url"])
-    #TODO: Remove comment
-    #store.createStore(api.getJwt())
+    store.createStore(api.getJwt())
 
     baseUrl = scrapingInfo["url"]
 
@@ -236,10 +234,8 @@ async def main():
                         clothingResult.imageUrl[i] = clothingResult.imageUrl[i][:width.start(1)] + str(properties.IMAGE_WIDTH_PIXELS) + clothingResult.imageUrl[i][width.end(1):]
                     clothingResult.imageUrl[i] = re.sub("(&h=[0-9]+$|h=[0-9]+\&)","", clothingResult.imageUrl[i])
 
-                #TODO: Remove comment
-                # if clothingResult.createClothing(api.getJwt()):
-                #     scrapertools.printMessage("Created " + str(clothingResult))
-                scrapertools.printMessage("Created " + str(clothingResult))
+                if clothingResult.createClothing(api.getJwt()):
+                    scrapertools.printMessage("Created " + str(clothingResult))
 
             time.sleep(random.randint(2,10))
             if random.randint(0,1) == 1:           
