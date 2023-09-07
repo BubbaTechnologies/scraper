@@ -3,13 +3,16 @@
     "url": "https://vuoriclothing.com",
     "catalogPageInformation": {
         "regex": [
-            "/collections/(?!products).+"
+            "(/collections/(?!products).+)"
         ],
-        "api": null
+        "api": {
+            "urlEncoding": "https://vuoriclothing.com/{regex[0][1]}.oembed",
+            "productUrl":"https://vuoriclothing.com/products/{products[*]/product_id}"
+        }
     },
     "productPageInformation": {
         "regex": [
-            "/products/.+"
+            "/products/(?!giftcard).+"
         ],
         "api": {
             "apiUrlEncoding": "{baseUrl}{route}.js",

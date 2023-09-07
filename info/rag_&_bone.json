@@ -4,18 +4,18 @@
     "loadJavascript": true,
     "catalogPageInformation": {
         "regex": [
-            "(?:https?://(?:www\\.)?)rag-bone\\.com/(mens|womens)/(jeans|pants|shorts|tshirts|tops|dresses-skirts|sweaters|sweatshirts|blazers|coats-jackets|rompers-jumpsuits|shoes|new-arrivals|shop-icons|chinos|polos|accessories)/$"
+            "^((?:https?://(?:www\\.)?)rag-bone\\.com)?/(mens|womens)/(jeans|pants|shorts|tshirts|tops|dresses-skirts|sweaters|sweatshirts|blazers|coats-jackets|rompers-jumpsuits|shoes|new-arrivals|shop-icons|chinos|polos|accessories)/$"
         ],
         "api": null
     },
     "productPageInformation": {
         "regex": [
-            "(?:https?://(?:www\\.)?)rag-bone\\.com/(mens|womens)/(jeans|pants|shorts|tshirts|tops|dresses-skirts|sweaters|sweatshirts|blazers|coats-jackets|rompers-jumpsuits|shoes|new-arrivals|shop-icons|chinos|polos|accessories)/.+"
+            "^(?:https://www\\.rag-bone\\.com)?/(mens|womens)/(jeans|pants|shorts|tshirts|tops|dresses-skirts|sweaters|sweatshirts|blazers|coats-jackets|rompers-jumpsuits|shoes|new-arrivals|shop-icons|chinos|polos|accessories)/.+\\.html$"
         ],
         "identifiers": {
             "nameIdentifier": "b-product_details-name",
             "imageDivIdentifier": "b-product_gallery-main",
-            "breadcrumbsIdentifier": "b-breadcrumbs",
+            "breadcrumbsIdentifier": "Breadcrumbs",
             "clothingDescription": {
                 "divIdentifier": "b-pdp_user_content",
                 "regex": null

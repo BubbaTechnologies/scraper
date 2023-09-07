@@ -4,13 +4,17 @@
     "loadJavascript": true,
     "catalogPageInformation": {
         "regex": [
-            "/collections/[a-z0-9A-Z-]+$"
+            "^(https://wearebound\\.co\\.uk)?/collections/[a-z0-9A-Z-]+$"
         ],
-        "api": null
+        "api": {
+            "urlEncoding": "https://wearebound.co.uk/{regex[0][1]}.oembed",
+            "productUrl":"https://wearebound.co.uk/products/{products[*]/product_id}"
+        }
     },
     "productPageInformation": {
         "regex": [
-            "/collections/[a-z0-9A-Z-]+/products/.+"
+            "^(https://wearebound\\.co\\.uk)?/collections/[a-z0-9A-Z-]+/products/.+",
+            "^(https://wearebound\\.co\\.uk)?/products/.+"
         ],
         "api": {
             "apiUrlEncoding": "{baseUrl}{route}.js",

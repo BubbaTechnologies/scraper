@@ -21,10 +21,124 @@ Homepage URL for the store. (Ex: https://shop.lululemon.com)
 ###### Catalog API Encoding
 Input URL to get API information. Replace any category specific parameters with regex[x][y] where x is the regex expression index (zero indexed) and y is the group within the regex expression.
 
-###### Product Route
+###### Product Url
 **See section about JSON Parsing for route formatting.**
-Input route to find product URLs. 
+Input product url format with JSON Parsing in brackets where needed.
+Example:
+Product Url:
+```
+https://vuoriclothing.com/products/{products[*]/product-id}
+```
+Api Json Response:
+```
+{
+    "products": [
+        {
+            "product_id": "womens-third-eye-muscle-tank-black",
+            "title": "Third Eye Muscle Tank | Black",
+            "description": "\u003cspan\u003eGraphic with a muscle-tank fit, the women's Third Eye Muscle Tank features a simple eye graphic on the front with a classic cotton feel. Great for yoga, training, hiking and chilling.\u003c\/span\u003e",
+            "brand": "Vuori Clothing",
+            "offers": [
+                {
+                    "title": "Black \/ XS",
+                    "offer_id": 22963966476346,
+                    "sku": "VW937BLKXSM",
+                    "price": 22.0,
+                    "currency_code": "USD",
+                    "in_stock": false
+                },
+                {
+                    "title": "Black \/ S",
+                    "offer_id": 22963966509114,
+                    "sku": "VW937BLKSML",
+                    "price": 22.0,
+                    "currency_code": "USD",
+                    "in_stock": false
+                },
+                {
+                    "title": "Black \/ M",
+                    "offer_id": 22963966541882,
+                    "sku": "VW937BLKMED",
+                    "price": 22.0,
+                    "currency_code": "USD",
+                    "in_stock": false
+                },
+                {
+                    "title": "Black \/ L",
+                    "offer_id": 22963966574650,
+                    "sku": "VW937BLKLRG",
+                    "price": 22.0,
+                    "currency_code": "USD",
+                    "in_stock": false
+                },
+                {
+                    "title": "Black \/ XL",
+                    "offer_id": 22963966607418,
+                    "sku": "VW937BLKXLG",
+                    "price": 22.0,
+                    "currency_code": "USD",
+                    "in_stock": false
+                }
+            ],
+            "thumbnail_url": "\/\/cdn.shopify.com\/s\/files\/1\/0022\/4008\/6074\/products\/VW937BLK_1.jpg?v=1556580999"
+        },
+        {
+            "product_id": "womens-best-day-crop-white",
+            "title": "Best Day Crop | White",
+            "description": "\u003cspan\u003eGraphic with a cropped tank fit, the women's Best Day Crop features a sunset graphic on the front with a classic cotton feel. Great for yoga, training, hiking and chilling.\u003c\/span\u003e",
+            "brand": "Vuori Clothing",
+            "offers": [
+                {
+                    "title": "White \/ XS",
+                    "offer_id": 22963966640186,
+                    "sku": "VW936WHTXSM",
+                    "price": 14.0,
+                    "currency_code": "USD",
+                    "in_stock": false
+                },
+                {
+                    "title": "White \/ S",
+                    "offer_id": 22963966672954,
+                    "sku": "VW936WHTSML",
+                    "price": 14.0,
+                    "currency_code": "USD",
+                    "in_stock": false
+                },
+                {
+                    "title": "White \/ M",
+                    "offer_id": 22963966705722,
+                    "sku": "VW936WHTMED",
+                    "price": 14.0,
+                    "currency_code": "USD",
+                    "in_stock": false
+                },
+                {
+                    "title": "White \/ L",
+                    "offer_id": 22963966738490,
+                    "sku": "VW936WHTLRG",
+                    "price": 14.0,
+                    "currency_code": "USD",
+                    "in_stock": false
+                },
+                {
+                    "title": "White \/ XL",
+                    "offer_id": 22963966771258,
+                    "sku": "VW936WHTXLG",
+                    "price": 14.0,
+                    "currency_code": "USD",
+                    "in_stock": false
+                }
+            ],
+            "thumbnail_url": "\/\/cdn.shopify.com\/s\/files\/1\/0022\/4008\/6074\/products\/VW936WHT_new1.jpg?v=1556580829"
+        }
+    ]
+}
+```
 
+Result:
+```
+["https://vuoriclothing.com/products/womens-third-eye-muscle-tank-black","https://vuoriclothing.com/products/womens-best-day-crop-white"]
+```
 #### Product Page Information
 ##### Product Regex
 1. Enter the amount of unique product URL routes.

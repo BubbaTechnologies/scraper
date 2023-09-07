@@ -53,7 +53,8 @@ def main():
             data[catalogInformationKey]["api"] = {}
             print("See README.md for instructions on how to encode catalog page API url.")
             data[catalogInformationKey]["api"]["urlEncoding"] = input("Catalog API Url Encoding: ")
-            data[catalogInformationKey]["api"]["productRoute"] = input("Product Route: ")
+            print("See README.md for instructions on how to encode product url for catalog API's.")
+            data[catalogInformationKey]["api"]["productUrl"] = input("Product Url: ")
 
 
         productInfromationKey = "productPageInformation"

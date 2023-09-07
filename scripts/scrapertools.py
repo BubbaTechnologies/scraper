@@ -125,7 +125,6 @@ def getType(string: str):
 
     return "other"
 
-
 def getTags(strings: List[str], customRegex: Dict[str,List[str]] = None)->List[str]:
     for i in range(len(strings)):
         strings.insert(i, cleanString(strings.pop(i)).lower())
@@ -175,16 +174,10 @@ def getProductApiUrl(baseUrl: str, productUrl: str, apiUrl: str) -> str:
     baseMatch = re.search("{baseUrl}", apiUrl)
     if baseMatch:
         apiUrl = apiUrl[:baseMatch.start()] + baseUrl + apiUrl[baseMatch.end():]
-    else:
-        printMessage("JSON Error! No {baseUrl} in apiUrlEncoding.")
-        exit()
 
     routeMatch = re.search("{route}", apiUrl)
     if routeMatch:
         apiUrl = apiUrl[:routeMatch.start()] + route + apiUrl[routeMatch.end():]
-    else:
-        printMessage("JSON Error! No {route} in apiUrlEncoding.")
-        exit()
 
     parametersMatch = re.search("{parameters}", apiUrl)
     if parametersMatch and parameters:
@@ -194,13 +187,46 @@ def getProductApiUrl(baseUrl: str, productUrl: str, apiUrl: str) -> str:
 
     return apiUrl
 
+def cleanUrl(url: str):
+    urlRe = re.match("[^#]+", url)
+    if urlRe:
+        return urlRe.group(0)
+    return url
+
+#Returns the product url information for Catalog API. 
+#Returns a tuple of strings with the following format: (productUrl, jsonRoute)
+def getProductUrlInformation(encoding: str)->tuple[str, str]:
+    #Gets jsonRoute; defaults variable to entire encoding
+    jsonRoute = encoding
+    productUrl = ""
+    jsonRouteSearch = re.search("{(.+?)}", encoding)
+    if jsonRouteSearch:
+        jsonRoute = encoding[jsonRouteSearch.start(1):jsonRouteSearch.end(1)]
+        productUrl = encoding[:jsonRouteSearch.start()] + '{data}' + encoding[jsonRouteSearch.end():]
+    return (productUrl, jsonRoute)
+
+#Creates Url
+#Searches for {data} and inserts data as replacement
+def buildUrl(urlEncoding: str, data: str)->str:
+    return urlEncoding.replace("{data}", data)
+
+#Creates jsonRoute with parameters
 def getJsonRoute(route: str, urlParameters:Dict[str, str])->str:
     for i in re.finditer("(?:{param:)(.+?)(?:})", route):
         try:
             route = route[:i.start()] + urlParameters[i.group(1)] + route[i.end():]
         except:
-            route = route[:i.start()] + "0" + route[i.end():]
-            printMessage("No URL parameter {0} replacing with zero index.".format(i.group(1)))
+            openingPosition = 0
+            closingPosition = i.end()
+
+            #Finds first [ before closingPosition
+            for j in range(closingPosition, 0, -1):
+                if route[j] == '[':
+                    openingPosition = j + 1
+                    break
+
+            route = route[:openingPosition] + "0" + route[closingPosition:]
+            printMessage("No URL parameter \"{0}\" replacing with index zero.".format(i.group(1)))
 
     return route.split("/")
 
@@ -267,8 +293,15 @@ def printMessage(message: str) -> None:
     print(datetime.datetime.now().strftime("%H:%M:%S") + ": " + message)
 
 def cleanString(string: str):
-    string = string.strip("\n").replace("\xa0", " ").strip()
-    return string
+    strings = string.strip().strip("\n").split("\n")
+    for i in range(len(strings)):
+        newString = strings[i].strip("\n").replace("\xa0", " ").strip()
+        #Removes any HTML tags
+        htmlTagMatch = re.match("<[^/]+>(.+?)<.+>", newString)
+        if htmlTagMatch:
+            newString = htmlTagMatch.group(1)
+        strings[i] = newString
+    return (" ".join(strings))
 
 def getCLOTHING_DICT():
     re = ""

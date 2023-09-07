@@ -12,37 +12,47 @@ import properties
 import classes
 import traceback
 
+#Exits program without errors.
 async def exitProgram(session: requests_html.AsyncHTMLSession):
     await session.close()
     exit()
 
+#Requests main page.
 async def getMainPage(baseUrl: str, session) -> None:
     response = await session.get(baseUrl, headers = scrapertools.getHeaders(useReferer=True))
     scrapertools.printMessage("Recieved from {0} status code {1}.".format(baseUrl, str(response.status_code)))
     time.sleep(random.randint(properties.SLEEP_FLOOR_SECONDS, properties.SLEEP_CEIL_SECONDS))
 
+#Creates link to store in queue.
 async def createLink(route: str, baseUrl: str) -> str:
     baseUrlRegex = baseUrl.replace(".", "\.")
     if not re.search(baseUrlRegex, route):
         return (baseUrl + route)
     return route
 
+#Parse API for links
 async def parseApiForLinks(info:Dict, url: str):
     parameterDict = scrapertools.getUrlParameters(url)
     apiUrl = scrapertools.getCatalogApiUrl(url, info["regex"], info["api"]["urlEncoding"])
     response = requests.get(apiUrl)
     if response.status_code == 200:
         responseAsJson = json.loads(response.text)
-        return scrapertools.parseJson(scrapertools.getJsonRoute(info["api"]["productRoute"], parameterDict), responseAsJson)
+        productUrl, jsonRoute = scrapertools.getProductUrlInformation(info["api"]["productUrl"])
+        returnList = scrapertools.parseJson(scrapertools.getJsonRoute(jsonRoute, parameterDict), responseAsJson)
+        
+        for i in range(len(returnList)):
+            returnList[i] = scrapertools.cleanUrl(scrapertools.buildUrl(productUrl, returnList[i]))
+        return returnList
     raise Exception("Recieved {0} from {1}.".format(response.status_code, apiUrl))
 
+#Parse API for Clothing
 async def parseApiForClothing(info: Dict, url: str, baseUrl: str) -> classes.Clothing:
     parameterDict = scrapertools.getUrlParameters(url)
     apiUrl = scrapertools.getProductApiUrl(baseUrl, url, info["api"]["apiUrlEncoding"])
     response = requests.get(apiUrl)
     if response.status_code == 200:
         responseAsJson = json.loads(response.text)
-        name = scrapertools.parseJson(scrapertools.getJsonRoute(info["api"]["nameRoute"], parameterDict), responseAsJson)[0]
+        name = scrapertools.cleanString(scrapertools.parseJson(scrapertools.getJsonRoute(info["api"]["nameRoute"], parameterDict), responseAsJson)[0])
         imageUrl = scrapertools.parseJson(scrapertools.getJsonRoute(info["api"]["imageRoute"], parameterDict), responseAsJson)
         for i in range(len(imageUrl)):
             if "//" == imageUrl[i][:2]:
@@ -58,24 +68,30 @@ async def parseApiForClothing(info: Dict, url: str, baseUrl: str) -> classes.Clo
                 if gender != "other":
                     break
         
-        description = scrapertools.parseJson(scrapertools.getJsonRoute(info["api"]["clothingDescription"]["route"], parameterDict), responseAsJson)
-        tags = scrapertools.getTags(description, info["api"]["clothingDescription"]["regex"])
+        descriptions = scrapertools.parseJson(scrapertools.getJsonRoute(info["api"]["clothingDescription"]["route"], parameterDict), responseAsJson)
+
+        for i in range(len(descriptions)):
+            descriptions[i] = scrapertools.cleanString(descriptions[i])
+
+        tags = scrapertools.getTags(descriptions, info["api"]["clothingDescription"]["regex"])
         return classes.Clothing(name, imageUrl, url, type, gender, tags)
     raise Exception("Recieved {0} from {1}.".format(response.status_code, apiUrl))
 
+#Parse HTML for links.
 async def parseHtmlForLinks(regex: List[str], soup: BeautifulSoup)->List[str]:
     results = []
     for a in soup.find_all('a', href = True):
         for ex in regex:
             linkUrl = a["href"]
             if re.search(ex, linkUrl):
-                results.append(linkUrl)
+                results.append(scrapertools.cleanUrl(linkUrl))
                 break
     return results
 
+#Parse html for clothing.
 async def parseHtmlForClothing(info: Dict, soup: str, url: str)-> classes.Clothing:
     #Gets product name
-    name = soup.find("h1", {"class":info["identifiers"]["nameIdentifier"]}).text
+    name = scrapertools.cleanString(soup.find("h1", {"class":info["identifiers"]["nameIdentifier"]}).text)
     type = scrapertools.getType(name)
 
     imageDiv = soup.find("div", {"class": info["identifiers"]["imageDivIdentifier"]})
@@ -89,11 +105,11 @@ async def parseHtmlForClothing(info: Dict, soup: str, url: str)-> classes.Clothi
                 imageUrl.append(imageSrc)
 
     gender = None
-    if "breadcrumbsIdentifier" in info["identifiers"] in info.keys():
+    if "breadcrumbsIdentifier" in info["identifiers"].keys():
         navSearch = soup.find("nav", {"aria-label": info["identifiers"]["breadcrumbsIdentifier"]})
 
         if not navSearch:
-            navSearch = soup.find("div", {"class": info["breadcrumbsIdentifier"]})
+            navSearch = soup.find("div", {"class": info["identifiers"]["breadcrumbsIdentifier"]})
 
         for link in navSearch.find_all("a"):
             gender = scrapertools.getGender(link.text)
@@ -101,9 +117,9 @@ async def parseHtmlForClothing(info: Dict, soup: str, url: str)-> classes.Clothi
                 break
     else:
         gender = info["identifiers"]["gender"]
-    gender = scrapertools.getGender(gender)
+    gender = scrapertools.getGender(scrapertools.cleanString(gender))
 
-    description = soup.find("div",{"class":info["identifiers"]["clothingDescription"]["divIdentifier"]}).find("p").text
+    description = scrapertools.cleanString(soup.find("div",{"class":info["identifiers"]["clothingDescription"]["divIdentifier"]}).text)
     return classes.Clothing(name, imageUrl, url, type, gender, scrapertools.getTags([description]))
 
 async def main():
@@ -114,17 +130,20 @@ async def main():
         scrapingInfo = json.loads(jsonFile.read())
 
     #Logs into API
-    api = classes.Api()
+    #TODO: Remove comment
+    # api = classes.Api()
 
     #Creates store
     store:classes.Store = classes.Store(scrapingInfo["name"], scrapingInfo["url"])
-    store.createStore(api.getJwt())
+    #TODO: Remove comment
+    #store.createStore(api.getJwt())
 
     baseUrl = scrapingInfo["url"]
 
     #Creates session
     session = requests_html.AsyncHTMLSession()
-    queue = [baseUrl]
+    catalogQueue = [baseUrl]
+    productQueue = []
     indexed = [baseUrl]
 
     nonAcceptCount = 0
@@ -132,10 +151,14 @@ async def main():
     proxyActive = False
     proxyRequests = 0
 
-    while not len(queue) == 0:
+    while not (len(catalogQueue)+ len(productQueue)) == 0:
         try:
             #Pops random url within queue
-            url = queue.pop(random.randrange(len(queue)))
+            chance = random.uniform(0,1)
+            if chance >= properties.PRODUCT_PERCENTAGE or len(productQueue) == 0:
+                url = catalogQueue.pop(0)
+            else:
+                url = productQueue.pop(0)
 
             if proxyRequests > 750:
                 await exitProgram(session)
@@ -153,9 +176,9 @@ async def main():
 
                 nonAcceptCount += 1
                 if not proxyActive:
-                    if len(queue) == 0:
+                    if len(productQueue) + len(catalogQueue) == 0:
                         #Resets queue
-                        queue = [baseUrl]
+                        catalogQueue = [baseUrl]
                     scrapertools.printMessage("Turning on Proxy.")
                     proxyActive = True
                     nonAcceptCount = 0
@@ -171,18 +194,24 @@ async def main():
 
             soup = BeautifulSoup(response.text, "html.parser")
 
-            results = []
+            catalogResults = []
+            productResults = []
             if scrapingInfo["catalogPageInformation"]["api"] and re.search("|".join(scrapingInfo["catalogPageInformation"]["regex"]), url):
-                results += await parseApiForLinks(scrapingInfo["catalogPageInformation"], url)
+                productResults += await parseApiForLinks(scrapingInfo["catalogPageInformation"], url)
             
-            results += await parseHtmlForLinks(scrapingInfo["catalogPageInformation"]["regex"] + scrapingInfo["productPageInformation"]["regex"], soup)
+            catalogResults += await parseHtmlForLinks(scrapingInfo["catalogPageInformation"]["regex"], soup)
+            productResults += await parseHtmlForLinks(scrapingInfo["productPageInformation"]["regex"], soup)
             
-            for link in results:
-                link = await createLink(link, baseUrl)
+            for unformattedLink in catalogResults + productResults:
+                link = await createLink(unformattedLink, baseUrl)
                 if link not in indexed:
                     indexed.append(link)
-                    scrapertools.printMessage("Appending {0} to queue.".format(link))
-                    queue.append(link)
+                    if unformattedLink in catalogResults:
+                        scrapertools.printMessage("Appending {0} to catalog queue.".format(link))
+                        catalogQueue.append(link)
+                    else:
+                        scrapertools.printMessage("Appending {0} to product queue.".format(link))
+                        productQueue.append(link)
                 else:
                     scrapertools.printMessage("Indexed {0} already.".format(link))
             
@@ -207,8 +236,10 @@ async def main():
                         clothingResult.imageUrl[i] = clothingResult.imageUrl[i][:width.start(1)] + str(properties.IMAGE_WIDTH_PIXELS) + clothingResult.imageUrl[i][width.end(1):]
                     clothingResult.imageUrl[i] = re.sub("(&h=[0-9]+$|h=[0-9]+\&)","", clothingResult.imageUrl[i])
 
-                if clothingResult.createClothing(api.getJwt()):
-                    scrapertools.printMessage("Created " + str(clothingResult))
+                #TODO: Remove comment
+                # if clothingResult.createClothing(api.getJwt()):
+                #     scrapertools.printMessage("Created " + str(clothingResult))
+                scrapertools.printMessage("Created " + str(clothingResult))
 
             time.sleep(random.randint(2,10))
             if random.randint(0,1) == 1:           

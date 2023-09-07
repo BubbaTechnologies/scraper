@@ -1,19 +1,19 @@
 {
     "name": "Gymshark",
-    "url": "https://www.gymshark.com",
+    "url": "https://us.shop.gymshark.com",
     "loadJavascript": true,
     "catalogPageInformation": {
         "regex": [
-            "/collections/.+"
+            "(?<=us\\.shop\\.gymshark\\.com)/collections/.+"
         ],
         "api": null
     },
     "productPageInformation": {
         "regex": [
-            "/products/.+"
+            "/products/(?!gift-card).+"
         ],
         "api": {
-            "apiUrlEncoding": "{baseUrl}{route}.js",
+            "apiUrlEncoding": "https://www.gymshark.com/{route}.js",
             "nameRoute": "title",
             "imageRoute": "images",
             "featuredImageRoute": "featured_image",
