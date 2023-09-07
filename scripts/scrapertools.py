@@ -31,7 +31,7 @@ CLOTHING_DICT = {
     "long sleeve":"(?:^| )([Ff]lannel)|(?:^| )([Tt]urtleneck)|(?:^| )([Hh]enley)|(?:^|\s)([Bb]utton(?:-|\s)[Dd]own)|(?:^| )([Ll]ong [Ss]leeve)|(?:^| )([Ww]affle [Kk]nit)",
     "sweatshirt":"(?:^| )([Hh]oodie)|(?:^| )([Ss]weatshirt)",
     "tank":"(?:^| )([Tt]anks?(?: [Tt]op)?)",
-    "bra":"(?:^| )([Bb]ra(?:lette)?)",
+    "bra":"(?:^| )([Bb]ra(?:lette)?) ",
     "dress":"(?:^| )([Dd]ress)",
     "jacket & vest":"((?:^| )[Cc]ardigan)|(?:^| )([Bb]lazer)|(?:^| )([Ss]weater)|(?:^| )([Vv]est)|(?:^| )([Pp]opover)|(?:^| )([Hh]alf[- ][Zz]ip)|(?:^| )([Ff]leece)"\
         "|(?:^| )([Jj]acket)|(?:^| )([Hh]oodie)|(?:^| )([Pp]ullover)|"\
