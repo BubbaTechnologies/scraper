@@ -22,6 +22,8 @@ def calculateRating(file)->float:
     text = file.read()
     clothingCreatedCount = len(re.findall("Created ", text))
     queueCount = len(re.findall(" to queue", text))
+    if queueCount == 0:
+        return 0.0
     return clothingCreatedCount/queueCount
 
 def getGroupNumber(chance: float)->int:
@@ -80,7 +82,7 @@ def main():
             outputList = [f.path for f in os.scandir("{0}/{1}".format(properties.OUTPUT_PATH, basename)) if f.is_file()]
             fileCount = 0
             for outputFilename in outputList:
-                if fileCount > properties.PREVIOUS_OUTPUT_RATING:
+                if fileCount <= properties.PREVIOUS_OUTPUT_RATING:
                     fileCount += 1
                     with open(outputFilename) as outputFile:
                         totalRating += calculateRating(outputFile)
