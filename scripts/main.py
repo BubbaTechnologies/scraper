@@ -141,7 +141,7 @@ async def main():
     #Creates session
     session = requests_html.AsyncHTMLSession()
     catalogQueue = [baseUrl]
-    productQueue = []
+    productQueue = ["https://www.bonobos.com/products/highland-golf-shorts?color=stone"]
     indexed = [baseUrl]
 
     nonAcceptCount = 0

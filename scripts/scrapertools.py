@@ -26,9 +26,9 @@ USER_AGENTS = [
 REFERER = ["https://www.google.com","https://search.yahoo.com","https://www.bing.com"]
 
 CLOTHING_DICT = {
-    "shirt":"(?:^|[- ])([Ss]hirts?)|(?:^| )(Jersey)|(?:^| )([Tt]ees?)|(?:(^| )([Pp]olo))|(?:^| )([Cc]rew (?:[Nn]eck)?)|(?:^| )([Vv]-[Nn]eck)",
+    "shirt":"(?:^|[- ])([Ss]hirts?)|(?:^| )(Jersey)|(?:^| )([Tt]ees?)|(?:(^| )([Pp]olo))|(?:^| )([Cc]rew (?:[Nn]eck)?)|(?:^| )([Vv]-[Nn]eck)|(?:^| )([Hh]enley)",
     "top":"(?:^| )([Tt]ops?)|(?:^| )([Cc]ami)|(?:^| )([Cc]orset)|(?:^| )([Bb]odysuit)",
-    "long sleeve":"(?:^| )([Ff]lannel)|(?:^| )([Tt]urtleneck)|(?:^| )([Hh]enley)|(?:^|\s)([Bb]utton(?:-|\s)[Dd]own)|(?:^| )([Ll]ong [Ss]leeve)|(?:^| )([Ww]affle [Kk]nit)",
+    "long sleeve":"(?:^| )([Ff]lannel)|(?:^| )([Tt]urtleneck)|(?:^|\s)([Bb]utton(?:-|\s)[Dd]own)|(?:^| )([Ll]ong [Ss]leeve)|(?:^| )([Ww]affle [Kk]nit)",
     "sweatshirt":"(?:^| )([Hh]oodie)|(?:^| )([Ss]weatshirt)",
     "tank":"(?:^| )([Tt]anks?(?: [Tt]op)?)",
     "bra":"(?:^| )([Bb]ra(?:lette)?) ",
