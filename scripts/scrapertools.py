@@ -36,7 +36,7 @@ CLOTHING_DICT = {
     "jacket & vest":"((?:^| )[Cc]ardigan)|(?:^| )([Bb]lazer)|(?:^| )([Ss]weater)|(?:^| )([Vv]est)|(?:^| )([Pp]opover)|(?:^| )([Hh]alf[- ][Zz]ip)|(?:^| )([Ff]leece)"\
         "|(?:^| )([Jj]acket)|(?:^| )([Hh]oodie)|(?:^| )([Pp]ullover)|"\
         "(?:^| )([Ss]hacket)|(?:^| )([Aa]norak)|(?:^| )([Pp]arka)|(?:^| )([Bb]omber)|(?:^| )([Cc]oat)|(?:^| )([Ss]weatshirt)|(?:^| )([Aa]norak)|(?:^| )([Ww]ind [Bb]reaker)",
-    "shorts":"(?:^| )([Ss]horts?)",
+    "shorts":"(?:^| )\b([Ss]horts?)(?! [Ss]leeve)\b",
     "jeans":"(?:^| )([Jj]eans?)",
     "leggings":"(?:^| )([Ll]eggings?)",
     "romper & jumper":"(?:^| )([Jj]umper)|(?:^| )([Oo]nesie)|(?:^| )([Pp]laysuit)|(?:^| )([Rr]omper)|(?:^| )([Jj]umpsuit)",
