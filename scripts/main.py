@@ -131,6 +131,7 @@ async def main():
 
     #Logs into API
     api = classes.Api()
+    print(api.getJwt())
 
     #Creates store
     store:classes.Store = classes.Store(scrapingInfo["name"], scrapingInfo["url"])
@@ -170,7 +171,7 @@ async def main():
                 await response.html.arender(wait = 4, timeout=properties.SCRAPER_TIMEOUT_SECONDS)
             
             if response.status_code != 200:
-                scrapertools.printMessage("Recieved {0} from {1} using {2}.".format(response.status_code, url, headers))
+                scrapertools.printMessage("Received {0} from {1} using {2}.".format(response.status_code, url, headers))
 
                 nonAcceptCount += 1
                 if not proxyActive:

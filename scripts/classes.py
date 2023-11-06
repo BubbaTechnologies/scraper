@@ -5,6 +5,9 @@ from typing import Dict
 from enum import Enum
 
 class Api:
+    '''
+        A class holding the API information needed to run the script.
+    '''
     def __init__(self):
         self.__JWT = ""
         self.__login()
@@ -23,6 +26,9 @@ class Api:
         return self.__JWT
     
 class Relation(Enum):
+    '''
+        I documented this too late. I think it has something to do with parsing the json.
+    '''
     EQUAL="="
     NOT_EQUAL="!="
     LESS_THAN="<"
