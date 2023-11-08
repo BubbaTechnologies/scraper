@@ -3,10 +3,10 @@
     "url": "https://vuoriclothing.com",
     "catalogPageInformation": {
         "regex": [
-            "(/(collections|pages)/(?!products).+)"
+            "/(?:collections|pages)(/(?!products).+)"
         ],
         "api": {
-            "urlEncoding": "https://vuori-clothing.myshopify.com{regex[0][1]}.oembed",
+            "urlEncoding": "https://vuori-clothing.myshopify.com/collections{regex[0][1]}.oembed",
             "productUrl":"https://vuoriclothing.com/products/{products[*]/product_id}"
         }
     },

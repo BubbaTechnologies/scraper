@@ -76,7 +76,7 @@ def scheduleJobs(totalGroups:int):
         cleanUpJob.hour.every(2)
 
         #Schedules reboot
-        cleanUpJob = cron.new(command="reboot".format(groupNumber))
+        cleanUpJob = cron.new(command="/sbin/shutdown -r now".format(groupNumber))
         cleanUpJob.minute.on(55)
         cleanUpJob.hour.on(23)
 
