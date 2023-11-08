@@ -10,8 +10,7 @@ import re2 as re
 import math
 import random
 import requests
-import properties
-from classes import Api
+import classes
 
 api = Api()
 
@@ -22,7 +21,7 @@ def mvFilesFromSubdirectories(path: str, moveDirectory: str):
         for file in files:
             subprocess.run(["mv", "{0}/{1}".format(root, file), moveDirectory])
         subprocess.run(["rm", "-r", "{0}".format(root)])
-        
+
 """
     Description: Accesses the api and receives the amount of clothing collected for the particular store over the last week.
     Parameters:
