@@ -9,6 +9,7 @@ import subprocess
 import re2 as re
 import math
 import random
+import json
 import requests
 from classes import Api
 
@@ -32,11 +33,9 @@ def calculateRating(storeName: str)->int:
     #Gets response from API
     requestHeaders = properties.API_HEADERS
     requestHeaders["Authorization"] = "Bearer " + api.getJwt()
-
     response = requests.get(properties.API_URL + "/scraper/store", params = {"storeName": storeName}, headers = requestHeaders)
     if response.status_code == 404:
         return 0
-    
     return response.json()["lastWeekCollections"]
 
 def getGroupNumber(chance: float)->int:
@@ -85,21 +84,17 @@ def main():
     #Removes old groupings
     mvFilesFromSubdirectories(properties.INFO_PATH, properties.INFO_PATH)
 
-    #Calculates ratings per json file
+    #Calculates ratings by items collected within the last week
     fileList = [f.path for f in os.scandir(properties.INFO_PATH) if f.is_file()]
     ratings = []
     for file in fileList:
-        basename = os.path.splitext(os.path.basename(file))[0]
-        totalRating = 0
-        if os.path.exists("{0}/{1}".format(properties.OUTPUT_PATH, basename)):
-            outputList = [f.path for f in os.scandir("{0}/{1}".format(properties.OUTPUT_PATH, basename)) if f.is_file()]
-            fileCount = 0
-            for outputFilename in outputList:
-                if fileCount <= properties.PREVIOUS_OUTPUT_RATING:
-                    fileCount += 1
-                    with open(outputFilename) as outputFile:
-                        totalRating += calculateRating(outputFile)
-        ratings.append((basename, totalRating / properties.PREVIOUS_OUTPUT_RATING))
+        basename = os.path.splitext(os.path.basename(file))[0]   
+        rating = 0
+        with open(file, "r") as infoFile:
+            calculateRating(json.loads(infoFile.read())['name'])
+
+
+        ratings.append((basename, calculateRating(file)))
 
     ratings.sort(key = lambda x: x[1])
     groupNumber = 0
