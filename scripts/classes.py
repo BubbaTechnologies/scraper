@@ -10,8 +10,7 @@ class Api:
     '''
     def __init__(self):
         self.__JWT = ""
-        # self.__login()
-        self.__JWT = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzY3JhcGVyLXNlcnZlciIsImV4cCI6MTcwNzMwNDU1MCwiaWF0IjoxNjk5NDE1MTUwfQ.HDDgbQ2LXUDySCXa_JGSJe7t8IuuHwpsYe2hPj5Yi40"
+        self.__login()
 
     def __login(self):
         loginResponse = requests.post(properties.API_URL + "/login", headers={"Content-Type":"application/json"}, json = properties.API_LOGIN_DATA)
