@@ -9,6 +9,11 @@ import subprocess
 import re2 as re
 import math
 import random
+import requests
+import properties
+from classes import Api
+
+api = Api()
 
 def mvFilesFromSubdirectories(path: str, moveDirectory: str):
     dirList = [f.path for f in os.scandir(path) if f.is_dir()]
@@ -17,14 +22,20 @@ def mvFilesFromSubdirectories(path: str, moveDirectory: str):
         for file in files:
             subprocess.run(["mv", "{0}/{1}".format(root, file), moveDirectory])
         subprocess.run(["rm", "-r", "{0}".format(root)])
-
-def calculateRating(file)->float:
-    text = file.read()
-    clothingCreatedCount = len(re.findall("Created ", text))
-    queueCount = len(re.findall(" to queue", text))
-    if queueCount == 0:
-        return 0.0
-    return clothingCreatedCount/queueCount
+        
+"""
+    Description: Accesses the api and receives the amount of clothing collected for the particular store over the last week.
+    Parameters:
+        storeName: A string representing the name of the store.
+    Return: Returns an integer that represents the amount of clothing collected within the last week.
+"""
+def calculateRating(storeName: str)->int:
+    #Gets response from API
+    response = requests.get(properties.API_URL + "/scraper/store", params={"storeName": storeName}, headers={"Authorization":"Bearer " + api.getJwt()})
+    if response.status_code == 404:
+        return 0
+    
+    return response.json()["lastWeekCollections"]
 
 def getGroupNumber(chance: float)->int:
     return math.floor(math.log(chance, 1 - properties.MAX_PERCENTAGE))
