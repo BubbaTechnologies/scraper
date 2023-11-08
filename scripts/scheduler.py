@@ -91,10 +91,8 @@ def main():
         basename = os.path.splitext(os.path.basename(file))[0]   
         rating = 0
         with open(file, "r") as infoFile:
-            calculateRating(json.loads(infoFile.read())['name'])
-
-
-        ratings.append((basename, calculateRating(file)))
+            rating = calculateRating(json.loads(infoFile.read())['name'])
+        ratings.append((basename, rating))
 
     ratings.sort(key = lambda x: x[1])
     groupNumber = 0
