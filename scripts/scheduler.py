@@ -10,7 +10,7 @@ import re2 as re
 import math
 import random
 import requests
-import classes
+from classes import Api
 
 api = Api()
 

@@ -11,7 +11,6 @@ import string as stringLibrary
 import properties
 
 from typing import Dict
-from classes import Relation
 
 USER_AGENTS = [
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.4 Safari/605.1.15",
@@ -232,6 +231,9 @@ def getJsonRoute(route: str, urlParameters:Dict[str, str])->str:
 
 #Parses Json Structure
 def parseJson(routeList: List[str], jsonObj)->List:
+    #NOTE: Avoids circular import
+    from classes import Relation
+
     if len(routeList) == 0:
         return jsonObj
     
