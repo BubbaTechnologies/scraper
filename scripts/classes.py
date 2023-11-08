@@ -1,5 +1,5 @@
 import requests
-import scrapertools
+from scrapertools import printMessage
 import properties
 from typing import Dict
 from enum import Enum
@@ -15,7 +15,7 @@ class Api:
     def __login(self):
         loginResponse = requests.post(properties.API_URL + "/login", headers={"Content-Type":"application/json"}, json = properties.API_LOGIN_DATA)
         if loginResponse.status_code != 200:
-            scrapertools.printMessage(f"Received code {loginResponse.status_code} from API.")
+            printMessage(f"Received code {loginResponse.status_code} from API.")
             exit()
         self.__JWT = loginResponse.json()["jwt"]
         
@@ -90,7 +90,7 @@ class Clothing:
         try:
             return response.json()["id"]
         except KeyError:
-            scrapertools.printMessage("Could not create clothing: " + str(response))
+            printMessage("Could not create clothing: " + str(response))
             return None
     
 class Store:
@@ -121,5 +121,5 @@ class Store:
             self.id = response.json()["id"]
             return 
         except KeyError:
-            scrapertools.printMessage("Could not create store: " + response)
+            printMessage("Could not create store: " + response)
             exit()
