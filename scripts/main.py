@@ -20,7 +20,7 @@ async def exitProgram(session: requests_html.AsyncHTMLSession):
 #Requests main page.
 async def getMainPage(baseUrl: str, session) -> None:
     response = await session.get(baseUrl, headers = scrapertools.getHeaders(useReferer=True))
-    scrapertools.printMessage("Recieved from {0} status code {1}.".format(baseUrl, str(response.status_code)))
+    scrapertools.printMessage("Received from {0} status code {1}.".format(baseUrl, str(response.status_code)))
     time.sleep(random.randint(properties.SLEEP_FLOOR_SECONDS, properties.SLEEP_CEIL_SECONDS))
 
 #Creates link to store in queue.
@@ -43,7 +43,7 @@ async def parseApiForLinks(info:Dict, url: str):
         for i in range(len(returnList)):
             returnList[i] = scrapertools.cleanUrl(scrapertools.buildUrl(productUrl, returnList[i]))
         return returnList
-    raise Exception("Recieved {0} from {1}.".format(response.status_code, apiUrl))
+    raise Exception("Received {0} from {1}.".format(response.status_code, apiUrl))
 
 #Parse API for Clothing
 async def parseApiForClothing(info: Dict, url: str, baseUrl: str) -> classes.Clothing:
@@ -75,7 +75,7 @@ async def parseApiForClothing(info: Dict, url: str, baseUrl: str) -> classes.Clo
 
         tags = scrapertools.getTags(descriptions, info["api"]["clothingDescription"]["regex"])
         return classes.Clothing(name, imageUrl, url, type, gender, tags)
-    raise Exception("Recieved {0} from {1}.".format(response.status_code, apiUrl))
+    raise Exception("Received {0} from {1}.".format(response.status_code, apiUrl))
 
 #Parse HTML for links.
 async def parseHtmlForLinks(regex: List[str], soup: BeautifulSoup)->List[str]:
@@ -99,6 +99,8 @@ async def parseHtmlForClothing(info: Dict, soup: str, url: str)-> classes.Clothi
     for img in imageDiv.find_all("img"):
         if img.has_attr('srcset'):
             imageUrl.append(img['srcset'].split()[0])
+        elif img.has_attr('data-originsrc'):
+            imageUrl.append(img['data-originsrc'])
         else:
             imageSrc = img['src']
             if re.match("(https://|/)", imageSrc):
@@ -107,14 +109,27 @@ async def parseHtmlForClothing(info: Dict, soup: str, url: str)-> classes.Clothi
     gender = None
     if "breadcrumbsIdentifier" in info["identifiers"].keys():
         navSearch = soup.find("nav", {"aria-label": info["identifiers"]["breadcrumbsIdentifier"]})
-
+        
+        #Attempts to find div
         if not navSearch:
             navSearch = soup.find("div", {"class": info["identifiers"]["breadcrumbsIdentifier"]})
+        
+        #Attempts to find ordered list
+        if not navSearch:
+            navSearch = soup.find("ol", {"class": info["identifiers"]["breadcrumbsIdentifier"]})
 
+        #Searchs through links within breadcrumbs
         for link in navSearch.find_all("a"):
             gender = scrapertools.getGender(link.text)
             if gender != "other":
                 break
+            
+            #Checks if url is seperated by gender
+            if link.has_attr('href'):
+                gender = scrapertools.getGender(link['href'])
+
+                if gender != "other":
+                    break
     else:
         gender = info["identifiers"]["gender"]
     gender = scrapertools.getGender(scrapertools.cleanString(gender))
@@ -131,7 +146,6 @@ async def main():
 
     #Logs into API
     api = classes.Api()
-    print(api.getJwt())
 
     #Creates store
     store:classes.Store = classes.Store(scrapingInfo["name"], scrapingInfo["url"])
@@ -189,7 +203,7 @@ async def main():
                         await getMainPage(baseUrl, session)
                 continue
             else:
-                scrapertools.printMessage("Recieved {0} from {1}.".format(response.status_code, url))
+                scrapertools.printMessage("Received {0} from {1}.".format(response.status_code, url))
 
             soup = BeautifulSoup(response.text, "html.parser")
 
