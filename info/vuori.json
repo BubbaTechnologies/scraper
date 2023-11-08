@@ -3,10 +3,10 @@
     "url": "https://vuoriclothing.com",
     "catalogPageInformation": {
         "regex": [
-            "(/collections/(?!products).+)"
+            "(/(collections|pages)/(?!products).+)"
         ],
         "api": {
-            "urlEncoding": "https://vuoriclothing.com/{regex[0][1]}.oembed",
+            "urlEncoding": "https://vuori-clothing.myshopify.com{regex[0][1]}.oembed",
             "productUrl":"https://vuoriclothing.com/products/{products[*]/product_id}"
         }
     },
@@ -15,7 +15,7 @@
             "/products/(?!giftcard).+"
         ],
         "api": {
-            "apiUrlEncoding": "{baseUrl}{route}.js",
+            "apiUrlEncoding": "https://vuori-clothing.myshopify.com{route}.js",
             "nameRoute": "title",
             "imageRoute": "images",
             "featuredImageRoute": "featured_image",
