@@ -20,6 +20,12 @@ API_LOGIN_DATA = {
         "username": os.getenv("PEACHSCONE_API_USERNAME"),
         "password": os.getenv("PEACHSCONE_API_PASSWORD")
     }
+API_HEADERS = {
+        "Accept-Encoding": "gzip, deflate, br",
+        "User-Agent": "Scraper Server - Python Requests",
+        "Connection": "keep-alive",
+        "Host": API_URL[8:]
+    }
 
 #Proxy Settings
 PROXY = {

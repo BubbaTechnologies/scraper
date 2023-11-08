@@ -30,7 +30,10 @@ def mvFilesFromSubdirectories(path: str, moveDirectory: str):
 """
 def calculateRating(storeName: str)->int:
     #Gets response from API
-    response = requests.get(properties.API_URL + "/scraper/store", params={"storeName": storeName}, headers={"Authorization":"Bearer " + api.getJwt()})
+    requestHeaders = properties.API_HEADERS
+    requestHeaders["Authorization"] = "Bearer " + api.getJwt()
+
+    response = requests.get(properties.API_URL + "/scraper/store", params = {"storeName": storeName}, headers = requestHeaders)
     if response.status_code == 404:
         return 0
     
