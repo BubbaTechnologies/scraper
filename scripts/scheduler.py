@@ -71,7 +71,7 @@ def scheduleJobs(totalGroups:int):
                 job.hour.on(j * 2)
 
         #Schedules clean up
-        cleanUpJob = cron.new(command="cd /home/mgroholski/scraper && SHELL=/bin/bash && bash /home/mgroholski/scraper/scripts/shutdown.py".format(groupNumber))
+        cleanUpJob = cron.new(command="cd /home/mgroholski/scraper && SHELL=/bin/bash && bash /home/mgroholski/scraper/scripts/shutdown.py > scheduler.out".format(groupNumber))
         cleanUpJob.minute.on(58)
         cleanUpJob.hour.every(2)
 
@@ -103,6 +103,6 @@ def main():
         subprocess.run(["mv","{0}/{1}.json".format(properties.INFO_PATH, ratings[i][0]),"{0}/group{1}".format(properties.INFO_PATH, str(groupNumber))])
     
     scheduleJobs(groupNumber)
-
+    
 if __name__=="__main__":
     main()
