@@ -89,22 +89,28 @@ def getHeaders(useReferer=False) -> dict[str, str]:
     return headers
 
 #Data Scraping
-def getGender(string: str):
+"""
+    Parameters:
+        - string: A string that will be used to determine the gender.
+    Return:
+        - A string with the determined gender.
+"""
+def getGender(string: str)->str:
     string = cleanString(string).lower()
 
-    if re.search("([Ww]om[ae]n)|([Ff]emale)", string):
+    if re.search("(?:^| )([Ww]om[ae]n)|([Ff]emale)(?:$| )", string):
         return "female"
 
-    if re.search("([Mm][ae]n)|([Mm]ale)", string):
+    if re.search("(?:^| )([Mm][ae]n)|([Mm]ale)(?:$| )", string):
         return "male"
 
-    if re.search("([Gg])irl", string):
+    if re.search("(?:^| )([Gg])irl(?:$| )", string):
         return "girl"
 
-    if re.search("([Bb])oy", string):
+    if re.search("(?:^| )([Bb])oy(?:$| )", string):
         return "boy"
 
-    if re.search("([Kk]id)", string):
+    if re.search("(?:^| )([Kk]id)(?:$| )", string):
         return "kids"
 
     return "other"
