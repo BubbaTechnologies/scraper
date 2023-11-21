@@ -241,13 +241,7 @@ async def main():
                     continue
 
                 clothingResult.storeId = store.id
-                
-                #Makes images higher quality
-                for i in range(len(clothingResult.imageUrl)):
-                    width = re.search("(?:\?|&)(?:w|sw|wid)=([0-9]+)\&?", clothingResult.imageUrl[i])
-                    if width:
-                        clothingResult.imageUrl[i] = clothingResult.imageUrl[i][:width.start(1)] + str(properties.IMAGE_WIDTH_PIXELS) + clothingResult.imageUrl[i][width.end(1):]
-                    clothingResult.imageUrl[i] = re.sub("(&h=[0-9]+$|h=[0-9]+\&)","", clothingResult.imageUrl[i])
+                clothingResult.imageUrl = scrapertools.cleanImageUrls(clothingResult.imageUrl)
 
                 if clothingResult.createClothing(api.getJwt()):
                     scrapertools.printMessage("Created " + str(clothingResult))

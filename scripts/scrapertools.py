@@ -192,6 +192,26 @@ def getProductApiUrl(baseUrl: str, productUrl: str, apiUrl: str) -> str:
 
     return apiUrl
 
+"""
+    Description: Removes unnecessary attributes from an image URL.
+    Parameters: 
+        - urls: A list of strings representing the image URLs to be cleaned..
+    Return:
+        - list[str]: A list of strings representing clean image URLs.
+"""
+def cleanImageUrls(urls: list[str])->list[str]:
+    cleanUrls = []
+    for url in urls:
+        width = re.search("(?:\?|&)(?:w|sw|wid)=([0-9]+)\&?", url)
+        editedUrl = url
+        if width:
+            editedUrl = url[:width.start(1)] + str(properties.IMAGE_WIDTH_PIXELS) + url[width.end(1):]
+        editedUrl = re.sub("(&h=[0-9]+$|(?:h|hei)=[0-9]+\&)","", editedUrl)
+
+
+    return cleanUrls
+
+
 def cleanUrl(url: str):
     urlRe = re.match("[^#]+", url)
     if urlRe:
