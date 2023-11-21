@@ -207,8 +207,7 @@ def cleanImageUrls(urls: list[str])->list[str]:
         if width:
             editedUrl = url[:width.start(1)] + str(properties.IMAGE_WIDTH_PIXELS) + url[width.end(1):]
         editedUrl = re.sub("(&h=[0-9]+$|(?:h|hei)=[0-9]+\&)","", editedUrl)
-
-
+        cleanUrls.append(editedUrl)
     return cleanUrls
 
 
