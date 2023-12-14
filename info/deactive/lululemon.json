@@ -1,0 +1,25 @@
+{
+    "name": "Lululemon",
+    "url": "https://shop.lululemon.com",
+    "catalogPageInformation": {
+        "regex": [
+            "/c/[^_]+"
+        ],
+        "api": null
+    },
+    "productPageInformation": {
+        "regex": [
+            "/p/.+"
+        ],
+        "api": {
+            "apiUrlEncoding": "{baseUrl}/api{route}",
+            "nameRoute": "data/attributes/product-summary/product-name",
+            "imageRoute": "data/attributes/product-carousel[color-code={param:color}]/image-info",
+            "genderRoute": "data/attributes/product-summary/gender",
+            "clothingDescription": {
+                "route": "data/attributes/product-summary/activity",
+                "regex": null
+            }
+        }
+    }
+}

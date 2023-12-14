@@ -1,0 +1,26 @@
+{
+    "name": "Modatrova",
+    "url": "https://modatrova.com",
+    "loadJavascript": true,
+    "catalogPageInformation": {
+        "regex": [
+            "^(?:https://www\\.modatrova\\.com)/collections/(?!products).+"
+        ],
+        "api": null
+    },
+    "productPageInformation": {
+        "regex": [
+            "^(?:https://www\\.modatrova\\.com)/collections/[a-z-]/products/.+"
+        ],
+        "api": {
+            "apiUrlEncoding": "{baseUrl}{route}.js",
+            "nameRoute": "title",
+            "imageRoute": "images",
+            "gender": "female",
+            "clothingDescription": {
+                "route": "description",
+                "regex": null
+            }
+        }
+    }
+}

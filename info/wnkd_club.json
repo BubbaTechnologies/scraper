@@ -1,0 +1,26 @@
+{
+    "name": "WNKD CLUB",
+    "url": "https://shopwkndclub.com",
+    "loadJavascript": true,
+    "catalogPageInformation": {
+        "regex": [
+            "/collections/(?!.+products).+"
+        ],
+        "api": null
+    },
+    "productPageInformation": {
+        "regex": [
+            "/products/.+"
+        ],
+        "api": {
+            "apiUrlEncoding": "{baseUrl}{route}.js",
+            "nameRoute": "title",
+            "imageRoute": "images",
+            "gender": "female",
+            "clothingDescription": {
+                "route": "description",
+                "regex": null
+            }
+        }
+    }
+}
