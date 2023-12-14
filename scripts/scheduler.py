@@ -18,10 +18,11 @@ api = Api()
 def mvFilesFromSubdirectories(path: str, moveDirectory: str):
     dirList = [f.path for f in os.scandir(path) if f.is_dir()]
     for i in dirList:
-        root, _, files = next(os.walk(i))
-        for file in files:
-            subprocess.run(["mv", "{0}/{1}".format(root, file), moveDirectory])
-        subprocess.run(["rm", "-r", "{0}".format(root)])
+        if i != "./info/inactive":
+            root, _, files = next(os.walk(i))
+            for file in files:
+                subprocess.run(["mv", "{0}/{1}".format(root, file), moveDirectory])
+            subprocess.run(["rm", "-r", "{0}".format(root)])
 
 """
     Description: Accesses the api and receives the amount of clothing collected for the particular store over the last week.
@@ -90,6 +91,7 @@ def main():
     for file in fileList:
         basename = os.path.splitext(os.path.basename(file))[0]   
         rating = 0
+        print(file)
         with open(file, "r") as infoFile:
             rating = calculateRating(json.loads(infoFile.read())['name'])
         ratings.append((basename, rating))
