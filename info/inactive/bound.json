@@ -1,0 +1,31 @@
+{
+    "name": "Bound",
+    "url": "https://wearebound.co.uk",
+    "loadJavascript": true,
+    "catalogPageInformation": {
+        "regex": [
+            "^(https://wearebound\\.co\\.uk)?/collections/[a-z0-9A-Z-]+$"
+        ],
+        "api": {
+            "urlEncoding": "https://wearebound.co.uk/{regex[0][1]}.oembed",
+            "productUrl":"https://wearebound.co.uk/products/{products[*]/product_id}"
+        }
+    },
+    "productPageInformation": {
+        "regex": [
+            "^(https://wearebound\\.co\\.uk)?/collections/[a-z0-9A-Z-]+/products/.+",
+            "^(https://wearebound\\.co\\.uk)?/products/.+"
+        ],
+        "api": {
+            "apiUrlEncoding": "{baseUrl}{route}.js",
+            "nameRoute": "title",
+            "imageRoute": "images",
+            "featuredImageRoute": "featured_image",
+            "gender": "male",
+            "clothingDescription": {
+                "route": "description",
+                "regex": null
+            }
+        }
+    }
+}
