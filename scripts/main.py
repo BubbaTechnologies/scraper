@@ -168,10 +168,13 @@ async def main():
         try:
             #Pops random url within queue
             chance = random.uniform(0,1)
-            if chance >= properties.PRODUCT_PERCENTAGE or len(productQueue) == 0:
+            if (chance >= properties.PRODUCT_PERCENTAGE or len(productQueue) == 0) and len(catalogQueue) > 0:
                 url = catalogQueue.pop(0)
-            else:
+            elif len(productQueue) > 0:
                 url = productQueue.pop(0)
+            else:
+                scrapertools.printMessage("No more item or catalog pages.")
+                exit(1)
 
             if proxyRequests > 750:
                 await exitProgram(session)
