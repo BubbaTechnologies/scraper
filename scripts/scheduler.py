@@ -91,7 +91,6 @@ def main():
     for file in fileList:
         basename = os.path.splitext(os.path.basename(file))[0]   
         rating = 0
-        print(file)
         with open(file, "r") as infoFile:
             rating = calculateRating(json.loads(infoFile.read())['name'])
         ratings.append((basename, rating))
