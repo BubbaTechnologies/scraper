@@ -121,9 +121,7 @@ def getType(string: str):
     if re.search(INVALID_REGEX, string):
         return "invalid"
     
-    listString = string.split(" ")
-    listString.reverse()
-    for p in re.finditer(getCLOTHING_DICT(), ' '.join(listString)):
+    for p in reversed(list(re.finditer(getCLOTHING_DICT(), string))):
         for i in CLOTHING_DICT:
             if re.search(CLOTHING_DICT[i], p.group()):
                 return i

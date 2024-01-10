@@ -14,7 +14,7 @@ SCRAPER_GROUP_MAX_AMOUNT = 3
 MAX_PERCENTAGE = 1/3
 
 #API Settings
-API_URL = "https://api.peachsconemarket.com"
+API_URL = "https://api.clothingcaoru.com"
 API_LOGIN_DATA = {
         "username": os.getenv("PEACHSCONE_API_USERNAME"),
         "password": os.getenv("PEACHSCONE_API_PASSWORD")
