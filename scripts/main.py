@@ -65,7 +65,6 @@ async def parseApiForClothing(info: Dict, url: str, baseUrl: str) -> classes.Clo
             tags:List[str] = scrapertools.parseJson(scrapertools.getJsonRoute(info["api"]["genderRoute"], parameterDict), responseAsJson)
             for tag in tags:
                 gender = scrapertools.getGender(tag)
-                print(tag, gender)
                 if gender != "other":
                     break
         
@@ -156,7 +155,7 @@ async def main():
 
     #Creates session
     session = requests_html.AsyncHTMLSession()
-    catalogQueue = [baseUrl]
+    catalogQueue = ["https://vuoriclothing.com/products/womens-axis-sports-bra-glacier", baseUrl]
     productQueue = []
     indexed = [baseUrl]
 
