@@ -13,7 +13,6 @@ class Api:
         self.__login()
 
     def __login(self):
-        print(properties.API_LOGIN_DATA)
         loginResponse = requests.post(properties.API_URL + "/login", headers={"Content-Type":"application/json"}, json = properties.API_LOGIN_DATA)
         if loginResponse.status_code != 200:
             printMessage(f"Received code {loginResponse.status_code} from API.")
