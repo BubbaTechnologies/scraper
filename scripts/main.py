@@ -74,6 +74,7 @@ async def parseApiForClothing(info: Dict, url: str, baseUrl: str) -> classes.Clo
             descriptions[i] = scrapertools.cleanString(descriptions[i])
 
         tags = scrapertools.getTags(descriptions, info["api"]["clothingDescription"]["regex"])
+        print(classes.Clothing(name, imageUrl, url, type, gender, tags))
         return classes.Clothing(name, imageUrl, url, type, gender, tags)
     raise Exception("Received {0} from {1}.".format(response.status_code, apiUrl))
 
@@ -155,7 +156,7 @@ async def main():
 
     #Creates session
     session = requests_html.AsyncHTMLSession()
-    catalogQueue = ["https://vuoriclothing.com/products/womens-axis-sports-bra-glacier", baseUrl]
+    catalogQueue = [baseUrl]
     productQueue = []
     indexed = [baseUrl]
 
