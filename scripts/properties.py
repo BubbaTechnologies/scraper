@@ -16,7 +16,7 @@ MAX_PERCENTAGE = 1/3
 #API Settings
 API_URL = "https://api.clothingcarou.com"
 API_LOGIN_DATA = {
-        "username": os.getenv("PEACHSCONE_API_USERNAME"),
+        "email": os.getenv("PEACHSCONE_API_USERNAME"),
         "password": os.getenv("PEACHSCONE_API_PASSWORD")
     }
 API_HEADERS = {

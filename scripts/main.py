@@ -65,6 +65,7 @@ async def parseApiForClothing(info: Dict, url: str, baseUrl: str) -> classes.Clo
             tags:List[str] = scrapertools.parseJson(scrapertools.getJsonRoute(info["api"]["genderRoute"], parameterDict), responseAsJson)
             for tag in tags:
                 gender = scrapertools.getGender(tag)
+                print(tag, gender)
                 if gender != "other":
                     break
         
