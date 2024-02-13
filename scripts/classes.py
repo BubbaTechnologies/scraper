@@ -13,6 +13,8 @@ class Api:
         self.__login()
 
     def __login(self):
+        #TODO: Remove
+        return
         loginResponse = requests.post(properties.API_URL + "/login", headers={"Content-Type":"application/json"}, json = properties.API_LOGIN_DATA)
         if loginResponse.status_code != 200:
             printMessage(f"Received code {loginResponse.status_code} from API.")
@@ -81,6 +83,9 @@ class Clothing:
         return str(self.toDict())
 
     def createClothing(self, jwt):
+        #TODO: Remove
+        return
+        
         header = {
             "Authorization": "Bearer " + jwt,
             "Content-Type": "application/json"
@@ -111,6 +116,8 @@ class Store:
         return str(self.toDict())
 
     def createStore(self, jwt):
+        #TODO: Remove
+        return
         headers = {
             "Authorization": "Bearer " + jwt,
             "Content-Type": "application/json"

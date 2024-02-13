@@ -16,7 +16,7 @@
             "nameRoute": "title",
             "imageRoute": "images",
             "featuredImageRoute": "featured_image",
-            "genderRoute": "type",
+            "genderRoute": "tags",
             "clothingDescription": {
                 "route": "description",
                 "regex": null

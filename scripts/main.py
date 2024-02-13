@@ -74,7 +74,6 @@ async def parseApiForClothing(info: Dict, url: str, baseUrl: str) -> classes.Clo
             descriptions[i] = scrapertools.cleanString(descriptions[i])
 
         tags = scrapertools.getTags(descriptions, info["api"]["clothingDescription"]["regex"])
-        print(classes.Clothing(name, imageUrl, url, type, gender, tags))
         return classes.Clothing(name, imageUrl, url, type, gender, tags)
     raise Exception("Received {0} from {1}.".format(response.status_code, apiUrl))
 
@@ -247,6 +246,8 @@ async def main():
                 clothingResult.storeId = store.id
                 clothingResult.imageUrl = scrapertools.cleanImageUrls(clothingResult.imageUrl)
 
+
+                scrapertools.printMessage("Created " + str(clothingResult))
                 if clothingResult.createClothing(api.getJwt()):
                     scrapertools.printMessage("Created " + str(clothingResult))
 

@@ -25,32 +25,32 @@ USER_AGENTS = [
 REFERER = ["https://www.google.com","https://search.yahoo.com","https://www.bing.com"]
 
 CLOTHING_DICT = {
-    "long sleeve":"(?:^| )([Ff]lannel)|(?:^| )([Tt]urtleneck)|(?:^|\s)([Bb]utton(?:-|\s)[Dd]own)|(?:^| )([Ll]ong [Ss]leeve)|(?:^| )([Ww]affle [Kk]nit)",
-    "shirt":"(?:^|[- ])([Ss]hirts?)|(?:^| )(Jersey)|(?:^| )([Tt]ees?)|(?:(^| )([Pp]olo))|(?:^| )([Cc]rew (?:[Nn]eck)?)|(?:^| )([Vv]-[Nn]eck)|(?:^| )([Hh]enley)|(?:^| )[Ss]hort [Ss]leeve",
-    "top":"(?:^| )([Tt]ops?(?!coat))|(?:^| )([Cc]ami)|(?:^| )([Cc]orset)|(?:^| )([Bb]odysuit)",
-    "sweatshirt":"(?:^| )([Hh]oodie)|(?:^| )([Ss]weatshirt)",
-    "tank":"(?:^| )([Tt]anks?(?: [Tt]op)?)",
-    "bra":"(?:^| )([Bb]ra(?:lette)?) ",
-    "dress":"(?:^| )([Dd]ress)",
-    "jacket & vest":"((?:^| )[Cc]ardigan)|(?:^| )([Bb]lazer)|(?:^| )([Ss]weater)|(?:^| )([Vv]est)|(?:^| )([Pp]opover)|(?:^| )([Hh]alf[- ][Zz]ip)|(?:^| )([Ff]leece)"\
-        "|(?:^| )([Jj]acket)|(?:^| )([Hh]oodie)|(?:^| )([Pp]ullover)|"\
-        "(?:^| )([Ss]hacket)|(?:^| )([Aa]norak)|(?:^| )([Pp]arka)|(?:^| )([Bb]omber)|(?:^| )([Cc]oat)|(?:^| )([Ss]weatshirt)|(?:^| )([Aa]norak)|(?:^| )([Ww]ind [Bb]reaker)",
-    "shorts":"(?:^| )\b([Ss]horts?)(?! [Ss]leeve)\b",
-    "jeans":"(?:^| )([Jj]eans?)",
-    "leggings":"(?:^| )([Ll]eggings?)",
-    "romper & jumper":"(?:^| )([Jj]umper)|(?:^| )([Oo]nesie)|(?:^| )([Pp]laysuit)|(?:^| )([Rr]omper)|(?:^| )([Jj]umpsuit)",
-    "skirt":"(?:^| )([Ss]kirt)|(?:^| )([Ss]kort)",
-    "pants":"(?:^| )([Pp]ants?)|(?:^| )([Tt]rousers?)|(?:^| )([Jj]oggers?)|(?:^| )([Ss]lacks)|(?:^| )([Cc]hinos?)|(?:^| )([Hh]igh[- ][Rr]ise)|(?:^| )([Ss]weatpants?)",
-    "set":"(?:^| )([S|s]ets?)",
-    "sleepwear":"(?:^| )([Ss]leepwear)|(?:^| )([Pp]ajamas?)|(?:^| )([Nn]ightie)|(?:^| )([Rr]obe)",
-    "swimwear":"(?:^| )([Ss]wim)|(?:^| )([Bb]ikini)|(?:^| )([Rr]ash(?: )?[Gg]uard)|(?:^| )([Ss]urf(?![- ]?[Bb]oard))|(?:^| )([Tt]runk[s]?)|(?:^| )([Ww]et(?:[Ss]uit)?)|(?:^| )([Oo]ne[- ][Pp]iece)",
-    "shoes":"(?:^| )([Ss]hoes?)|(?:^| )([Ss]andals?)|(?:^| )([Ss]lides)|(?:^| )([Bb]oots?)|(?:^| )([Ss]neakers?)|(?:^| )([Hh]eels?)|(?:^| )([Ss]tilettos?)|(?:^| )([Ff]latforms?)|(?:^| )([Ww]edges?)|(?:^| )([Pp]umps?)",
-    "suit & tuxedo":"(?:^| )([Ss]uit)|(?:^| )([Tt]uxedo)",
-    "underclothing":"(?:^| )([Uu]nderwear)|(?:^| )([Bb]oxers?)|(?:^| )([Bb]riefs?)|(?:^| )([Tt]hong)|(?:^| )([Pp]ant(?:ies|y))|(?:^| )([Gg]arter)|(?:^| )([Bb]abydoll)|(?:^| )([Tt]edd(?:ies|y(?! ?[Bb]ear)))",
-    "accessories":"(?:^| )([Tt]ights)|(?:^| )([Ss]tockings)|(?:^| )([Tt]high(?: )?[Hh]ighs?)|(?:^| )([Bb]ackpack)|(?:^| )([Pp]urse)|(?:^| )([Bb]ag)|(?:^| )([Bb]elt)|(?:^| )(" \
-                 "[Pp]erfume)|(?:^| )([Cc]ologne)|(?:^| )([Hh]at)|(?:^| )([Gg]lasses)|(?:^| )([Ww]atch)|(?:^| )([Nn]ecklace)|(?:^| )([Ww]allet)|(?:^| )([Pp]in)|(?:^| )([Cc]uff(?:s|links))|" \
-                 "(?:^| )([Pp]ocket [Ss]quares)|(?:^| )([Cc]lip)|(?:^| )([Rr]ing)|(?:^| )([Ee]arings)|(?:^| )([Pp]endant)|(?:^| )([Bb]raclet)|(?:^| )([Bb]rooches?)|(?:^| )([Bb]ands?)|" \
-                 "(?:^| )([Ss]carves)|(?:^| )([Gg]loves?)|(?:^| )([Tt]ies?)|(?:^| )([Ss]ocks)|(?:^| )([T|t]ote)|(?:^| )([Pp]ocket [Ss]quare)|(?:^| )([Cc]ap)|(?:^| )([Cc]hoker)|(?:^| )([Bb]eanie)"
+    "long sleeve":r"(?:^| )([Ff]lannel)|(?:^| )([Tt]urtleneck)|(?:^|\s)([Bb]utton(?:-|\s)[Dd]own)|(?:^| )([Ll]ong [Ss]leeve)|(?:^| )([Ww]affle [Kk]nit)",
+    "shirt":r"(?:^|[- ])([Ss]hirts?)|(?:^| )(Jersey)|(?:^| )([Tt]ees?)|(?:(^| )([Pp]olo))|(?:^| )([Cc]rew (?:[Nn]eck)?)|(?:^| )([Vv][-\s][Nn]eck)|(?:^| )([Hh]enley)|(?:^| )[Ss]hort [Ss]leeve",
+    "top":r"(?:^| )([Tt]ops?(?!coat))|(?:^| )([Cc]ami)|(?:^| )([Cc]orset)|(?:^| )([Bb]odysuit)",
+    "sweatshirt":r"(?:^| )([Hh]oodie)|(?:^| )([Ss]weatshirt)",
+    "tank":r"(?:^| )([Tt]anks?(?: [Tt]op)?)",
+    "bra":r"(?:^| )([Bb]ra(?:lette)?) ",
+    "dress":r"(?:^| )([Dd]ress)",
+    "jacket & vest":r"((?:^| )[Cc]ardigan)|(?:^| )([Bb]lazer)|(?:^| )([Ss]weater)|(?:^| )([Vv]est)|(?:^| )([Pp]opover)|(?:^| )([Hh]alf[- ][Zz]ip)|(?:^| )([Ff]leece)"\
+        r"|(?:^| )([Jj]acket)|(?:^| )([Hh]oodie)|(?:^| )([Pp]ullover)|"\
+        r"(?:^| )([Ss]hacket)|(?:^| )([Aa]norak)|(?:^| )([Pp]arka)|(?:^| )([Bb]omber)|(?:^| )([Cc]oat)|(?:^| )([Ss]weatshirt)|(?:^| )([Aa]norak)|(?:^| )([Ww]ind [Bb]reaker)|(?:^| )([Zz]ip[- ][Kk]nit)",
+    "shorts":r"(?:^| )\b([Ss]horts?)(?! [Ss]leeve)\b",
+    "jeans":r"(?:^| )([Jj]eans?)",
+    "leggings":r"(?:^| )([Ll]eggings?)",
+    "romper & jumper":r"(?:^| )([Jj]umper)|(?:^| )([Oo]nesie)|(?:^| )([Pp]laysuit)|(?:^| )([Rr]omper)|(?:^| )([Jj]umpsuit)",
+    "skirt":r"(?:^| )([Ss]kirt)|(?:^| )([Ss]kort)",
+    "pants":r"(?:^| )([Pp]ants?)|(?:^| )([Tt]rousers?)|(?:^| )([Jj]oggers?)|(?:^| )([Ss]lacks)|(?:^| )([Cc]hinos?)|(?:^| )([Hh]igh[- ][Rr]ise)|(?:^| )([Ss]weatpants?)",
+    "set":r"(?:^| )([S|s]ets?)",
+    "sleepwear":r"(?:^| )([Ss]leepwear)|(?:^| )([Pp]ajamas?)|(?:^| )([Nn]ightie)|(?:^| )([Rr]obe)",
+    "swimwear":r"(?:^| )([Ss]wim)|(?:^| )([Bb]ikini)|(?:^| )([Rr]ash(?: )?[Gg]uard)|(?:^| )([Ss]urf(?![- ]?[Bb]oard))|(?:^| )([Tt]runk[s]?)|(?:^| )([Ww]et(?:[Ss]uit)?)|(?:^| )([Oo]ne[- ][Pp]iece)",
+    "shoes":r"(?:^| )([Ss]hoes?)|(?:^| )([Ss]andals?)|(?:^| )([Ss]lides)|(?:^| )([Bb]oots?)|(?:^| )([Ss]neakers?)|(?:^| )([Hh]eels?)|(?:^| )([Ss]tilettos?)|(?:^| )([Ff]latforms?)|(?:^| )([Ww]edges?)|(?:^| )([Pp]umps?)",
+    "suit & tuxedo":r"(?:^| )([Ss]uit)|(?:^| )([Tt]uxedo)",
+    "underclothing":r"(?:^| )([Uu]nderwear)|(?:^| )([Bb]oxers?)|(?:^| )([Bb]riefs?)|(?:^| )([Tt]hong)|(?:^| )([Pp]ant(?:ies|y))|(?:^| )([Gg]arter)|(?:^| )([Bb]abydoll)|(?:^| )([Tt]edd(?:ies|y(?! ?[Bb]ear)))",
+    "accessories":r"(?:^| )([Tt]ights)|(?:^| )([Ss]tockings)|(?:^| )([Tt]high(?: )?[Hh]ighs?)|(?:^| )([Bb]ackpack)|(?:^| )([Pp]urse)|(?:^| )([Bb]ag)|(?:^| )([Bb]elt)|(?:^| )(" \
+                 r"[Pp]erfume)|(?:^| )([Cc]ologne)|(?:^| )([Hh]at)|(?:^| )([Gg]lasses)|(?:^| )([Ww]atch)|(?:^| )([Nn]ecklace)|(?:^| )([Ww]allet)|(?:^| )([Pp]in)|(?:^| )([Cc]uff(?:s|links))|" \
+                 r"(?:^| )([Pp]ocket [Ss]quares)|(?:^| )([Cc]lip)|(?:^| )([Rr]ing)|(?:^| )([Ee]arings)|(?:^| )([Pp]endant)|(?:^| )([Bb]raclet)|(?:^| )([Bb]rooches?)|(?:^| )([Bb]ands?)|" \
+                 r"(?:^| )([Ss]carves)|(?:^| )([Gg]loves?)|(?:^| )([Tt]ies?)|(?:^| )([Ss]ocks)|(?:^| )([T|t]ote)|(?:^| )([Pp]ocket [Ss]quare)|(?:^| )([Cc]ap)|(?:^| )([Cc]hoker)|(?:^| )([Bb]eanie)"
 }
 
 TAG_DICT = {
@@ -115,12 +115,19 @@ def getGender(string: str)->str:
 
     return "other"
 
+"""
+    Description: Flips string and determines which type category the name fits into.
+    Parameters:
+        - string: String being used to determine type.
+"""
 def getType(string: str):
     string = cleanString(string).lower()
 
     if re.search(INVALID_REGEX, string):
         return "invalid"
     
+    print(reversed(list(re.finditer(getCLOTHING_DICT(), string))))
+
     for p in reversed(list(re.finditer(getCLOTHING_DICT(), string))):
         for i in CLOTHING_DICT:
             if re.search(CLOTHING_DICT[i], p.group()):

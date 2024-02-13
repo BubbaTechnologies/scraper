@@ -1,29 +1,29 @@
 {
-    "name": "Vuori",
-    "url": "https://vuoriclothing.com",
-    "catalogPageInformation": {
-        "regex": [
-            "/(?:collections|pages)(/(?!products).+)"
-        ],
-        "api": {
-            "urlEncoding": "https://vuori-clothing.myshopify.com/collections{regex[0][1]}.oembed",
-            "productUrl":"https://vuoriclothing.com/products/{products[*]/product_id}"
-        }
-    },
-    "productPageInformation": {
-        "regex": [
-            "/products/(?!giftcard).+"
-        ],
-        "api": {
-            "apiUrlEncoding": "https://vuori-clothing.myshopify.com{route}.js",
-            "nameRoute": "title",
-            "imageRoute": "images",
-            "featuredImageRoute": "featured_image",
-            "genderRoute": "tags",
-            "clothingDescription": {
-                "route": "description",
-                "regex": null
-            }
-        }
-    }
+	"name": "Vuori",
+	"url": "https://vuoriclothing.com",
+	"catalogPageInformation": {
+		"regex": [
+			"/(?:collections|pages)(/(?!products).+)"
+		],
+		"api": {
+			"urlEncoding": "https://vuori-clothing.myshopify.com/collections{regex[0][1]}.oembed",
+			"productUrl": "https://vuoriclothing.com/products/{products[*]/product_id}"
+		}
+	},
+	"productPageInformation": {
+		"regex": [
+			"/products/(?!.*(?:gift[-\\s]?card)).*$"
+		],
+		"api": {
+			"apiUrlEncoding": "https://vuori-clothing.myshopify.com{route}.js",
+			"nameRoute": "title",
+			"imageRoute": "images",
+			"featuredImageRoute": "featured_image",
+			"genderRoute": "tags",
+			"clothingDescription": {
+				"route": "description",
+				"regex": null
+			}
+		}
+	}
 }
