@@ -31,6 +31,10 @@ def main():
         #Gets input
         data["name"] = input("Store Name: ")
         data["url"] = input("Store URL: ")
+        if input("Use Proxy? (Yes/No)").lower() == 'Yes':
+            data["useProxy"] = True
+        else:
+            data["useProxy"] = False
 
         #Checks url input
         urlCheck = re.fullmatch("http(?:s)?://(?:(?:www|shop)\.)?.+\.(?:com|co|co\.uk)", data["url"])
@@ -71,6 +75,16 @@ def main():
             data[productInfromationKey]["api"]["imageRoute"] = input("Image Route: ")
             # if input("Is there a featured image? (Yes/No) ").lower() == "yes":
             #     data[productInfromationKey]["api"]["featuredImageRoute"] = input("Featured Image Route: ")
+
+            if input("Can more clothing be found in the API? (Yes/No)").lower() == "yes":
+                uniqueParamters = int(input("How many unique parameters?"))
+                data[productInfromationKey]["api"]["urlParams"] = []
+                for _ in uniqueParamters: 
+                    parameterData = dict()
+                    parameterData["param"] = input("Parameter Key: ")
+                    print("See README.md for instructions on how to encode for correct JSON parsing.")
+                    parameterData["value"] = input("Parameter Value: ")
+                    data[productInfromationKey]["api"]["urlParams"].append(parameterData)
 
             if input("Is there a specific gender? (Yes/No) ").lower() == "yes":
                 data[productInfromationKey]["api"]["gender"] = checkGender(input("Gender: (Male/Female/Boy/Girl) ").lower())

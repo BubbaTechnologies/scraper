@@ -30,8 +30,8 @@ async def createLink(route: str, baseUrl: str) -> str:
         return (baseUrl + route)
     return route
 
-#Parse API for links
-async def parseApiForLinks(info:Dict, url: str):
+#Parse Catalog API for links
+async def parseApiForLinks(info: Dict, url: str):
     parameterDict = scrapertools.getUrlParameters(url)
     apiUrl = scrapertools.getCatalogApiUrl(url, info["regex"], info["api"]["urlEncoding"])
     response = requests.get(apiUrl)
@@ -74,6 +74,7 @@ async def parseApiForClothing(info: Dict, url: str, baseUrl: str) -> classes.Clo
             descriptions[i] = scrapertools.cleanString(descriptions[i])
 
         tags = scrapertools.getTags(descriptions, info["api"]["clothingDescription"]["regex"])
+
         return classes.Clothing(name, imageUrl, url, type, gender, tags)
     raise Exception("Received {0} from {1}.".format(response.status_code, apiUrl))
 
@@ -191,7 +192,7 @@ async def main():
                 scrapertools.printMessage("Received {0} from {1} using {2}.".format(response.status_code, url, headers))
 
                 nonAcceptCount += 1
-                if not proxyActive:
+                if not proxyActive and ('useProxy' in  scrapingInfo.keys()) and scrapingInfo['useProxy']:
                     if len(productQueue) + len(catalogQueue) == 0:
                         #Resets queue
                         catalogQueue = [baseUrl]

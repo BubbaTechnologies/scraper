@@ -16,10 +16,17 @@
             "nameRoute": "data/attributes/product-summary/product-name",
             "imageRoute": "data/attributes/product-carousel[color-code={param:color}]/image-info",
             "genderRoute": "data/attributes/product-summary/gender",
+            "urlParams": [
+                {
+                    "param":"color",
+                    "valueRoute":"data/attributes/product-carousel[*]/color-code"
+                }
+            ],
             "clothingDescription": {
                 "route": "data/attributes/product-summary/activity",
                 "regex": null
             }
         }
-    }
+    },
+    "useProxy": true
 }
