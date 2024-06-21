@@ -31,7 +31,7 @@ def main():
         #Gets input
         data["name"] = input("Store Name: ")
         data["url"] = input("Store URL: ")
-        if input("Use Proxy? (Yes/No)").lower() == 'Yes':
+        if input("Use Proxy? (Yes/No) ").lower() == 'Yes':
             data["useProxy"] = True
         else:
             data["useProxy"] = False
@@ -106,6 +106,8 @@ def main():
         else:
             data[productInfromationKey]["identifiers"]["clothingDescription"] = {"divIdentifier": input("Clothing Description Div Identifier: ")}
             data[productInfromationKey]["identifiers"]["clothingDescription"]["regex"] = getTagRegex()
+
+        data["keepUrlParameters"] = (input("Keep URL Parameters? (Yes/No)").lower() == "yes")
 
         with open(f"../info/" + data["name"].lower().replace(" ","_") + ".json", 'w') as file:
             print("Writing file " + scrapertools.pwd() + "/" + data["name"].lower().replace(" ","_") + ".json")

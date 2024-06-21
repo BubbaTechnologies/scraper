@@ -1,0 +1,27 @@
+{
+    "name": "Urban Outfitters",
+    "url": "https://www.urbanoutfitters.com",
+    "useProxy": false,
+    "keepUrlParameters": false,
+    "loadJavascript": true,
+    "catalogPageInformation": {
+        "regex": [
+            "\\.com/[a-z-]+$"
+        ],
+        "api": null
+    },
+    "productPageInformation": {
+        "regex": [
+            "/shop/.*$"
+        ],
+        "identifiers": {
+            "nameIdentifier": ["c-pwa-product-meta-heading", "c-pwa-family-product__heading"],
+            "imageDivIdentifier": ["c-pwa-product-image-grid__slider"],
+            "breadcrumbsIdentifier": "o-pwa-breadcrumbs__list",
+            "clothingDescription": {
+                "divIdentifier": "c-pwa-product-details",
+                "regex": null
+            }
+        }
+    }
+}

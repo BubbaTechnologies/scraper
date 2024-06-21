@@ -1,5 +1,8 @@
 import os
 
+#Testing Settings
+TESTING_ENV = True
+
 #Scraper Settings
 SCRAPER_TIMEOUT_SECONDS = 30
 SLEEP_FLOOR_SECONDS = 2

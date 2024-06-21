@@ -1,6 +1,9 @@
 # Bubba Technologies Inc. Python Scraper
 ## Created by Matthew Groholski
-## README Last Update: 08/02/23
+## README Last Update: 06/21/24
+
+**This program was used for non-profit purposes only. The creators do not deny nor admit to web scraping any websites.**
+
 
 ### File Creation
 Use scripts/fileBuilder.py to create JSON files with website scraping information.

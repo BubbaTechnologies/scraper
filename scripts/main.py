@@ -90,13 +90,14 @@ async def parseHtmlForLinks(regex: List[str], soup: BeautifulSoup)->List[str]:
     return results
 
 #Parse html for clothing.
-async def parseHtmlForClothing(info: Dict, soup: str, url: str)-> classes.Clothing:
+async def parseHtmlForClothing(info: Dict, soup: BeautifulSoup, url: str)-> classes.Clothing:
     #Gets product name
     name = scrapertools.cleanString(soup.find("h1", {"class":info["identifiers"]["nameIdentifier"]}).text)
     type = scrapertools.getType(name)
 
     imageDiv = soup.find("div", {"class": info["identifiers"]["imageDivIdentifier"]})
     imageUrl = []
+
     for img in imageDiv.find_all("img"):
         if img.has_attr('srcset'):
             imageUrl.append(img['srcset'].split()[0])
@@ -133,7 +134,9 @@ async def parseHtmlForClothing(info: Dict, soup: str, url: str)-> classes.Clothi
                     break
     else:
         gender = info["identifiers"]["gender"]
-    gender = scrapertools.getGender(scrapertools.cleanString(gender))
+    gender = scrapertools.getGender(scrapertools.cleanString(
+        gender if not gender is None else ""
+        ))
 
     description = scrapertools.cleanString(soup.find("div",{"class":info["identifiers"]["clothingDescription"]["divIdentifier"]}).text)
     return classes.Clothing(name, imageUrl, url, type, gender, scrapertools.getTags([description]))
@@ -146,18 +149,20 @@ async def main():
         scrapingInfo = json.loads(jsonFile.read())
 
     #Logs into API
-    api = classes.Api()
+    if not properties.TESTING_ENV:
+        api = classes.Api()
 
     #Creates store
     store:classes.Store = classes.Store(scrapingInfo["name"], scrapingInfo["url"])
-    store.createStore(api.getJwt())
+    if not properties.TESTING_ENV:
+        store.createStore(api.getJwt())
 
     baseUrl = scrapingInfo["url"]
 
     #Creates session
     session = requests_html.AsyncHTMLSession()
     catalogQueue = [baseUrl]
-    productQueue = []
+    productQueue = ["https://www.urbanoutfitters.com/shop/bdg-astro-baggy-denim-jort"]
     indexed = [baseUrl]
 
     nonAcceptCount = 0
@@ -220,6 +225,11 @@ async def main():
             productResults += await parseHtmlForLinks(scrapingInfo["productPageInformation"]["regex"], soup)
             
             for unformattedLink in catalogResults + productResults:
+                if "keepUrlParameters" in scrapingInfo.keys() and not scrapingInfo["keepUrlParameters"]:
+                    searchResults = re.search("(.+)(?:\?)", unformattedLink)
+                    if not searchResults is None:
+                        unformattedLink = searchResults.group(1)
+
                 link = await createLink(unformattedLink, baseUrl)
                 if link not in indexed:
                     indexed.append(link)
@@ -238,6 +248,12 @@ async def main():
                 if "api" in scrapingInfo["productPageInformation"].keys():
                     clothingResult = await parseApiForClothing(scrapingInfo["productPageInformation"], url, baseUrl)
                 else:
+                    # TODO: Remove
+                    with open("/Users/mattgroholski/Desktop/urbanPage.html", "w+") as file:
+                        file.write(str(soup))
+                    # print("Exiting")
+                    # exit()
+
                     clothingResult = await parseHtmlForClothing(scrapingInfo["productPageInformation"], soup, url)
                 
                 if clothingResult.type == "invalid":
@@ -247,10 +263,11 @@ async def main():
                 clothingResult.storeId = store.id
                 clothingResult.imageUrl = scrapertools.cleanImageUrls(clothingResult.imageUrl)
 
-
-                scrapertools.printMessage("Created " + str(clothingResult))
-                if clothingResult.createClothing(api.getJwt()):
+                if properties.TESTING_ENV or clothingResult.createClothing(api.getJwt()):
                     scrapertools.printMessage("Created " + str(clothingResult))
+                    # TODO: Remove
+                    print("Exiting")
+                    exit()
 
             time.sleep(random.randint(2,10))
             if random.randint(0,1) == 1:           
